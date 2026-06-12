@@ -34,6 +34,11 @@ _$VehicleRegistrationStateImpl _$$VehicleRegistrationStateImplFromJson(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  exteriorPhotosMap:
+      (json['exteriorPhotosMap'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
   interiorPhotos:
       (json['interiorPhotos'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -88,6 +93,7 @@ Map<String, dynamic> _$$VehicleRegistrationStateImplToJson(
   'runningCondition': _$RunningConditionEnumMap[instance.runningCondition],
   'mechanicalIssues': instance.mechanicalIssues,
   'exteriorPhotos': instance.exteriorPhotos,
+  'exteriorPhotosMap': instance.exteriorPhotosMap,
   'interiorPhotos': instance.interiorPhotos,
   'damagePhotos': instance.damagePhotos,
   'damages': instance.damages,

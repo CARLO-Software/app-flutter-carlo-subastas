@@ -92,6 +92,18 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(exteriorPhotos: photos);
   }
 
+  void addExteriorPhotoWithPath(String positionId, String filePath) {
+    final photos = Map<String, String>.from(state.exteriorPhotosMap);
+    photos[positionId] = filePath;
+    state = state.copyWith(exteriorPhotosMap: photos);
+  }
+
+  void removeExteriorPhotoByPosition(String positionId) {
+    final photos = Map<String, String>.from(state.exteriorPhotosMap);
+    photos.remove(positionId);
+    state = state.copyWith(exteriorPhotosMap: photos);
+  }
+
   void removeExteriorPhoto(String photoPath) {
     final photos = List<String>.from(state.exteriorPhotos);
     photos.remove(photoPath);
@@ -100,6 +112,10 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
 
   void setExteriorPhotos(List<String> photos) {
     state = state.copyWith(exteriorPhotos: photos);
+  }
+
+  void setExteriorPhotosMap(Map<String, String> photosMap) {
+    state = state.copyWith(exteriorPhotosMap: photosMap);
   }
 
   void confirmPhotos() {

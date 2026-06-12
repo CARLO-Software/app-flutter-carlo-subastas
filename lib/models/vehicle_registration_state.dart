@@ -49,6 +49,7 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
 
     // Photos
     @Default([]) List<String> exteriorPhotos,
+    @Default({}) Map<String, String> exteriorPhotosMap,
     @Default([]) List<String> interiorPhotos,
     @Default([]) List<String> damagePhotos,
 

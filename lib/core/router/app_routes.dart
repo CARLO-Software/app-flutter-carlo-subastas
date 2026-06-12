@@ -13,6 +13,7 @@ class AppRoutes {
   static const String photoIntroduction = '/photo-introduction';
   static const String photoReady = '/photo-ready';
   static const String exteriorPhotos = '/exterior-photos';
+  static const String guidedCapture = '/guided-capture';
   static const String conditionDamage = '/condition-damage';
   static const String serviceHistory = '/service-history';
   static const String review = '/review';

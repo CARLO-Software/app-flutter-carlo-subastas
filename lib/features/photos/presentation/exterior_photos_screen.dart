@@ -5,8 +5,10 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
+import '../providers/guided_capture_provider.dart';
 import '../widgets/widgets.dart';
 
 class ExteriorPhotosScreen extends ConsumerStatefulWidget {
@@ -17,32 +19,70 @@ class ExteriorPhotosScreen extends ConsumerStatefulWidget {
 }
 
 class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
-  final Map<String, bool> _photosTaken = {};
-
-  @override
-  void initState() {
-    super.initState();
-    for (final photoType in AppConstants.exteriorPhotoTypes) {
-      _photosTaken[photoType] = false;
-    }
+  void _startGuidedCapture() {
+    // Initialize guided capture with existing photos
+    final registrationState = ref.read(vehicleRegistrationProvider);
+    ref.read(guidedCaptureProvider.notifier).initializeWithExistingPhotos(
+      registrationState.exteriorPhotosMap,
+    );
+    context.push(AppRoutes.guidedCapture);
   }
 
-  void _simulateTakePhoto(String photoType) {
-    setState(() {
-      _photosTaken[photoType] = !(_photosTaken[photoType] ?? false);
-    });
+  void _onPhotoCardTap(String positionId) {
+    final registrationState = ref.read(vehicleRegistrationProvider);
+    final hasPhoto = registrationState.exteriorPhotosMap.containsKey(positionId);
 
-    if (_photosTaken[photoType] == true) {
-      ref.read(vehicleRegistrationProvider.notifier).addExteriorPhoto(photoType);
+    if (hasPhoto) {
+      // Show option to retake
+      _showRetakeDialog(positionId);
     } else {
-      ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhoto(photoType);
+      // Go to guided capture at this position
+      final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
+      if (index >= 0) {
+        ref.read(guidedCaptureProvider.notifier).goToPosition(index);
+        context.push(AppRoutes.guidedCapture);
+      }
     }
   }
 
-  int get _photosTakenCount => _photosTaken.values.where((taken) => taken).length;
+  void _showRetakeDialog(String positionId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Photo Options'),
+        content: const Text('Would you like to retake this photo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhotoByPosition(positionId);
+              final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
+              if (index >= 0) {
+                ref.read(guidedCaptureProvider.notifier).goToPosition(index);
+                context.push(AppRoutes.guidedCapture);
+              }
+            },
+            child: const Text('Retake'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int get _photosTakenCount {
+    final state = ref.watch(vehicleRegistrationProvider);
+    return state.exteriorPhotosMap.length;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final registrationState = ref.watch(vehicleRegistrationProvider);
+    final totalPhotos = AppConstants.photoPositions.length;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -64,7 +104,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                   child: ClipRRect(
                     borderRadius: AppSpacing.borderRadiusFull,
                     child: LinearProgressIndicator(
-                      value: _photosTakenCount / AppConstants.exteriorPhotoTypes.length,
+                      value: _photosTakenCount / totalPhotos,
                       backgroundColor: AppColors.border,
                       valueColor: const AlwaysStoppedAnimation<Color>(AppColors.success),
                       minHeight: 8,
@@ -73,7 +113,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                 ),
                 AppSpacing.hGapMd,
                 Text(
-                  '$_photosTakenCount/${AppConstants.exteriorPhotoTypes.length}',
+                  '$_photosTakenCount/$totalPhotos',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
@@ -88,9 +128,69 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Guided capture button
+                  GestureDetector(
+                    onTap: _startGuidedCapture,
+                    child: Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, Color(0xFF0066CC)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                          AppSpacing.hGapMd,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Start Guided Capture',
+                                  style: AppTypography.titleMedium.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                AppSpacing.vGapXxs,
+                                Text(
+                                  'We\'ll guide you through each angle',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  AppSpacing.vGapLg,
                   const SectionHeader(
-                    title: 'Take Exterior Photos',
-                    subtitle: 'Tap each card to simulate taking a photo',
+                    title: 'Photo Overview',
+                    subtitle: 'Tap any photo to capture or retake',
                   ),
                   GridView.builder(
                     shrinkWrap: true,
@@ -101,13 +201,15 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                       crossAxisSpacing: AppSpacing.md,
                       mainAxisSpacing: AppSpacing.md,
                     ),
-                    itemCount: AppConstants.exteriorPhotoTypes.length,
+                    itemCount: AppConstants.photoPositions.length,
                     itemBuilder: (context, index) {
-                      final photoType = AppConstants.exteriorPhotoTypes[index];
+                      final position = AppConstants.photoPositions[index];
+                      final photoPath = registrationState.exteriorPhotosMap[position.id];
                       return PhotoCard(
-                        title: photoType,
-                        imagePath: _photosTaken[photoType] == true ? 'mock_path' : null,
-                        onTap: () => _simulateTakePhoto(photoType),
+                        title: position.name,
+                        imagePath: photoPath,
+                        angle: position.angle,
+                        onTap: () => _onPhotoCardTap(position.id),
                       );
                     },
                   ),

@@ -1,13 +1,17 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../models/photo_position.dart';
+import 'car_silhouette_painter.dart';
 
 class PhotoCard extends StatelessWidget {
   final String title;
   final String? imagePath;
   final VoidCallback onTap;
   final bool isRequired;
+  final PhotoAngle? angle;
 
   const PhotoCard({
     super.key,
@@ -15,11 +19,13 @@ class PhotoCard extends StatelessWidget {
     this.imagePath,
     required this.onTap,
     this.isRequired = true,
+    this.angle,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool hasPhoto = imagePath != null && imagePath!.isNotEmpty;
+    final bool isRealPhoto = hasPhoto && imagePath!.startsWith('/');
 
     return GestureDetector(
       onTap: onTap,
@@ -39,16 +45,33 @@ class PhotoCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: AppSpacing.borderRadiusMd,
-                    child: Container(
-                      color: AppColors.surfaceVariant,
-                      child: const Center(
-                        child: Icon(
-                          Icons.check_circle,
-                          size: 48,
-                          color: AppColors.success,
-                        ),
-                      ),
-                    ),
+                    child: isRealPhoto
+                        ? Image.file(
+                            File(imagePath!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: AppColors.surfaceVariant,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    size: 48,
+                                    color: AppColors.success,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: AppColors.surfaceVariant,
+                            child: const Center(
+                              child: Icon(
+                                Icons.check_circle,
+                                size: 48,
+                                color: AppColors.success,
+                              ),
+                            ),
+                          ),
                   ),
                   Positioned(
                     bottom: 0,
@@ -84,11 +107,20 @@ class PhotoCard extends StatelessWidget {
                       color: AppColors.surfaceVariant,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.camera_alt_outlined,
-                      size: 32,
-                      color: AppColors.textSecondary,
-                    ),
+                    child: angle != null
+                        ? Center(
+                            child: CarSilhouetteWidget(
+                              angle: angle!,
+                              color: AppColors.textSecondary,
+                              size: 48,
+                              strokeWidth: 1.5,
+                            ),
+                          )
+                        : const Icon(
+                            Icons.camera_alt_outlined,
+                            size: 32,
+                            color: AppColors.textSecondary,
+                          ),
                   ),
                   AppSpacing.vGapSm,
                   Text(

@@ -35,6 +35,8 @@ mixin _$VehicleRegistrationState {
   List<String> get mechanicalIssues =>
       throw _privateConstructorUsedError; // Photos
   List<String> get exteriorPhotos => throw _privateConstructorUsedError;
+  Map<String, String> get exteriorPhotosMap =>
+      throw _privateConstructorUsedError;
   List<String> get interiorPhotos => throw _privateConstructorUsedError;
   List<String> get damagePhotos =>
       throw _privateConstructorUsedError; // Condition & Damage
@@ -82,6 +84,7 @@ abstract class $VehicleRegistrationStateCopyWith<$Res> {
     RunningCondition? runningCondition,
     List<String> mechanicalIssues,
     List<String> exteriorPhotos,
+    Map<String, String> exteriorPhotosMap,
     List<String> interiorPhotos,
     List<String> damagePhotos,
     List<DamageItem> damages,
@@ -128,6 +131,7 @@ class _$VehicleRegistrationStateCopyWithImpl<
     Object? runningCondition = freezed,
     Object? mechanicalIssues = null,
     Object? exteriorPhotos = null,
+    Object? exteriorPhotosMap = null,
     Object? interiorPhotos = null,
     Object? damagePhotos = null,
     Object? damages = null,
@@ -178,6 +182,10 @@ class _$VehicleRegistrationStateCopyWithImpl<
                 ? _value.exteriorPhotos
                 : exteriorPhotos // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            exteriorPhotosMap: null == exteriorPhotosMap
+                ? _value.exteriorPhotosMap
+                : exteriorPhotosMap // ignore: cast_nullable_to_non_nullable
+                      as Map<String, String>,
             interiorPhotos: null == interiorPhotos
                 ? _value.interiorPhotos
                 : interiorPhotos // ignore: cast_nullable_to_non_nullable
@@ -276,6 +284,7 @@ abstract class _$$VehicleRegistrationStateImplCopyWith<$Res>
     RunningCondition? runningCondition,
     List<String> mechanicalIssues,
     List<String> exteriorPhotos,
+    Map<String, String> exteriorPhotosMap,
     List<String> interiorPhotos,
     List<String> damagePhotos,
     List<DamageItem> damages,
@@ -323,6 +332,7 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
     Object? runningCondition = freezed,
     Object? mechanicalIssues = null,
     Object? exteriorPhotos = null,
+    Object? exteriorPhotosMap = null,
     Object? interiorPhotos = null,
     Object? damagePhotos = null,
     Object? damages = null,
@@ -373,6 +383,10 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
             ? _value._exteriorPhotos
             : exteriorPhotos // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        exteriorPhotosMap: null == exteriorPhotosMap
+            ? _value._exteriorPhotosMap
+            : exteriorPhotosMap // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
         interiorPhotos: null == interiorPhotos
             ? _value._interiorPhotos
             : interiorPhotos // ignore: cast_nullable_to_non_nullable
@@ -450,6 +464,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     this.runningCondition,
     final List<String> mechanicalIssues = const [],
     final List<String> exteriorPhotos = const [],
+    final Map<String, String> exteriorPhotosMap = const {},
     final List<String> interiorPhotos = const [],
     final List<String> damagePhotos = const [],
     final List<DamageItem> damages = const [],
@@ -468,6 +483,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
   }) : _extraFeatures = extraFeatures,
        _mechanicalIssues = mechanicalIssues,
        _exteriorPhotos = exteriorPhotos,
+       _exteriorPhotosMap = exteriorPhotosMap,
        _interiorPhotos = interiorPhotos,
        _damagePhotos = damagePhotos,
        _damages = damages,
@@ -525,6 +541,16 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     if (_exteriorPhotos is EqualUnmodifiableListView) return _exteriorPhotos;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_exteriorPhotos);
+  }
+
+  final Map<String, String> _exteriorPhotosMap;
+  @override
+  @JsonKey()
+  Map<String, String> get exteriorPhotosMap {
+    if (_exteriorPhotosMap is EqualUnmodifiableMapView)
+      return _exteriorPhotosMap;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_exteriorPhotosMap);
   }
 
   final List<String> _interiorPhotos;
@@ -604,7 +630,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
 
   @override
   String toString() {
-    return 'VehicleRegistrationState(vehicle: $vehicle, mileage: $mileage, extraFeatures: $extraFeatures, numberOfKeys: $numberOfKeys, hasFinance: $hasFinance, runningCondition: $runningCondition, mechanicalIssues: $mechanicalIssues, exteriorPhotos: $exteriorPhotos, interiorPhotos: $interiorPhotos, damagePhotos: $damagePhotos, damages: $damages, serviceHistoryType: $serviceHistoryType, serviceDocuments: $serviceDocuments, submissionStatus: $submissionStatus, vehicleDetailsConfirmed: $vehicleDetailsConfirmed, extraFeaturesConfirmed: $extraFeaturesConfirmed, keysConfirmed: $keysConfirmed, financeConfirmed: $financeConfirmed, runningConditionConfirmed: $runningConditionConfirmed, mechanicalIssuesConfirmed: $mechanicalIssuesConfirmed, photosConfirmed: $photosConfirmed, conditionDamageConfirmed: $conditionDamageConfirmed, serviceHistoryConfirmed: $serviceHistoryConfirmed)';
+    return 'VehicleRegistrationState(vehicle: $vehicle, mileage: $mileage, extraFeatures: $extraFeatures, numberOfKeys: $numberOfKeys, hasFinance: $hasFinance, runningCondition: $runningCondition, mechanicalIssues: $mechanicalIssues, exteriorPhotos: $exteriorPhotos, exteriorPhotosMap: $exteriorPhotosMap, interiorPhotos: $interiorPhotos, damagePhotos: $damagePhotos, damages: $damages, serviceHistoryType: $serviceHistoryType, serviceDocuments: $serviceDocuments, submissionStatus: $submissionStatus, vehicleDetailsConfirmed: $vehicleDetailsConfirmed, extraFeaturesConfirmed: $extraFeaturesConfirmed, keysConfirmed: $keysConfirmed, financeConfirmed: $financeConfirmed, runningConditionConfirmed: $runningConditionConfirmed, mechanicalIssuesConfirmed: $mechanicalIssuesConfirmed, photosConfirmed: $photosConfirmed, conditionDamageConfirmed: $conditionDamageConfirmed, serviceHistoryConfirmed: $serviceHistoryConfirmed)';
   }
 
   @override
@@ -631,6 +657,10 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
             const DeepCollectionEquality().equals(
               other._exteriorPhotos,
               _exteriorPhotos,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._exteriorPhotosMap,
+              _exteriorPhotosMap,
             ) &&
             const DeepCollectionEquality().equals(
               other._interiorPhotos,
@@ -696,6 +726,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     runningCondition,
     const DeepCollectionEquality().hash(_mechanicalIssues),
     const DeepCollectionEquality().hash(_exteriorPhotos),
+    const DeepCollectionEquality().hash(_exteriorPhotosMap),
     const DeepCollectionEquality().hash(_interiorPhotos),
     const DeepCollectionEquality().hash(_damagePhotos),
     const DeepCollectionEquality().hash(_damages),
@@ -740,6 +771,7 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
     final RunningCondition? runningCondition,
     final List<String> mechanicalIssues,
     final List<String> exteriorPhotos,
+    final Map<String, String> exteriorPhotosMap,
     final List<String> interiorPhotos,
     final List<String> damagePhotos,
     final List<DamageItem> damages,
@@ -777,6 +809,8 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
   List<String> get mechanicalIssues; // Photos
   @override
   List<String> get exteriorPhotos;
+  @override
+  Map<String, String> get exteriorPhotosMap;
   @override
   List<String> get interiorPhotos;
   @override
