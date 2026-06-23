@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,9 +7,11 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../models/photo_position.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../providers/guided_capture_provider.dart';
+import '../services/angle_validator_service.dart';
 import '../widgets/widgets.dart';
 
 class ExteriorPhotosScreen extends ConsumerStatefulWidget {
@@ -19,8 +22,93 @@ class ExteriorPhotosScreen extends ConsumerStatefulWidget {
 }
 
 class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
+  final AngleValidatorService _validator = AngleValidatorService(
+    apiKey: AppConstants.geminiApiKey,
+  );
+
+  // Track validation status per position
+  final Map<String, PhotoValidationStatus> _validationStatus = {};
+  final Map<String, String> _validationFeedback = {};
+  // Track which paths we've already validated to avoid re-validating
+  final Map<String, String> _validatedPaths = {};
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Validate new photos when returning from capture
+    WidgetsBinding.instance.addPostFrameCallback((_) => _validateNewPhotos());
+  }
+
+  void _validateNewPhotos() {
+    final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
+
+    for (final position in AppConstants.photoPositions) {
+      final path = photos[position.id];
+      if (path == null) continue;
+
+      // Skip if already validated with the same path
+      if (_validatedPaths[position.id] == path) continue;
+
+      _validatePhoto(position.id, path, position.angle);
+    }
+  }
+
+  Future<void> _validatePhoto(String positionId, String path, PhotoAngle angle) async {
+    setState(() {
+      _validationStatus[positionId] = PhotoValidationStatus.validating;
+      _validatedPaths[positionId] = path;
+    });
+
+    try {
+      final bytes = await File(path).readAsBytes();
+      final result = await _validator.validateAngle(
+        imageBytes: bytes,
+        expectedAngle: angle,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        if (result.isValid) {
+          _validationStatus[positionId] = PhotoValidationStatus.valid;
+          _validationFeedback.remove(positionId);
+        } else {
+          _validationStatus[positionId] = PhotoValidationStatus.invalid;
+          _validationFeedback[positionId] = result.feedback ?? 'Ángulo incorrecto';
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        // On error, don't block the user
+        _validationStatus[positionId] = PhotoValidationStatus.valid;
+        _validatedPaths.remove(positionId);
+      });
+    }
+  }
+
+  void _retakePhoto(String positionId) {
+    // Remove photo and validation state
+    ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhotoByPosition(positionId);
+    setState(() {
+      _validationStatus.remove(positionId);
+      _validationFeedback.remove(positionId);
+      _validatedPaths.remove(positionId);
+    });
+
+    // Navigate to capture at this position
+    final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
+    if (index >= 0) {
+      final registrationState = ref.read(vehicleRegistrationProvider);
+      ref.read(guidedCaptureProvider.notifier).initializeWithExistingPhotos(
+        registrationState.exteriorPhotosMap,
+      );
+      ref.read(guidedCaptureProvider.notifier).goToPosition(index);
+      context.push(AppRoutes.guidedCapture);
+    }
+  }
+
   void _startGuidedCapture() {
-    // Initialize guided capture with existing photos
     final registrationState = ref.read(vehicleRegistrationProvider);
     ref.read(guidedCaptureProvider.notifier).initializeWithExistingPhotos(
       registrationState.exteriorPhotosMap,
@@ -33,10 +121,8 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     final hasPhoto = registrationState.exteriorPhotosMap.containsKey(positionId);
 
     if (hasPhoto) {
-      // Show option to retake
       _showRetakeDialog(positionId);
     } else {
-      // Go to guided capture at this position
       final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
       if (index >= 0) {
         ref.read(guidedCaptureProvider.notifier).goToPosition(index);
@@ -59,12 +145,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhotoByPosition(positionId);
-              final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
-              if (index >= 0) {
-                ref.read(guidedCaptureProvider.notifier).goToPosition(index);
-                context.push(AppRoutes.guidedCapture);
-              }
+              _retakePhoto(positionId);
             },
             child: const Text('Retake'),
           ),
@@ -94,7 +175,6 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
       ),
       body: Column(
         children: [
-          // Progress indicator
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             color: AppColors.surfaceVariant,
@@ -128,14 +208,13 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Guided capture button
                   GestureDetector(
                     onTap: _startGuidedCapture,
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.primary, Color(0xFF0066CC)],
+                          colors: [AppColors.primary, Color(0xFF8B5CF6)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -210,6 +289,9 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                         imagePath: photoPath,
                         angle: position.angle,
                         onTap: () => _onPhotoCardTap(position.id),
+                        validationStatus: _validationStatus[position.id] ?? PhotoValidationStatus.none,
+                        validationFeedback: _validationFeedback[position.id],
+                        onRetake: () => _retakePhoto(position.id),
                       );
                     },
                   ),

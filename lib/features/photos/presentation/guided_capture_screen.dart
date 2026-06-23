@@ -63,7 +63,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   }
 
   Future<void> _initializeCamera() async {
-    // Check permission
     final status = await Permission.camera.request();
     if (!status.isGranted) {
       setState(() {
@@ -86,7 +85,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
         return;
       }
 
-      // Use the back camera
       final backCamera = _cameras!.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.back,
         orElse: () => _cameras!.first,
@@ -123,8 +121,13 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
         image,
         _cameraController!.description,
       );
-      if (mounted && result.detected != _detectionResult.detected ||
-          result.isAligned != _detectionResult.isAligned) {
+
+      if (!mounted) return;
+
+      final changed = result.detected != _detectionResult.detected ||
+          result.isAligned != _detectionResult.isAligned;
+
+      if (changed) {
         setState(() => _detectionResult = result);
       }
     });
@@ -141,11 +144,9 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     ref.read(guidedCaptureProvider.notifier).setCapturing(true);
 
     try {
-      // Stop stream before capturing
       await _cameraController!.stopImageStream();
       final XFile photo = await _cameraController!.takePicture();
 
-      // Save to app documents directory
       final directory = await getApplicationDocumentsDirectory();
       final fileName =
           'car_${captureState.currentPosition.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -156,7 +157,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       if (mounted) {
         ref.read(guidedCaptureProvider.notifier).setCapturing(false);
 
-        // Show preview dialog
         await PhotoPreviewDialog.show(
           context: context,
           imagePath: savedPath,
@@ -165,17 +165,14 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             _acceptPhoto(savedPath);
           },
           onRetake: () {
-            // Delete the file and allow retaking
             File(savedPath).deleteSync();
           },
         );
-        // Restart detection after dialog closes
         await _startDetection();
       }
     } catch (e) {
       ref.read(guidedCaptureProvider.notifier).setCapturing(false);
       ref.read(guidedCaptureProvider.notifier).setError('Failed to take photo');
-      // Restart detection on error too
       await _startDetection();
     }
   }
@@ -184,22 +181,17 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     final captureState = ref.read(guidedCaptureProvider);
     final positionId = captureState.currentPosition.id;
 
-    // Save to guided capture state
     ref.read(guidedCaptureProvider.notifier).capturePhoto(positionId, path);
-
-    // Also save to vehicle registration state
     ref
         .read(vehicleRegistrationProvider.notifier)
         .addExteriorPhotoWithPath(positionId, path);
 
-    // Auto-advance to next position
     if (!captureState.isLastPosition) {
       ref.read(guidedCaptureProvider.notifier).goToNext();
     }
   }
 
   void _finishCapture() {
-    // Mark photos as confirmed if minimum photos taken
     final captureState = ref.read(guidedCaptureProvider);
     if (captureState.completedCount >= 4) {
       ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
@@ -215,7 +207,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Camera preview or error state
           if (_errorMessage != null)
             _buildErrorState()
           else if (!_hasPermission)
@@ -225,7 +216,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
           else
             _buildCameraPreview(captureState),
 
-          // Top bar with close button and progress
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
@@ -258,7 +248,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             ),
           ),
 
-          // Bottom controls
           if (_isInitialized && _hasPermission)
             Positioned(
               bottom: 0,
@@ -274,11 +263,9 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   Widget _buildCameraPreview(GuidedCaptureState captureState) {
     return Stack(
       children: [
-        // Camera feed
         Positioned.fill(
           child: CameraPreview(_cameraController!),
         ),
-        // Overlay with guide
         Positioned.fill(
           child: CameraOverlayWidget(
             angle: captureState.currentPosition.angle,
@@ -310,7 +297,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Position selector
             SizedBox(
               height: 70,
               child: ListView.builder(
@@ -386,11 +372,9 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
               ),
             ),
             AppSpacing.vGapLg,
-            // Capture button row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Previous button
                 IconButton(
                   onPressed: captureState.isFirstPosition
                       ? null
@@ -400,7 +384,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                   color: Colors.white,
                   disabledColor: Colors.white.withValues(alpha: 0.3),
                 ),
-                // Capture button
                 GestureDetector(
                   onTap: captureState.isCapturing ? null : _takePhoto,
                   child: Container(
@@ -425,7 +408,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                     ),
                   ),
                 ),
-                // Next/Done button
                 if (captureState.isLastPosition ||
                     captureState.completedCount >= 4)
                   TextButton(

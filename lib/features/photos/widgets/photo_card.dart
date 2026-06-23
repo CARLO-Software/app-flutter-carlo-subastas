@@ -6,12 +6,17 @@ import '../../../core/theme/app_typography.dart';
 import '../../../models/photo_position.dart';
 import 'car_silhouette_painter.dart';
 
+enum PhotoValidationStatus { none, validating, valid, invalid }
+
 class PhotoCard extends StatelessWidget {
   final String title;
   final String? imagePath;
   final VoidCallback onTap;
   final bool isRequired;
   final PhotoAngle? angle;
+  final PhotoValidationStatus validationStatus;
+  final String? validationFeedback;
+  final VoidCallback? onRetake;
 
   const PhotoCard({
     super.key,
@@ -20,12 +25,26 @@ class PhotoCard extends StatelessWidget {
     required this.onTap,
     this.isRequired = true,
     this.angle,
+    this.validationStatus = PhotoValidationStatus.none,
+    this.validationFeedback,
+    this.onRetake,
   });
 
   @override
   Widget build(BuildContext context) {
     final bool hasPhoto = imagePath != null && imagePath!.isNotEmpty;
     final bool isRealPhoto = hasPhoto && imagePath!.startsWith('/');
+    final bool isInvalid = validationStatus == PhotoValidationStatus.invalid;
+    final bool isValidating = validationStatus == PhotoValidationStatus.validating;
+    final bool isValid = validationStatus == PhotoValidationStatus.valid;
+
+    final borderColor = isInvalid
+        ? AppColors.error
+        : isValid
+            ? AppColors.success
+            : hasPhoto
+                ? AppColors.success
+                : AppColors.border;
 
     return GestureDetector(
       onTap: onTap,
@@ -35,7 +54,7 @@ class PhotoCard extends StatelessWidget {
           color: hasPhoto ? AppColors.surfaceVariant : AppColors.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(
-            color: hasPhoto ? AppColors.success : AppColors.border,
+            color: borderColor,
             width: hasPhoto ? 2 : 1,
           ),
         ),
@@ -54,9 +73,9 @@ class PhotoCard extends StatelessWidget {
                                 color: AppColors.surfaceVariant,
                                 child: const Center(
                                   child: Icon(
-                                    Icons.check_circle,
+                                    Icons.broken_image,
                                     size: 48,
-                                    color: AppColors.success,
+                                    color: AppColors.textTertiary,
                                   ),
                                 ),
                               );
@@ -73,6 +92,39 @@ class PhotoCard extends StatelessWidget {
                             ),
                           ),
                   ),
+                  // Validating overlay
+                  if (isValidating)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: AppSpacing.borderRadiusMd,
+                      ),
+                      child: const Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 3,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Validando...',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  // Bottom banner
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -80,21 +132,60 @@ class PhotoCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
                       decoration: BoxDecoration(
-                        color: AppColors.success.withValues(alpha: 0.9),
+                        color: isInvalid
+                            ? AppColors.error.withValues(alpha: 0.9)
+                            : AppColors.success.withValues(alpha: 0.9),
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(AppSpacing.radiusMd),
                           bottomRight: Radius.circular(AppSpacing.radiusMd),
                         ),
                       ),
-                      child: Text(
-                        title,
-                        style: AppTypography.labelMedium.copyWith(
-                          color: AppColors.textOnPrimary,
-                        ),
-                        textAlign: TextAlign.center,
+                      child: Row(
+                        children: [
+                          if (isInvalid)
+                            const Padding(
+                              padding: EdgeInsets.only(right: 4),
+                              child: Icon(Icons.warning, color: Colors.white, size: 14),
+                            ),
+                          Expanded(
+                            child: Text(
+                              isInvalid
+                                  ? (validationFeedback ?? title)
+                                  : title,
+                              style: AppTypography.labelMedium.copyWith(
+                                color: AppColors.textOnPrimary,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                  // Retake button (X) for invalid photos
+                  if (isInvalid && onRetake != null)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: onRetake,
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: const BoxDecoration(
+                            color: AppColors.error,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               )
             : Column(

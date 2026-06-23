@@ -44,14 +44,18 @@ class VehicleDetectorService {
       final imageHeight = image.height.toDouble();
       final box = vehicle.boundingBox;
 
-      // Check if vehicle is centered (within 20% of center)
+      // Check if vehicle is centered (within 25% of center)
       final centerX = (box.left + box.right) / 2 / imageWidth;
       final centerY = (box.top + box.bottom) / 2 / imageHeight;
-      final isCentered = (centerX - 0.5).abs() < 0.2 && (centerY - 0.5).abs() < 0.2;
+      final isCentered = (centerX - 0.5).abs() < 0.25 && (centerY - 0.5).abs() < 0.25;
 
-      // Check if vehicle fills enough of frame (at least 30%)
+      // Check if vehicle fills enough of frame (at least 10%)
       final coverage = (box.width * box.height) / (imageWidth * imageHeight);
-      final isGoodSize = coverage > 0.15 && coverage < 0.9;
+      final isGoodSize = coverage > 0.10 && coverage < 0.95;
+
+      // Debug logs
+      debugPrint('>>> centerX: ${centerX.toStringAsFixed(2)}, centerY: ${centerY.toStringAsFixed(2)}, coverage: ${(coverage * 100).toStringAsFixed(1)}%');
+      debugPrint('>>> isCentered: $isCentered, isGoodSize: $isGoodSize, isAligned: ${isCentered && isGoodSize}');
 
       return VehicleDetectionResult(
         detected: true,

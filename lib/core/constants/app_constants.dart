@@ -7,6 +7,9 @@ class AppConstants {
   static const String appName = 'Carlo Vehicle App';
   static const String appVersion = '1.0.0';
 
+  // AI Configuration — passed via --dart-define-from-file=.env
+  static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
+
   // Photo Position Definitions
   static const List<PhotoPositionData> photoPositions = [
     PhotoPositionData(

@@ -4,14 +4,14 @@ class AppColors {
   AppColors._();
 
   // Primary Colors
-  static const Color primary = Color(0xFF1E3A5F);
-  static const Color primaryLight = Color(0xFF2E5A8F);
-  static const Color primaryDark = Color(0xFF0E2A4F);
+  static const Color primary = Color(0xFF6327E2);
+  static const Color primaryLight = Color(0xFF8B5CF6);
+  static const Color primaryDark = Color(0xFF4C1D95);
 
-  // Accent Colors
-  static const Color accent = Color(0xFF0066CC);
-  static const Color accentLight = Color(0xFF3399FF);
-  static const Color accentDark = Color(0xFF004C99);
+  // Accent Colors (Secondary)
+  static const Color accent = Color(0xFFAEF318);
+  static const Color accentLight = Color(0xFFC5F74D);
+  static const Color accentDark = Color(0xFF8BC612);
 
   // Background Colors
   static const Color background = Color(0xFFFFFFFF);
@@ -47,7 +47,7 @@ class AppColors {
   static const Color shadow = Color(0x1A000000);
 
   // Chip Colors
-  static const Color chipSelected = Color(0xFF1E3A5F);
+  static const Color chipSelected = Color(0xFF6327E2);
   static const Color chipUnselected = Color(0xFFF5F7FA);
   static const Color chipBorder = Color(0xFFE5E7EB);
 
