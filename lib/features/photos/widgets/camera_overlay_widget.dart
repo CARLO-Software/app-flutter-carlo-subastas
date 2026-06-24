@@ -9,29 +9,13 @@ class CameraOverlayWidget extends StatelessWidget {
   final PhotoAngle angle;
   final String positionName;
   final String instructions;
-  final bool isVehicleDetected;
-  final bool isVehicleAligned;
 
   const CameraOverlayWidget({
     super.key,
     required this.angle,
     required this.positionName,
     required this.instructions,
-    this.isVehicleDetected = false,
-    this.isVehicleAligned = false,
   });
-
-  Color get _frameColor {
-    if (isVehicleAligned) return AppColors.success;
-    if (isVehicleDetected) return Colors.orange;
-    return Colors.white.withValues(alpha: 0.6);
-  }
-
-  String get _statusText {
-    if (isVehicleAligned) return '✓ Vehículo alineado';
-    if (isVehicleDetected) return 'Centra el vehículo';
-    return 'Buscando vehículo...';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,50 +69,26 @@ class CameraOverlayWidget extends StatelessWidget {
             ),
           ),
         ),
-        // Center guide frame
+        // Center guide frame with silhouette
         Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                width: MediaQuery.of(context).size.width * 0.85,
-                height: MediaQuery.of(context).size.width * 0.65,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: _frameColor,
-                    width: isVehicleAligned ? 4 : 2,
-                  ),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: Center(
-                  child: CarSilhouetteWidget(
-                    angle: angle,
-                    color: _frameColor.withValues(alpha: 0.5),
-                    strokeWidth: 3,
-                    size: MediaQuery.of(context).size.width * 0.55,
-                  ),
-                ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.85,
+            height: MediaQuery.of(context).size.width * 0.65,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.6),
+                width: 2,
               ),
-              AppSpacing.vGapMd,
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: _frameColor.withValues(alpha: 0.8),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                ),
-                child: Text(
-                  _statusText,
-                  style: AppTypography.labelMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            ),
+            child: Center(
+              child: CarSilhouetteWidget(
+                angle: angle,
+                color: Colors.white.withValues(alpha: 0.4),
+                strokeWidth: 3,
+                size: MediaQuery.of(context).size.width * 0.55,
               ),
-            ],
+            ),
           ),
         ),
         // Corner guides

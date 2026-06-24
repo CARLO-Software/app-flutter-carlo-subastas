@@ -7,7 +7,6 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../../models/photo_position.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../providers/guided_capture_provider.dart';
@@ -22,78 +21,90 @@ class ExteriorPhotosScreen extends ConsumerStatefulWidget {
 }
 
 class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
-  final AngleValidatorService _validator = AngleValidatorService(
-    apiKey: AppConstants.geminiApiKey,
-  );
+  AngleValidatorService? _validator;
+  bool _isValidating = false;
 
-  // Track validation status per position
   final Map<String, PhotoValidationStatus> _validationStatus = {};
   final Map<String, String> _validationFeedback = {};
-  // Track which paths we've already validated to avoid re-validating
-  final Map<String, String> _validatedPaths = {};
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Validate new photos when returning from capture
-    WidgetsBinding.instance.addPostFrameCallback((_) => _validateNewPhotos());
+  AngleValidatorService get validator {
+    _validator ??= AngleValidatorService(apiKey: AppConstants.geminiApiKey);
+    return _validator!;
   }
 
-  void _validateNewPhotos() {
-    final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
+  Future<void> _validateAllPhotos() async {
+    // ponytail: AI validation disabled until API quota issue resolved
+    // TODO: re-enable when Gemini API key has proper quota
+    const useAiValidation = true;
 
-    for (final position in AppConstants.photoPositions) {
-      final path = photos[position.id];
-      if (path == null) continue;
-
-      // Skip if already validated with the same path
-      if (_validatedPaths[position.id] == path) continue;
-
-      _validatePhoto(position.id, path, position.angle);
+    if (!useAiValidation) {
+      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
+      context.go(AppRoutes.dashboard);
+      return;
     }
-  }
 
-  Future<void> _validatePhoto(String positionId, String path, PhotoAngle angle) async {
-    setState(() {
-      _validationStatus[positionId] = PhotoValidationStatus.validating;
-      _validatedPaths[positionId] = path;
-    });
+    final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
+    if (photos.isEmpty) return;
 
-    try {
-      final bytes = await File(path).readAsBytes();
-      final result = await _validator.validateAngle(
-        imageBytes: bytes,
-        expectedAngle: angle,
-      );
+    setState(() => _isValidating = true);
 
-      if (!mounted) return;
+    final photosToValidate = AppConstants.photoPositions
+        .where((p) => photos.containsKey(p.id))
+        .toList();
+
+    for (var i = 0; i < photosToValidate.length; i++) {
+      final position = photosToValidate[i];
+      final path = photos[position.id]!;
 
       setState(() {
-        if (result.isValid) {
-          _validationStatus[positionId] = PhotoValidationStatus.valid;
-          _validationFeedback.remove(positionId);
-        } else {
-          _validationStatus[positionId] = PhotoValidationStatus.invalid;
-          _validationFeedback[positionId] = result.feedback ?? 'Ángulo incorrecto';
-        }
+        _validationStatus[position.id] = PhotoValidationStatus.validating;
       });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        // On error, don't block the user
-        _validationStatus[positionId] = PhotoValidationStatus.valid;
-        _validatedPaths.remove(positionId);
-      });
+
+      try {
+        final bytes = await File(path).readAsBytes();
+        final result = await validator.validateAngle(
+          imageBytes: bytes,
+          expectedAngle: position.angle,
+        );
+
+        if (!mounted) return;
+
+        setState(() {
+          if (result.isValid) {
+            _validationStatus[position.id] = PhotoValidationStatus.valid;
+            _validationFeedback.remove(position.id);
+          } else {
+            _validationStatus[position.id] = PhotoValidationStatus.invalid;
+            _validationFeedback[position.id] = result.feedback ?? 'Ángulo incorrecto';
+          }
+        });
+      } catch (e) {
+        if (!mounted) return;
+        setState(() {
+          _validationStatus[position.id] = PhotoValidationStatus.valid;
+        });
+      }
+
+      if (i < photosToValidate.length - 1) {
+        await Future.delayed(const Duration(seconds: 2));
+      }
+    }
+
+    if (!mounted) return;
+    setState(() => _isValidating = false);
+
+    final hasInvalid = _validationStatus.values.contains(PhotoValidationStatus.invalid);
+    if (!hasInvalid) {
+      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
+      context.go(AppRoutes.dashboard);
     }
   }
 
   void _retakePhoto(String positionId) {
-    // Remove photo and validation state
     ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhotoByPosition(positionId);
     setState(() {
       _validationStatus.remove(positionId);
       _validationFeedback.remove(positionId);
-      _validatedPaths.remove(positionId);
     });
 
     // Navigate to capture at this position
@@ -313,13 +324,10 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
               ],
             ),
             child: PrimaryButton(
-              text: 'Continue',
-              isEnabled: _photosTakenCount >= 4,
-              onPressed: _photosTakenCount >= 4
-                  ? () {
-                      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
-                      context.go(AppRoutes.dashboard);
-                    }
+              text: _isValidating ? 'Validando fotos...' : 'Continuar',
+              isEnabled: _photosTakenCount >= 4 && !_isValidating,
+              onPressed: _photosTakenCount >= 4 && !_isValidating
+                  ? _validateAllPhotos
                   : null,
             ),
           ),

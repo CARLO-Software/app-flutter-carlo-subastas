@@ -12,7 +12,6 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../providers/guided_capture_provider.dart';
-import '../services/vehicle_detector_service.dart';
 import '../widgets/widgets.dart';
 
 class GuidedCaptureScreen extends ConsumerStatefulWidget {
@@ -30,8 +29,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   bool _isInitialized = false;
   bool _hasPermission = false;
   String? _errorMessage;
-  VehicleDetectorService? _vehicleDetector;
-  VehicleDetectionResult _detectionResult = VehicleDetectionResult.none();
 
   @override
   void initState() {
@@ -43,9 +40,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _cameraController?.stopImageStream().ignore();
     _cameraController?.dispose();
-    _vehicleDetector?.dispose();
     super.dispose();
   }
 
@@ -98,9 +93,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
 
       await _cameraController!.initialize();
 
-      _vehicleDetector = VehicleDetectorService();
-      await _startDetection();
-
       if (mounted) {
         setState(() {
           _isInitialized = true;
@@ -111,26 +103,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
         _errorMessage = 'Failed to initialize camera: $e';
       });
     }
-  }
-
-  Future<void> _startDetection() async {
-    if (_cameraController == null || _vehicleDetector == null) return;
-
-    await _cameraController!.startImageStream((image) async {
-      final result = await _vehicleDetector!.processImage(
-        image,
-        _cameraController!.description,
-      );
-
-      if (!mounted) return;
-
-      final changed = result.detected != _detectionResult.detected ||
-          result.isAligned != _detectionResult.isAligned;
-
-      if (changed) {
-        setState(() => _detectionResult = result);
-      }
-    });
   }
 
   Future<void> _takePhoto() async {
@@ -144,7 +116,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     ref.read(guidedCaptureProvider.notifier).setCapturing(true);
 
     try {
-      await _cameraController!.stopImageStream();
       final XFile photo = await _cameraController!.takePicture();
 
       final directory = await getApplicationDocumentsDirectory();
@@ -168,12 +139,10 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             File(savedPath).deleteSync();
           },
         );
-        await _startDetection();
       }
     } catch (e) {
       ref.read(guidedCaptureProvider.notifier).setCapturing(false);
       ref.read(guidedCaptureProvider.notifier).setError('Failed to take photo');
-      await _startDetection();
     }
   }
 
@@ -271,8 +240,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             angle: captureState.currentPosition.angle,
             positionName: captureState.currentPosition.name,
             instructions: captureState.currentPosition.instructions,
-            isVehicleDetected: _detectionResult.detected,
-            isVehicleAligned: _detectionResult.isAligned,
           ),
         ),
       ],
