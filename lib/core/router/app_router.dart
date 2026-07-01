@@ -14,6 +14,7 @@ import '../../features/photos/presentation/photo_introduction_screen.dart';
 import '../../features/photos/presentation/photo_ready_screen.dart';
 import '../../features/photos/presentation/exterior_photos_screen.dart';
 import '../../features/photos/presentation/guided_capture_screen.dart';
+import '../../features/photos/presentation/interior_photos_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
@@ -91,6 +92,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.guidedCapture,
       name: 'guidedCapture',
       builder: (context, state) => const GuidedCaptureScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.interiorPhotos,
+      name: 'interiorPhotos',
+      builder: (context, state) => const InteriorPhotosScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,

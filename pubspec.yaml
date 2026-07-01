@@ -40,6 +40,7 @@ dependencies:
 
   # AI
   google_generative_ai: ^0.4.6
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:

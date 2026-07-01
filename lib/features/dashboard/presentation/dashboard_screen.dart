@@ -192,11 +192,19 @@ class DashboardScreen extends ConsumerWidget {
             ),
             AppSpacing.vGapMd,
             ProgressCard(
-              title: 'Photos',
-              subtitle: 'Take photos of your vehicle',
+              title: 'Fotos Exteriores',
+              subtitle: 'Toma fotos del exterior del vehículo',
               icon: Icons.camera_alt_outlined,
               isCompleted: registrationState.photosConfirmed,
               onTap: () => context.push(AppRoutes.photoIntroduction),
+            ),
+            AppSpacing.vGapMd,
+            ProgressCard(
+              title: 'Fotos Interiores',
+              subtitle: 'Toma fotos del interior del vehículo',
+              icon: Icons.chair_outlined,
+              isCompleted: registrationState.interiorPhotosConfirmed,
+              onTap: () => context.push(AppRoutes.interiorPhotos),
             ),
             AppSpacing.vGapMd,
             ProgressCard(

@@ -165,14 +165,28 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Photos
+                  // Exterior Photos
                   _buildSectionCard(
-                    title: 'Photos',
+                    title: 'Fotos Exteriores',
                     icon: Icons.camera_alt_outlined,
                     isComplete: registrationState.photosConfirmed,
                     children: [
                       Text(
-                        '${registrationState.exteriorPhotos.length} exterior photos',
+                        '${registrationState.exteriorPhotosMap.length} fotos exteriores',
+                        style: AppTypography.bodyMedium,
+                      ),
+                    ],
+                  ),
+                  AppSpacing.vGapMd,
+
+                  // Interior Photos
+                  _buildSectionCard(
+                    title: 'Fotos Interiores',
+                    icon: Icons.chair_outlined,
+                    isComplete: registrationState.interiorPhotosConfirmed,
+                    children: [
+                      Text(
+                        '${registrationState.interiorPhotosMap.length} fotos interiores',
                         style: AppTypography.bodyMedium,
                       ),
                     ],

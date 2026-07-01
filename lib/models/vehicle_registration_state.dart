@@ -51,6 +51,7 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default([]) List<String> exteriorPhotos,
     @Default({}) Map<String, String> exteriorPhotosMap,
     @Default([]) List<String> interiorPhotos,
+    @Default({}) Map<String, String> interiorPhotosMap,
     @Default([]) List<String> damagePhotos,
 
     // Condition & Damage
@@ -71,6 +72,7 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default(false) bool runningConditionConfirmed,
     @Default(false) bool mechanicalIssuesConfirmed,
     @Default(false) bool photosConfirmed,
+    @Default(false) bool interiorPhotosConfirmed,
     @Default(false) bool conditionDamageConfirmed,
     @Default(false) bool serviceHistoryConfirmed,
   }) = _VehicleRegistrationState;

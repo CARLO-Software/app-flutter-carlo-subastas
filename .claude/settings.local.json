@@ -4,7 +4,14 @@
       "Bash(flutter pub:*)",
       "Bash(flutter analyze:*)",
       "Bash(flutter build:*)",
-      "PowerShell(Remove-Item *)"
+      "PowerShell(Remove-Item *)",
+      "Bash(adb shell:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(/c/Users/danie/AppData/Local/Android/Sdk/platform-tools/adb.exe shell:*)",
+      "Bash(/c/Users/danie/AppData/Local/Android/Sdk/platform-tools/adb.exe install:*)",
+      "Bash(find /c/verificarlo/app-carlo-subastas-mobile/app_carlo_subastas_mobile/lib/features -type f -name \"*_screen.dart\" -exec wc -l {} +)",
+      "Bash(dart run:*)"
     ]
   },
   "enabledPlugins": {

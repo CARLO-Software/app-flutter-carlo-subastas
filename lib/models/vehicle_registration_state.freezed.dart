@@ -38,6 +38,8 @@ mixin _$VehicleRegistrationState {
   Map<String, String> get exteriorPhotosMap =>
       throw _privateConstructorUsedError;
   List<String> get interiorPhotos => throw _privateConstructorUsedError;
+  Map<String, String> get interiorPhotosMap =>
+      throw _privateConstructorUsedError;
   List<String> get damagePhotos =>
       throw _privateConstructorUsedError; // Condition & Damage
   List<DamageItem> get damages =>
@@ -55,6 +57,7 @@ mixin _$VehicleRegistrationState {
   bool get runningConditionConfirmed => throw _privateConstructorUsedError;
   bool get mechanicalIssuesConfirmed => throw _privateConstructorUsedError;
   bool get photosConfirmed => throw _privateConstructorUsedError;
+  bool get interiorPhotosConfirmed => throw _privateConstructorUsedError;
   bool get conditionDamageConfirmed => throw _privateConstructorUsedError;
   bool get serviceHistoryConfirmed => throw _privateConstructorUsedError;
 
@@ -86,6 +89,7 @@ abstract class $VehicleRegistrationStateCopyWith<$Res> {
     List<String> exteriorPhotos,
     Map<String, String> exteriorPhotosMap,
     List<String> interiorPhotos,
+    Map<String, String> interiorPhotosMap,
     List<String> damagePhotos,
     List<DamageItem> damages,
     ServiceHistoryType? serviceHistoryType,
@@ -98,6 +102,7 @@ abstract class $VehicleRegistrationStateCopyWith<$Res> {
     bool runningConditionConfirmed,
     bool mechanicalIssuesConfirmed,
     bool photosConfirmed,
+    bool interiorPhotosConfirmed,
     bool conditionDamageConfirmed,
     bool serviceHistoryConfirmed,
   });
@@ -133,6 +138,7 @@ class _$VehicleRegistrationStateCopyWithImpl<
     Object? exteriorPhotos = null,
     Object? exteriorPhotosMap = null,
     Object? interiorPhotos = null,
+    Object? interiorPhotosMap = null,
     Object? damagePhotos = null,
     Object? damages = null,
     Object? serviceHistoryType = freezed,
@@ -145,6 +151,7 @@ class _$VehicleRegistrationStateCopyWithImpl<
     Object? runningConditionConfirmed = null,
     Object? mechanicalIssuesConfirmed = null,
     Object? photosConfirmed = null,
+    Object? interiorPhotosConfirmed = null,
     Object? conditionDamageConfirmed = null,
     Object? serviceHistoryConfirmed = null,
   }) {
@@ -190,6 +197,10 @@ class _$VehicleRegistrationStateCopyWithImpl<
                 ? _value.interiorPhotos
                 : interiorPhotos // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            interiorPhotosMap: null == interiorPhotosMap
+                ? _value.interiorPhotosMap
+                : interiorPhotosMap // ignore: cast_nullable_to_non_nullable
+                      as Map<String, String>,
             damagePhotos: null == damagePhotos
                 ? _value.damagePhotos
                 : damagePhotos // ignore: cast_nullable_to_non_nullable
@@ -237,6 +248,10 @@ class _$VehicleRegistrationStateCopyWithImpl<
             photosConfirmed: null == photosConfirmed
                 ? _value.photosConfirmed
                 : photosConfirmed // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            interiorPhotosConfirmed: null == interiorPhotosConfirmed
+                ? _value.interiorPhotosConfirmed
+                : interiorPhotosConfirmed // ignore: cast_nullable_to_non_nullable
                       as bool,
             conditionDamageConfirmed: null == conditionDamageConfirmed
                 ? _value.conditionDamageConfirmed
@@ -286,6 +301,7 @@ abstract class _$$VehicleRegistrationStateImplCopyWith<$Res>
     List<String> exteriorPhotos,
     Map<String, String> exteriorPhotosMap,
     List<String> interiorPhotos,
+    Map<String, String> interiorPhotosMap,
     List<String> damagePhotos,
     List<DamageItem> damages,
     ServiceHistoryType? serviceHistoryType,
@@ -298,6 +314,7 @@ abstract class _$$VehicleRegistrationStateImplCopyWith<$Res>
     bool runningConditionConfirmed,
     bool mechanicalIssuesConfirmed,
     bool photosConfirmed,
+    bool interiorPhotosConfirmed,
     bool conditionDamageConfirmed,
     bool serviceHistoryConfirmed,
   });
@@ -334,6 +351,7 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
     Object? exteriorPhotos = null,
     Object? exteriorPhotosMap = null,
     Object? interiorPhotos = null,
+    Object? interiorPhotosMap = null,
     Object? damagePhotos = null,
     Object? damages = null,
     Object? serviceHistoryType = freezed,
@@ -346,6 +364,7 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
     Object? runningConditionConfirmed = null,
     Object? mechanicalIssuesConfirmed = null,
     Object? photosConfirmed = null,
+    Object? interiorPhotosConfirmed = null,
     Object? conditionDamageConfirmed = null,
     Object? serviceHistoryConfirmed = null,
   }) {
@@ -391,6 +410,10 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
             ? _value._interiorPhotos
             : interiorPhotos // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        interiorPhotosMap: null == interiorPhotosMap
+            ? _value._interiorPhotosMap
+            : interiorPhotosMap // ignore: cast_nullable_to_non_nullable
+                  as Map<String, String>,
         damagePhotos: null == damagePhotos
             ? _value._damagePhotos
             : damagePhotos // ignore: cast_nullable_to_non_nullable
@@ -439,6 +462,10 @@ class __$$VehicleRegistrationStateImplCopyWithImpl<$Res>
             ? _value.photosConfirmed
             : photosConfirmed // ignore: cast_nullable_to_non_nullable
                   as bool,
+        interiorPhotosConfirmed: null == interiorPhotosConfirmed
+            ? _value.interiorPhotosConfirmed
+            : interiorPhotosConfirmed // ignore: cast_nullable_to_non_nullable
+                  as bool,
         conditionDamageConfirmed: null == conditionDamageConfirmed
             ? _value.conditionDamageConfirmed
             : conditionDamageConfirmed // ignore: cast_nullable_to_non_nullable
@@ -466,6 +493,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     final List<String> exteriorPhotos = const [],
     final Map<String, String> exteriorPhotosMap = const {},
     final List<String> interiorPhotos = const [],
+    final Map<String, String> interiorPhotosMap = const {},
     final List<String> damagePhotos = const [],
     final List<DamageItem> damages = const [],
     this.serviceHistoryType,
@@ -478,6 +506,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     this.runningConditionConfirmed = false,
     this.mechanicalIssuesConfirmed = false,
     this.photosConfirmed = false,
+    this.interiorPhotosConfirmed = false,
     this.conditionDamageConfirmed = false,
     this.serviceHistoryConfirmed = false,
   }) : _extraFeatures = extraFeatures,
@@ -485,6 +514,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
        _exteriorPhotos = exteriorPhotos,
        _exteriorPhotosMap = exteriorPhotosMap,
        _interiorPhotos = interiorPhotos,
+       _interiorPhotosMap = interiorPhotosMap,
        _damagePhotos = damagePhotos,
        _damages = damages,
        _serviceDocuments = serviceDocuments;
@@ -562,6 +592,16 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     return EqualUnmodifiableListView(_interiorPhotos);
   }
 
+  final Map<String, String> _interiorPhotosMap;
+  @override
+  @JsonKey()
+  Map<String, String> get interiorPhotosMap {
+    if (_interiorPhotosMap is EqualUnmodifiableMapView)
+      return _interiorPhotosMap;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_interiorPhotosMap);
+  }
+
   final List<String> _damagePhotos;
   @override
   @JsonKey()
@@ -623,6 +663,9 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
   final bool photosConfirmed;
   @override
   @JsonKey()
+  final bool interiorPhotosConfirmed;
+  @override
+  @JsonKey()
   final bool conditionDamageConfirmed;
   @override
   @JsonKey()
@@ -630,7 +673,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
 
   @override
   String toString() {
-    return 'VehicleRegistrationState(vehicle: $vehicle, mileage: $mileage, extraFeatures: $extraFeatures, numberOfKeys: $numberOfKeys, hasFinance: $hasFinance, runningCondition: $runningCondition, mechanicalIssues: $mechanicalIssues, exteriorPhotos: $exteriorPhotos, exteriorPhotosMap: $exteriorPhotosMap, interiorPhotos: $interiorPhotos, damagePhotos: $damagePhotos, damages: $damages, serviceHistoryType: $serviceHistoryType, serviceDocuments: $serviceDocuments, submissionStatus: $submissionStatus, vehicleDetailsConfirmed: $vehicleDetailsConfirmed, extraFeaturesConfirmed: $extraFeaturesConfirmed, keysConfirmed: $keysConfirmed, financeConfirmed: $financeConfirmed, runningConditionConfirmed: $runningConditionConfirmed, mechanicalIssuesConfirmed: $mechanicalIssuesConfirmed, photosConfirmed: $photosConfirmed, conditionDamageConfirmed: $conditionDamageConfirmed, serviceHistoryConfirmed: $serviceHistoryConfirmed)';
+    return 'VehicleRegistrationState(vehicle: $vehicle, mileage: $mileage, extraFeatures: $extraFeatures, numberOfKeys: $numberOfKeys, hasFinance: $hasFinance, runningCondition: $runningCondition, mechanicalIssues: $mechanicalIssues, exteriorPhotos: $exteriorPhotos, exteriorPhotosMap: $exteriorPhotosMap, interiorPhotos: $interiorPhotos, interiorPhotosMap: $interiorPhotosMap, damagePhotos: $damagePhotos, damages: $damages, serviceHistoryType: $serviceHistoryType, serviceDocuments: $serviceDocuments, submissionStatus: $submissionStatus, vehicleDetailsConfirmed: $vehicleDetailsConfirmed, extraFeaturesConfirmed: $extraFeaturesConfirmed, keysConfirmed: $keysConfirmed, financeConfirmed: $financeConfirmed, runningConditionConfirmed: $runningConditionConfirmed, mechanicalIssuesConfirmed: $mechanicalIssuesConfirmed, photosConfirmed: $photosConfirmed, interiorPhotosConfirmed: $interiorPhotosConfirmed, conditionDamageConfirmed: $conditionDamageConfirmed, serviceHistoryConfirmed: $serviceHistoryConfirmed)';
   }
 
   @override
@@ -665,6 +708,10 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
             const DeepCollectionEquality().equals(
               other._interiorPhotos,
               _interiorPhotos,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._interiorPhotosMap,
+              _interiorPhotosMap,
             ) &&
             const DeepCollectionEquality().equals(
               other._damagePhotos,
@@ -703,6 +750,11 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
             (identical(other.photosConfirmed, photosConfirmed) ||
                 other.photosConfirmed == photosConfirmed) &&
             (identical(
+                  other.interiorPhotosConfirmed,
+                  interiorPhotosConfirmed,
+                ) ||
+                other.interiorPhotosConfirmed == interiorPhotosConfirmed) &&
+            (identical(
                   other.conditionDamageConfirmed,
                   conditionDamageConfirmed,
                 ) ||
@@ -728,6 +780,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     const DeepCollectionEquality().hash(_exteriorPhotos),
     const DeepCollectionEquality().hash(_exteriorPhotosMap),
     const DeepCollectionEquality().hash(_interiorPhotos),
+    const DeepCollectionEquality().hash(_interiorPhotosMap),
     const DeepCollectionEquality().hash(_damagePhotos),
     const DeepCollectionEquality().hash(_damages),
     serviceHistoryType,
@@ -740,6 +793,7 @@ class _$VehicleRegistrationStateImpl implements _VehicleRegistrationState {
     runningConditionConfirmed,
     mechanicalIssuesConfirmed,
     photosConfirmed,
+    interiorPhotosConfirmed,
     conditionDamageConfirmed,
     serviceHistoryConfirmed,
   ]);
@@ -773,6 +827,7 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
     final List<String> exteriorPhotos,
     final Map<String, String> exteriorPhotosMap,
     final List<String> interiorPhotos,
+    final Map<String, String> interiorPhotosMap,
     final List<String> damagePhotos,
     final List<DamageItem> damages,
     final ServiceHistoryType? serviceHistoryType,
@@ -785,6 +840,7 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
     final bool runningConditionConfirmed,
     final bool mechanicalIssuesConfirmed,
     final bool photosConfirmed,
+    final bool interiorPhotosConfirmed,
     final bool conditionDamageConfirmed,
     final bool serviceHistoryConfirmed,
   }) = _$VehicleRegistrationStateImpl;
@@ -814,6 +870,8 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
   @override
   List<String> get interiorPhotos;
   @override
+  Map<String, String> get interiorPhotosMap;
+  @override
   List<String> get damagePhotos; // Condition & Damage
   @override
   List<DamageItem> get damages; // Service History
@@ -837,6 +895,8 @@ abstract class _VehicleRegistrationState implements VehicleRegistrationState {
   bool get mechanicalIssuesConfirmed;
   @override
   bool get photosConfirmed;
+  @override
+  bool get interiorPhotosConfirmed;
   @override
   bool get conditionDamageConfirmed;
   @override

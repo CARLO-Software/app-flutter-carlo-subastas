@@ -70,6 +70,16 @@ class AppConstants {
     ),
   ];
 
+  // Interior Photo Positions
+  static const List<Map<String, String>> interiorPhotoPositions = [
+    {'id': 'dashboard', 'name': 'Tablero', 'instructions': 'Fotografía el tablero completo con el volante visible'},
+    {'id': 'front_seats', 'name': 'Asientos delanteros', 'instructions': 'Captura ambos asientos delanteros desde la puerta trasera'},
+    {'id': 'rear_seats', 'name': 'Asientos traseros', 'instructions': 'Fotografía los asientos traseros desde el frente'},
+    {'id': 'trunk', 'name': 'Maletero', 'instructions': 'Abre el maletero y fotografía el espacio completo'},
+    {'id': 'odometer', 'name': 'Odómetro', 'instructions': 'Acércate al odómetro para que el kilometraje sea legible'},
+    {'id': 'center_console', 'name': 'Consola central', 'instructions': 'Fotografía la consola central y la palanca de cambios'},
+  ];
+
   // Extra Features Options
   static const List<String> extraFeatureOptions = [
     'Sat Nav',

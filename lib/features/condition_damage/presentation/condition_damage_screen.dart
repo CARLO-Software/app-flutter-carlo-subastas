@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_routes.dart';
@@ -20,9 +23,11 @@ class ConditionDamageScreen extends ConsumerStatefulWidget {
 
 class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
   String? _selectedDamageType;
+  String? _damagePhotoPath;
   final _locationController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _uuid = const Uuid();
+  final _picker = ImagePicker();
 
   @override
   void dispose() {
@@ -31,11 +36,25 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
     super.dispose();
   }
 
+  Future<void> _takeDamagePhoto() async {
+    final xFile = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+    );
+    if (xFile == null) return;
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = 'damage_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final savedFile = await File(xFile.path).copy('${appDir.path}/$fileName');
+
+    setState(() => _damagePhotoPath = savedFile.path);
+  }
+
   void _addDamage() {
     if (_selectedDamageType == null || _locationController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select damage type and location'),
+          content: Text('Selecciona tipo de daño y ubicación'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -49,19 +68,21 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
       description: _descriptionController.text.isNotEmpty
           ? _descriptionController.text
           : null,
+      photoPath: _damagePhotoPath,
     );
 
     ref.read(vehicleRegistrationProvider.notifier).addDamage(damage);
 
     setState(() {
       _selectedDamageType = null;
+      _damagePhotoPath = null;
       _locationController.clear();
       _descriptionController.clear();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Damage added'),
+        content: Text('Daño agregado'),
         backgroundColor: AppColors.success,
       ),
     );
@@ -130,15 +151,80 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
 
                   // Description
                   AppTextField(
-                    label: 'Description (Optional)',
-                    hint: 'Add more details about the damage',
+                    label: 'Descripción (Opcional)',
+                    hint: 'Agrega más detalles sobre el daño',
                     controller: _descriptionController,
                     maxLines: 3,
                   ),
                   AppSpacing.vGapMd,
 
+                  // Damage photo
+                  Text(
+                    'Foto del daño (Opcional)',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  AppSpacing.vGapSm,
+                  GestureDetector(
+                    onTap: _takeDamagePhoto,
+                    child: Container(
+                      height: 120,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceVariant,
+                        borderRadius: AppSpacing.borderRadiusMd,
+                        border: Border.all(
+                          color: _damagePhotoPath != null ? AppColors.success : AppColors.border,
+                          width: _damagePhotoPath != null ? 2 : 1,
+                        ),
+                      ),
+                      child: _damagePhotoPath != null
+                          ? Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: AppSpacing.borderRadiusMd,
+                                  child: Image.file(
+                                    File(_damagePhotoPath!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: GestureDetector(
+                                    onTap: () => setState(() => _damagePhotoPath = null),
+                                    child: Container(
+                                      width: 28,
+                                      height: 28,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.error,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.close, color: Colors.white, size: 16),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_a_photo_outlined, size: 32, color: AppColors.textSecondary),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Tomar foto del daño',
+                                  style: TextStyle(color: AppColors.textSecondary),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                  AppSpacing.vGapMd,
+
                   SecondaryButton(
-                    text: 'Add Damage',
+                    text: 'Agregar Daño',
                     icon: Icons.add,
                     onPressed: _addDamage,
                   ),
@@ -160,19 +246,39 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                           ),
                           child: Row(
                             children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: AppColors.warningLight,
-                                  borderRadius: AppSpacing.borderRadiusSm,
-                                ),
-                                child: const Icon(
-                                  Icons.warning_amber,
-                                  color: AppColors.warning,
-                                  size: 20,
-                                ),
-                              ),
+                              // Photo thumbnail or warning icon
+                              damage.photoPath != null
+                                  ? ClipRRect(
+                                      borderRadius: AppSpacing.borderRadiusSm,
+                                      child: Image.file(
+                                        File(damage.photoPath!),
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Container(
+                                          width: 48,
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.warningLight,
+                                            borderRadius: AppSpacing.borderRadiusSm,
+                                          ),
+                                          child: const Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.warningLight,
+                                        borderRadius: AppSpacing.borderRadiusSm,
+                                      ),
+                                      child: const Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.warning,
+                                        size: 20,
+                                      ),
+                                    ),
                               AppSpacing.hGapMd,
                               Expanded(
                                 child: Column(

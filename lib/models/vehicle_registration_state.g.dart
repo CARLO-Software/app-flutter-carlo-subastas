@@ -44,6 +44,11 @@ _$VehicleRegistrationStateImpl _$$VehicleRegistrationStateImplFromJson(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  interiorPhotosMap:
+      (json['interiorPhotosMap'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
   damagePhotos:
       (json['damagePhotos'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -78,6 +83,7 @@ _$VehicleRegistrationStateImpl _$$VehicleRegistrationStateImplFromJson(
   mechanicalIssuesConfirmed:
       json['mechanicalIssuesConfirmed'] as bool? ?? false,
   photosConfirmed: json['photosConfirmed'] as bool? ?? false,
+  interiorPhotosConfirmed: json['interiorPhotosConfirmed'] as bool? ?? false,
   conditionDamageConfirmed: json['conditionDamageConfirmed'] as bool? ?? false,
   serviceHistoryConfirmed: json['serviceHistoryConfirmed'] as bool? ?? false,
 );
@@ -95,6 +101,7 @@ Map<String, dynamic> _$$VehicleRegistrationStateImplToJson(
   'exteriorPhotos': instance.exteriorPhotos,
   'exteriorPhotosMap': instance.exteriorPhotosMap,
   'interiorPhotos': instance.interiorPhotos,
+  'interiorPhotosMap': instance.interiorPhotosMap,
   'damagePhotos': instance.damagePhotos,
   'damages': instance.damages,
   'serviceHistoryType':
@@ -108,6 +115,7 @@ Map<String, dynamic> _$$VehicleRegistrationStateImplToJson(
   'runningConditionConfirmed': instance.runningConditionConfirmed,
   'mechanicalIssuesConfirmed': instance.mechanicalIssuesConfirmed,
   'photosConfirmed': instance.photosConfirmed,
+  'interiorPhotosConfirmed': instance.interiorPhotosConfirmed,
   'conditionDamageConfirmed': instance.conditionDamageConfirmed,
   'serviceHistoryConfirmed': instance.serviceHistoryConfirmed,
 };

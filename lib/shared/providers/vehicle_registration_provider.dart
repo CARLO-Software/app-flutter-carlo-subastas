@@ -122,6 +122,23 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(photosConfirmed: true);
   }
 
+  // Interior Photos
+  void addInteriorPhoto(String positionId, String filePath) {
+    final photos = Map<String, String>.from(state.interiorPhotosMap);
+    photos[positionId] = filePath;
+    state = state.copyWith(interiorPhotosMap: photos);
+  }
+
+  void removeInteriorPhoto(String positionId) {
+    final photos = Map<String, String>.from(state.interiorPhotosMap);
+    photos.remove(positionId);
+    state = state.copyWith(interiorPhotosMap: photos);
+  }
+
+  void confirmInteriorPhotos() {
+    state = state.copyWith(interiorPhotosConfirmed: true);
+  }
+
   // Condition & Damage
   void addDamage(DamageItem damage) {
     final damages = List<DamageItem>.from(state.damages);
@@ -165,7 +182,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
   // Progress Calculation
   double calculateProgress() {
     int completedSteps = 0;
-    const int totalSteps = 9;
+    const int totalSteps = 10;
 
     if (state.vehicleDetailsConfirmed) completedSteps++;
     if (state.extraFeaturesConfirmed) completedSteps++;
@@ -174,6 +191,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     if (state.runningConditionConfirmed) completedSteps++;
     if (state.mechanicalIssuesConfirmed) completedSteps++;
     if (state.photosConfirmed) completedSteps++;
+    if (state.interiorPhotosConfirmed) completedSteps++;
     if (state.conditionDamageConfirmed) completedSteps++;
     if (state.serviceHistoryConfirmed) completedSteps++;
 
