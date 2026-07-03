@@ -21,15 +21,16 @@ class ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: c.card,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(
-            color: isCompleted ? AppColors.success : AppColors.cardBorder,
+            color: isCompleted ? AppColors.success : c.cardBorder,
           ),
         ),
         child: Row(
@@ -39,8 +40,8 @@ class ProgressCard extends StatelessWidget {
               height: 48,
               decoration: BoxDecoration(
                 color: isCompleted
-                    ? AppColors.successLight
-                    : AppColors.surfaceVariant,
+                    ? c.successLight
+                    : c.surfaceVariant,
                 borderRadius: AppSpacing.borderRadiusSm,
               ),
               child: Icon(
@@ -76,16 +77,16 @@ class ProgressCard extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: AppColors.success,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.check,
                   size: 16,
-                  color: AppColors.textOnPrimary,
+                  color: c.textOnPrimary,
                 ),
               )
             else
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: AppColors.textTertiary,
+                color: c.textTertiary,
               ),
           ],
         ),

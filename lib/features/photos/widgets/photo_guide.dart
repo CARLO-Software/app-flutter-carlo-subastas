@@ -19,10 +19,11 @@ class PhotoGuide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.infoLight,
+        color: c.infoLight,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(color: AppColors.info.withValues(alpha: 0.3)),
       ),
@@ -49,7 +50,7 @@ class PhotoGuide extends StatelessWidget {
           Text(
             description,
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: c.textSecondary,
             ),
           ),
           if (tips.isNotEmpty) ...[
@@ -69,7 +70,7 @@ class PhotoGuide extends StatelessWidget {
                         child: Text(
                           tip,
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                            color: c.textSecondary,
                           ),
                         ),
                       ),

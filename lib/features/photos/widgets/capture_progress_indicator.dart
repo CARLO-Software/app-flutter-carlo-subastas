@@ -16,6 +16,7 @@ class CaptureProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(totalSteps, (index) {
@@ -33,7 +34,7 @@ class CaptureProgressIndicator extends StatelessWidget {
                   ? AppColors.success
                   : isCurrent
                       ? AppColors.primary
-                      : AppColors.border,
+                      : c.border,
               borderRadius: BorderRadius.circular(6),
             ),
             child: isCompleted
@@ -64,6 +65,7 @@ class CaptureProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final progress = totalSteps > 0 ? completedCount / totalSteps : 0.0;
 
     return Column(
@@ -75,18 +77,18 @@ class CaptureProgressBar extends StatelessWidget {
             children: [
               Text(
                 label!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
+                  color: c.textSecondary,
                 ),
               ),
               Text(
                 '$completedCount/$totalSteps',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  color: c.textPrimary,
                 ),
               ),
             ],
@@ -97,7 +99,7 @@ class CaptureProgressBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: AppColors.border,
+            backgroundColor: c.border,
             valueColor: const AlwaysStoppedAnimation<Color>(AppColors.success),
             minHeight: 8,
           ),

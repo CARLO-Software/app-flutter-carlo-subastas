@@ -23,14 +23,15 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.card,
+          color: c.card,
           borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(color: AppColors.cardBorder),
+          border: Border.all(color: c.cardBorder),
         ),
         child: Row(
           children: [
@@ -39,7 +40,7 @@ class InfoCard extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: c.surfaceVariant,
                   borderRadius: AppSpacing.borderRadiusSm,
                 ),
                 child: Icon(
@@ -70,9 +71,9 @@ class InfoCard extends StatelessWidget {
             ),
             if (trailing != null) trailing!,
             if (showChevron && trailing == null)
-              const Icon(
+              Icon(
                 Icons.chevron_right,
-                color: AppColors.textTertiary,
+                color: c.textTertiary,
               ),
           ],
         ),

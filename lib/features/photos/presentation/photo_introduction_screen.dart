@@ -11,8 +11,9 @@ class PhotoIntroductionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: const Text('Photos'),
         leading: IconButton(
@@ -52,30 +53,34 @@ class PhotoIntroductionScreen extends StatelessWidget {
                   Text(
                     'Great photos help buyers see your vehicle clearly and can increase your auction value.',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: AppColors.textSecondary,
+                      color: c.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   AppSpacing.vGapXl,
                   _buildTipCard(
+                    context: context,
                     icon: Icons.wb_sunny_outlined,
                     title: 'Good lighting',
                     description: 'Take photos in daylight or well-lit areas',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
+                    context: context,
                     icon: Icons.cleaning_services_outlined,
                     title: 'Clean your vehicle',
                     description: 'A clean car photographs better',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
+                    context: context,
                     icon: Icons.center_focus_strong_outlined,
                     title: 'Keep it steady',
                     description: 'Hold your phone steady for clear shots',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
+                    context: context,
                     icon: Icons.panorama_horizontal_outlined,
                     title: 'Capture all angles',
                     description: 'We\'ll guide you through each shot',
@@ -88,10 +93,10 @@ class PhotoIntroductionScreen extends StatelessWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),
@@ -108,6 +113,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
   }
 
   Widget _buildTipCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String description,
@@ -115,7 +121,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.colors.surfaceVariant,
         borderRadius: AppSpacing.borderRadiusMd,
       ),
       child: Row(

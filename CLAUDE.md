@@ -5,10 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Run Commands
 
 ```bash
-# Run on connected device/emulator
-flutter run
-
-# Run with Gemini API key (required for photo validation)
+# Run (photo validation requires the .env file with GEMINI_API_KEY)
 flutter run --dart-define-from-file=.env
 
 # Code generation (after modifying freezed/json_serializable models)
@@ -26,11 +23,13 @@ flutter test test/widget_test.dart
 
 ## Architecture
 
-**State Management**: Riverpod with `Notifier` pattern. Central state lives in `vehicleRegistrationProvider` (`lib/shared/providers/vehicle_registration_provider.dart`).
+**State Management**: Riverpod with `Notifier` pattern. All registration wizard state lives in a single `vehicleRegistrationProvider` (`lib/shared/providers/vehicle_registration_provider.dart`) backed by a freezed `VehicleRegistrationState`. Each wizard step calls methods on the notifier and sets a `*Confirmed` flag. Progress is derived from how many flags are true (10 steps total).
 
-**Routing**: go_router. Routes defined in `lib/core/router/app_routes.dart`, router config in `app_router.dart`.
+**Routing**: go_router with flat routes (no nesting). Routes defined in `lib/core/router/app_routes.dart`, router config in `app_router.dart`.
 
-**Models**: Use freezed for immutable data classes. After editing `*.dart` model files, run build_runner.
+**Models**: Use freezed for immutable data classes (`lib/models/`). After editing model files, run build_runner. Generated files: `*.freezed.dart`, `*.g.dart`.
+
+**Barrel exports**: Each layer has barrel files (`core.dart`, `shared.dart`, `models.dart`, `widgets.dart`). Import from barrels, not individual files.
 
 **Feature Structure**: Each feature in `lib/features/<name>/` contains:
 - `presentation/` — screens
@@ -40,11 +39,14 @@ flutter test test/widget_test.dart
 
 ## Key Systems
 
+**Registration Wizard Flow**: Splash → Vehicle Lookup → Dashboard (hub) → 10 steps (vehicle details, extra features, keys, finance, running condition, mechanical issues, exterior photos, interior photos, condition/damage, service history) → Review → Submission. The dashboard shows completion progress; each step navigates back to dashboard after confirming.
+
 **Photo Capture Flow** (`lib/features/photos/`):
-- `GuidedCaptureScreen` — camera preview with overlay
+- `GuidedCaptureScreen` — camera preview with car silhouette overlay
 - `VehicleDetectorService` — ML Kit object detection for real-time vehicle alignment
-- `AngleValidatorService` — Gemini API validation of photo angle correctness
-- Requires 8 exterior photos at specific angles (front, rear, sides, corners)
+- `AngleValidatorService` — Gemini API (`gemini-2.5-flash`) validation of photo angle correctness
+- 8 exterior photos at specific angles defined by `PhotoAngle` enum (`lib/models/photo_position.dart`)
+- Interior photos and damage photos stored as `Map<String, String>` (positionId → filePath)
 
 **Theme**: Custom design system in `lib/core/theme/`. Use `AppColors`, `AppSpacing`, `AppTypography` instead of raw values.
 

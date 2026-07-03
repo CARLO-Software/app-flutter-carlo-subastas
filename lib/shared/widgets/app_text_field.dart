@@ -48,6 +48,7 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,7 +56,7 @@ class AppTextField extends StatelessWidget {
           Text(
             label!,
             style: AppTypography.labelLarge.copyWith(
-              color: AppColors.textSecondary,
+              color: c.textSecondary,
             ),
           ),
           AppSpacing.vGapSm,
@@ -81,18 +82,18 @@ class AppTextField extends StatelessWidget {
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: enabled ? AppColors.surfaceVariant : AppColors.border,
+            fillColor: enabled ? c.surfaceVariant : c.border,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.md,
             ),
             border: OutlineInputBorder(
               borderRadius: AppSpacing.borderRadiusMd,
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: c.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: AppSpacing.borderRadiusMd,
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: c.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: AppSpacing.borderRadiusMd,

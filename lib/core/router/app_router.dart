@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/auth_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/vehicle_lookup/presentation/vehicle_lookup_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
@@ -32,6 +33,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.splash,
       name: 'splash',
       builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.auth,
+      name: 'auth',
+      builder: (context, state) => const AuthScreen(),
     ),
     GoRoute(
       path: AppRoutes.vehicleLookup,

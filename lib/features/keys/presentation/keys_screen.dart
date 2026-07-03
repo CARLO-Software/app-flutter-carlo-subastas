@@ -12,11 +12,11 @@ class KeysScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedKeys = registrationState.numberOfKeys;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Keys'),
         leading: IconButton(
@@ -73,10 +73,10 @@ class KeysScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

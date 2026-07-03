@@ -13,11 +13,11 @@ class MechanicalIssuesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedIssues = registrationState.mechanicalIssues;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Mechanical Issues'),
         leading: IconButton(
@@ -58,7 +58,7 @@ class MechanicalIssuesScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: AppColors.successLight,
+                        color: c.successLight,
                         borderRadius: AppSpacing.borderRadiusMd,
                       ),
                       child: Row(
@@ -84,7 +84,7 @@ class MechanicalIssuesScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: AppColors.warningLight,
+                        color: c.warningLight,
                         borderRadius: AppSpacing.borderRadiusMd,
                       ),
                       child: Row(
@@ -112,10 +112,10 @@ class MechanicalIssuesScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

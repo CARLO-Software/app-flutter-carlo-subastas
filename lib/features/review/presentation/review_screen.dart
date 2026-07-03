@@ -14,12 +14,12 @@ class ReviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final vehicle = registrationState.vehicle;
     final progress = ref.watch(progressPercentageProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Review'),
         leading: IconButton(
@@ -41,8 +41,8 @@ class ReviewScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     decoration: BoxDecoration(
                       color: progress == 100
-                          ? AppColors.successLight
-                          : AppColors.warningLight,
+                          ? c.successLight
+                          : c.warningLight,
                       borderRadius: AppSpacing.borderRadiusLg,
                     ),
                     child: Column(
@@ -65,7 +65,7 @@ class ReviewScreen extends ConsumerWidget {
                               ? 'All steps completed!'
                               : '$progress% complete - finish remaining steps',
                           style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
+                            color: c.textSecondary,
                           ),
                         ),
                       ],
@@ -79,11 +79,12 @@ class ReviewScreen extends ConsumerWidget {
                       title: 'Vehicle Information',
                       icon: Icons.directions_car_outlined,
                       isComplete: registrationState.vehicleDetailsConfirmed,
+                      c: c,
                       children: [
-                        _buildDetailRow('Vehicle', '${vehicle.brand} ${vehicle.model}'),
-                        _buildDetailRow('Year', vehicle.year.toString()),
-                        _buildDetailRow('Plate', vehicle.plate),
-                        _buildDetailRow('Mileage', '${registrationState.mileage} km'),
+                        _buildDetailRow('Vehicle', '${vehicle.brand} ${vehicle.model}', c),
+                        _buildDetailRow('Year', vehicle.year.toString(), c),
+                        _buildDetailRow('Plate', vehicle.plate, c),
+                        _buildDetailRow('Mileage', '${registrationState.mileage} km', c),
                       ],
                     ),
                     AppSpacing.vGapMd,
@@ -94,6 +95,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Extra Features',
                     icon: Icons.star_outline,
                     isComplete: registrationState.extraFeaturesConfirmed,
+                    c: c,
                     children: [
                       Text(
                         registrationState.extraFeatures.isEmpty
@@ -110,6 +112,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Keys',
                     icon: Icons.key,
                     isComplete: registrationState.keysConfirmed,
+                    c: c,
                     children: [
                       Text(
                         '${registrationState.numberOfKeys} key(s)',
@@ -124,6 +127,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Finance',
                     icon: Icons.credit_card,
                     isComplete: registrationState.financeConfirmed,
+                    c: c,
                     children: [
                       Text(
                         registrationState.hasFinance
@@ -140,6 +144,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Running Condition',
                     icon: Icons.engineering_outlined,
                     isComplete: registrationState.runningConditionConfirmed,
+                    c: c,
                     children: [
                       Text(
                         _getRunningConditionText(registrationState.runningCondition),
@@ -154,6 +159,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Mechanical Issues',
                     icon: Icons.build_outlined,
                     isComplete: registrationState.mechanicalIssuesConfirmed,
+                    c: c,
                     children: [
                       Text(
                         registrationState.mechanicalIssues.isEmpty
@@ -170,6 +176,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Fotos Exteriores',
                     icon: Icons.camera_alt_outlined,
                     isComplete: registrationState.photosConfirmed,
+                    c: c,
                     children: [
                       Text(
                         '${registrationState.exteriorPhotosMap.length} fotos exteriores',
@@ -184,6 +191,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Fotos Interiores',
                     icon: Icons.chair_outlined,
                     isComplete: registrationState.interiorPhotosConfirmed,
+                    c: c,
                     children: [
                       Text(
                         '${registrationState.interiorPhotosMap.length} fotos interiores',
@@ -198,6 +206,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Condition & Damage',
                     icon: Icons.report_problem_outlined,
                     isComplete: registrationState.conditionDamageConfirmed,
+                    c: c,
                     children: [
                       Text(
                         registrationState.damages.isEmpty
@@ -214,6 +223,7 @@ class ReviewScreen extends ConsumerWidget {
                     title: 'Service History',
                     icon: Icons.history_outlined,
                     isComplete: registrationState.serviceHistoryConfirmed,
+                    c: c,
                     children: [
                       Text(
                         _getServiceHistoryText(registrationState.serviceHistoryType),
@@ -229,10 +239,10 @@ class ReviewScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),
@@ -258,15 +268,16 @@ class ReviewScreen extends ConsumerWidget {
     required String title,
     required IconData icon,
     required bool isComplete,
+    required AdaptiveColors c,
     required List<Widget> children,
   }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.card,
+        color: c.card,
         borderRadius: AppSpacing.borderRadiusMd,
         border: Border.all(
-          color: isComplete ? AppColors.success : AppColors.border,
+          color: isComplete ? AppColors.success : c.border,
         ),
       ),
       child: Column(
@@ -276,14 +287,14 @@ class ReviewScreen extends ConsumerWidget {
             children: [
               Icon(
                 icon,
-                color: isComplete ? AppColors.success : AppColors.textSecondary,
+                color: isComplete ? AppColors.success : c.textSecondary,
                 size: 20,
               ),
               AppSpacing.hGapSm,
               Text(
                 title,
                 style: AppTypography.titleSmall.copyWith(
-                  color: isComplete ? AppColors.success : AppColors.textPrimary,
+                  color: isComplete ? AppColors.success : c.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -294,9 +305,9 @@ class ReviewScreen extends ConsumerWidget {
                   size: 20,
                 )
               else
-                const Icon(
+                Icon(
                   Icons.pending,
-                  color: AppColors.textTertiary,
+                  color: c.textTertiary,
                   size: 20,
                 ),
             ],
@@ -308,7 +319,7 @@ class ReviewScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, AdaptiveColors c) {
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.xs),
       child: Row(
@@ -317,7 +328,7 @@ class ReviewScreen extends ConsumerWidget {
           Text(
             label,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: c.textSecondary,
             ),
           ),
           Text(

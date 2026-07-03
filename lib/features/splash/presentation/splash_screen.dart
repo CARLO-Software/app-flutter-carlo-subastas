@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
-        context.go(AppRoutes.vehicleLookup);
+        context.go(AppRoutes.auth);
       }
     });
   }
@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: AppColors.textOnPrimary,
+                        color: context.colors.textOnPrimary,
                         borderRadius: AppSpacing.borderRadiusXl,
                       ),
                       child: const Icon(
@@ -87,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen>
                     Text(
                       'Carlo',
                       style: AppTypography.displaySmall.copyWith(
-                        color: AppColors.textOnPrimary,
+                        color: context.colors.textOnPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
                     Text(
                       'Vehicle App',
                       style: AppTypography.titleLarge.copyWith(
-                        color: AppColors.textOnPrimary.withValues(alpha: 0.8),
+                        color: context.colors.textOnPrimary.withValues(alpha: 0.8),
                       ),
                     ),
                   ],

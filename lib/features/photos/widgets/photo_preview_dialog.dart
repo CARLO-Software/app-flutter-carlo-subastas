@@ -21,12 +21,13 @@ class PhotoPreviewDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(AppSpacing.md),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: c.surface,
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         ),
         child: Column(
@@ -61,7 +62,7 @@ class PhotoPreviewDialog extends StatelessWidget {
                         Text(
                           'Review your photo',
                           style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                            color: c.textSecondary,
                           ),
                         ),
                       ],
@@ -79,12 +80,12 @@ class PhotoPreviewDialog extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      color: AppColors.surfaceVariant,
-                      child: const Center(
+                      color: c.surfaceVariant,
+                      child: Center(
                         child: Icon(
                           Icons.broken_image_outlined,
                           size: 48,
-                          color: AppColors.textTertiary,
+                          color: c.textTertiary,
                         ),
                       ),
                     );

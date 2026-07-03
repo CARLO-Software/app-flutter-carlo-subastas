@@ -13,14 +13,13 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final vehicle = registrationState.vehicle;
     final progress = ref.watch(progressPercentageProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -63,14 +62,14 @@ class DashboardScreen extends ConsumerWidget {
                   Text(
                     'Estimated Auction Value',
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textOnPrimary.withValues(alpha: 0.8),
+                      color: c.textOnPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                   AppSpacing.vGapSm,
                   Text(
                     'S/ 45,000 - S/ 52,000',
                     style: AppTypography.headlineMedium.copyWith(
-                      color: AppColors.textOnPrimary,
+                      color: c.textOnPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -84,7 +83,7 @@ class DashboardScreen extends ConsumerWidget {
                             Text(
                               'Progress',
                               style: AppTypography.labelSmall.copyWith(
-                                color: AppColors.textOnPrimary.withValues(alpha: 0.8),
+                                color: c.textOnPrimary.withValues(alpha: 0.8),
                               ),
                             ),
                             AppSpacing.vGapXs,
@@ -93,9 +92,9 @@ class DashboardScreen extends ConsumerWidget {
                               child: LinearProgressIndicator(
                                 value: progress / 100,
                                 backgroundColor:
-                                    AppColors.textOnPrimary.withValues(alpha: 0.3),
-                                valueColor: const AlwaysStoppedAnimation<Color>(
-                                  AppColors.textOnPrimary,
+                                    c.textOnPrimary.withValues(alpha: 0.3),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  c.textOnPrimary,
                                 ),
                                 minHeight: 8,
                               ),
@@ -110,13 +109,13 @@ class DashboardScreen extends ConsumerWidget {
                           vertical: AppSpacing.xs,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.textOnPrimary.withValues(alpha: 0.2),
+                          color: c.textOnPrimary.withValues(alpha: 0.2),
                           borderRadius: AppSpacing.borderRadiusFull,
                         ),
                         child: Text(
                           '$progress%',
                           style: AppTypography.titleMedium.copyWith(
-                            color: AppColors.textOnPrimary,
+                            color: c.textOnPrimary,
                           ),
                         ),
                       ),
@@ -135,9 +134,9 @@ class DashboardScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: c.card,
                   borderRadius: AppSpacing.borderRadiusMd,
-                  border: Border.all(color: AppColors.cardBorder),
+                  border: Border.all(color: c.cardBorder),
                 ),
                 child: Row(
                   children: [
@@ -145,7 +144,7 @@ class DashboardScreen extends ConsumerWidget {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceVariant,
+                        color: c.surfaceVariant,
                         borderRadius: AppSpacing.borderRadiusSm,
                       ),
                       child: const Icon(
@@ -235,6 +234,7 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   void _showMenu(BuildContext context) {
+    final c = context.colors;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -252,7 +252,7 @@ class DashboardScreen extends ConsumerWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: c.border,
                 borderRadius: AppSpacing.borderRadiusFull,
               ),
             ),

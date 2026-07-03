@@ -21,6 +21,7 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -29,7 +30,7 @@ class SecondaryButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: BorderSide(
-            color: isEnabled ? AppColors.primary : AppColors.border,
+            color: isEnabled ? AppColors.primary : c.border,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusMd,
@@ -54,7 +55,7 @@ class SecondaryButton extends StatelessWidget {
                   Text(
                     text,
                     style: AppTypography.button.copyWith(
-                      color: isEnabled ? AppColors.primary : AppColors.textTertiary,
+                      color: isEnabled ? AppColors.primary : c.textTertiary,
                     ),
                   ),
                 ],

@@ -19,6 +19,7 @@ class SelectableChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -28,10 +29,10 @@ class SelectableChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.chipSelected : AppColors.chipUnselected,
+          color: isSelected ? c.chipSelected : c.chipUnselected,
           borderRadius: AppSpacing.borderRadiusSm,
           border: Border.all(
-            color: isSelected ? AppColors.chipSelected : AppColors.chipBorder,
+            color: isSelected ? c.chipSelected : c.chipBorder,
           ),
         ),
         child: Row(
@@ -41,14 +42,14 @@ class SelectableChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: isSelected ? AppColors.textOnPrimary : AppColors.textPrimary,
+                color: isSelected ? c.textOnPrimary : c.textPrimary,
               ),
               AppSpacing.hGapSm,
             ],
             Text(
               label,
               style: AppTypography.labelLarge.copyWith(
-                color: isSelected ? AppColors.textOnPrimary : AppColors.textPrimary,
+                color: isSelected ? c.textOnPrimary : c.textPrimary,
               ),
             ),
             if (isSelected) ...[
@@ -56,7 +57,7 @@ class SelectableChip extends StatelessWidget {
               Icon(
                 Icons.check,
                 size: 18,
-                color: AppColors.textOnPrimary,
+                color: c.textOnPrimary,
               ),
             ],
           ],

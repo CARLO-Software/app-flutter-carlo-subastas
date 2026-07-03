@@ -13,6 +13,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final vehicle = registrationState.vehicle;
 
@@ -25,7 +26,6 @@ class VehicleDetailsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Vehicle Details'),
         leading: IconButton(
@@ -89,7 +89,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
                                 child: Text(
                                   vehicle.plate,
                                   style: AppTypography.labelMedium.copyWith(
-                                    color: AppColors.textOnPrimary,
+                                    color: c.textOnPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -107,19 +107,19 @@ class VehicleDetailsScreen extends ConsumerWidget {
                     subtitle: 'Please verify your vehicle details',
                   ),
 
-                  _buildDetailRow('Plate', vehicle.plate),
-                  _buildDetailRow('Brand', vehicle.brand),
-                  _buildDetailRow('Model', vehicle.model),
-                  _buildDetailRow('Year', vehicle.year.toString()),
-                  _buildDetailRow('Mileage', '${registrationState.mileage} km'),
-                  _buildDetailRow('Color', vehicle.color),
-                  _buildDetailRow('Body Type', vehicle.bodyType),
-                  _buildDetailRow('Doors', vehicle.doors.toString()),
-                  _buildDetailRow('Transmission', vehicle.transmission),
-                  _buildDetailRow('Fuel Type', vehicle.fuelType),
-                  _buildDetailRow('Engine Size', vehicle.engineSize),
-                  _buildDetailRow('Ownership', vehicle.ownership),
-                  _buildDetailRow('MOT Expiry', vehicle.motExpiry),
+                  _buildDetailRow('Plate', vehicle.plate, c),
+                  _buildDetailRow('Brand', vehicle.brand, c),
+                  _buildDetailRow('Model', vehicle.model, c),
+                  _buildDetailRow('Year', vehicle.year.toString(), c),
+                  _buildDetailRow('Mileage', '${registrationState.mileage} km', c),
+                  _buildDetailRow('Color', vehicle.color, c),
+                  _buildDetailRow('Body Type', vehicle.bodyType, c),
+                  _buildDetailRow('Doors', vehicle.doors.toString(), c),
+                  _buildDetailRow('Transmission', vehicle.transmission, c),
+                  _buildDetailRow('Fuel Type', vehicle.fuelType, c),
+                  _buildDetailRow('Engine Size', vehicle.engineSize, c),
+                  _buildDetailRow('Ownership', vehicle.ownership, c),
+                  _buildDetailRow('MOT Expiry', vehicle.motExpiry, c),
 
                   AppSpacing.vGapLg,
                 ],
@@ -129,10 +129,10 @@ class VehicleDetailsScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),
@@ -151,12 +151,12 @@ class VehicleDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, AdaptiveColors c) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: AppColors.divider),
+          bottom: BorderSide(color: c.divider),
         ),
       ),
       child: Row(
@@ -165,7 +165,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
           Text(
             label,
             style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: c.textSecondary,
             ),
           ),
           Text(

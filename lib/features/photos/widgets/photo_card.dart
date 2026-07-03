@@ -32,6 +32,7 @@ class PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final bool hasPhoto = imagePath != null && imagePath!.isNotEmpty;
     final bool isRealPhoto = hasPhoto && imagePath!.startsWith('/');
     final bool isInvalid = validationStatus == PhotoValidationStatus.invalid;
@@ -44,14 +45,14 @@ class PhotoCard extends StatelessWidget {
             ? AppColors.success
             : hasPhoto
                 ? AppColors.success
-                : AppColors.border;
+                : c.border;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 160,
         decoration: BoxDecoration(
-          color: hasPhoto ? AppColors.surfaceVariant : AppColors.surface,
+          color: hasPhoto ? c.surfaceVariant : c.surface,
           borderRadius: AppSpacing.borderRadiusMd,
           border: Border.all(
             color: borderColor,
@@ -70,19 +71,19 @@ class PhotoCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
-                                color: AppColors.surfaceVariant,
-                                child: const Center(
+                                color: c.surfaceVariant,
+                                child: Center(
                                   child: Icon(
                                     Icons.broken_image,
                                     size: 48,
-                                    color: AppColors.textTertiary,
+                                    color: c.textTertiary,
                                   ),
                                 ),
                               );
                             },
                           )
                         : Container(
-                            color: AppColors.surfaceVariant,
+                            color: c.surfaceVariant,
                             child: const Center(
                               child: Icon(
                                 Icons.check_circle,
@@ -153,7 +154,7 @@ class PhotoCard extends StatelessWidget {
                                   ? (validationFeedback ?? title)
                                   : title,
                               style: AppTypography.labelMedium.copyWith(
-                                color: AppColors.textOnPrimary,
+                                color: c.textOnPrimary,
                               ),
                               textAlign: TextAlign.center,
                               maxLines: 1,
@@ -195,29 +196,29 @@ class PhotoCard extends StatelessWidget {
                     width: 64,
                     height: 64,
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
+                      color: c.surfaceVariant,
                       shape: BoxShape.circle,
                     ),
                     child: angle != null
                         ? Center(
                             child: CarSilhouetteWidget(
                               angle: angle!,
-                              color: AppColors.textSecondary,
+                              color: c.textSecondary,
                               size: 48,
                               strokeWidth: 1.5,
                             ),
                           )
-                        : const Icon(
+                        : Icon(
                             Icons.camera_alt_outlined,
                             size: 32,
-                            color: AppColors.textSecondary,
+                            color: c.textSecondary,
                           ),
                   ),
                   AppSpacing.vGapSm,
                   Text(
                     title,
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textPrimary,
+                      color: c.textPrimary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -226,7 +227,7 @@ class PhotoCard extends StatelessWidget {
                     Text(
                       'Required',
                       style: AppTypography.caption.copyWith(
-                        color: AppColors.textTertiary,
+                        color: c.textTertiary,
                       ),
                     ),
                   ],

@@ -14,11 +14,11 @@ class ServiceHistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedType = registrationState.serviceHistoryType;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Service History'),
         leading: IconButton(
@@ -85,7 +85,7 @@ class ServiceHistoryScreen extends ConsumerWidget {
                     Text(
                       'Upload your service records for better auction value',
                       style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                        color: c.textSecondary,
                       ),
                     ),
                     AppSpacing.vGapMd,
@@ -102,10 +102,10 @@ class ServiceHistoryScreen extends ConsumerWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(AppSpacing.xl),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant,
+                          color: c.surfaceVariant,
                           borderRadius: AppSpacing.borderRadiusMd,
                           border: Border.all(
-                            color: AppColors.border,
+                            color: c.border,
                             style: BorderStyle.solid,
                           ),
                         ),
@@ -149,10 +149,10 @@ class ServiceHistoryScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

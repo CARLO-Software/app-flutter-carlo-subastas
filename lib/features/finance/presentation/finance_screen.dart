@@ -12,11 +12,11 @@ class FinanceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final hasFinance = registrationState.hasFinance;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Finance'),
         leading: IconButton(
@@ -59,7 +59,7 @@ class FinanceScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.infoLight,
+                      color: c.infoLight,
                       borderRadius: AppSpacing.borderRadiusMd,
                     ),
                     child: Row(
@@ -71,11 +71,11 @@ class FinanceScreen extends ConsumerWidget {
                           size: 20,
                         ),
                         AppSpacing.hGapSm,
-                        const Expanded(
+                        Expanded(
                           child: Text(
                             'Don\'t worry if you have finance. We can help settle it from the auction proceeds.',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: c.textSecondary,
                               fontSize: 14,
                             ),
                           ),
@@ -90,10 +90,10 @@ class FinanceScreen extends ConsumerWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

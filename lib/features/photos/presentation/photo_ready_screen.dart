@@ -12,8 +12,9 @@ class PhotoReadyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: const Text('Ready to Start'),
         leading: IconButton(
@@ -50,14 +51,14 @@ class PhotoReadyScreen extends StatelessWidget {
                     style: AppTypography.titleMedium,
                   ),
                   AppSpacing.vGapMd,
-                  _buildPhotoListItem('Front view'),
-                  _buildPhotoListItem('Rear view'),
-                  _buildPhotoListItem('Left side'),
-                  _buildPhotoListItem('Right side'),
-                  _buildPhotoListItem('Front left corner'),
-                  _buildPhotoListItem('Front right corner'),
-                  _buildPhotoListItem('Rear left corner'),
-                  _buildPhotoListItem('Rear right corner'),
+                  _buildPhotoListItem('Front view', c),
+                  _buildPhotoListItem('Rear view', c),
+                  _buildPhotoListItem('Left side', c),
+                  _buildPhotoListItem('Right side', c),
+                  _buildPhotoListItem('Front left corner', c),
+                  _buildPhotoListItem('Front right corner', c),
+                  _buildPhotoListItem('Rear left corner', c),
+                  _buildPhotoListItem('Rear right corner', c),
                   AppSpacing.vGapLg,
                 ],
               ),
@@ -66,10 +67,10 @@ class PhotoReadyScreen extends StatelessWidget {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),
@@ -94,14 +95,14 @@ class PhotoReadyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoListItem(String text) {
+  Widget _buildPhotoListItem(String text, AdaptiveColors c) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.camera_alt_outlined,
-            color: AppColors.textSecondary,
+            color: c.textSecondary,
             size: 20,
           ),
           AppSpacing.hGapSm,

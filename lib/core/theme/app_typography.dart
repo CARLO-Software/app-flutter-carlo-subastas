@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 class AppTypography {
   AppTypography._();
@@ -13,7 +12,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: -0.25,
     height: 1.12,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle displayMedium = TextStyle(
@@ -22,7 +20,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.16,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle displaySmall = TextStyle(
@@ -31,7 +28,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     height: 1.22,
-    color: AppColors.textPrimary,
   );
 
   // Headline styles
@@ -41,7 +37,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     height: 1.25,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle headlineMedium = TextStyle(
@@ -50,7 +45,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     height: 1.29,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle headlineSmall = TextStyle(
@@ -59,7 +53,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     height: 1.33,
-    color: AppColors.textPrimary,
   );
 
   // Title styles
@@ -69,7 +62,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     height: 1.27,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle titleMedium = TextStyle(
@@ -78,7 +70,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0.15,
     height: 1.5,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle titleSmall = TextStyle(
@@ -87,7 +78,6 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0.1,
     height: 1.43,
-    color: AppColors.textPrimary,
   );
 
   // Label styles
@@ -97,7 +87,6 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     letterSpacing: 0.1,
     height: 1.43,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle labelMedium = TextStyle(
@@ -106,7 +95,6 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
     height: 1.33,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle labelSmall = TextStyle(
@@ -115,7 +103,6 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     letterSpacing: 0.5,
     height: 1.45,
-    color: AppColors.textSecondary,
   );
 
   // Body styles
@@ -125,7 +112,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0.5,
     height: 1.5,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle bodyMedium = TextStyle(
@@ -134,7 +120,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0.25,
     height: 1.43,
-    color: AppColors.textPrimary,
   );
 
   static const TextStyle bodySmall = TextStyle(
@@ -143,7 +128,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0.4,
     height: 1.33,
-    color: AppColors.textSecondary,
   );
 
   // Button text
@@ -170,7 +154,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: 0.4,
     height: 1.33,
-    color: AppColors.textTertiary,
   );
 
   // Overline
@@ -180,6 +163,5 @@ class AppTypography {
     fontWeight: FontWeight.w500,
     letterSpacing: 1.5,
     height: 1.6,
-    color: AppColors.textSecondary,
   );
 }

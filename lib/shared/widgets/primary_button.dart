@@ -21,6 +21,7 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return SizedBox(
       width: double.infinity,
       height: 56,
@@ -28,21 +29,21 @@ class PrimaryButton extends StatelessWidget {
         onPressed: isEnabled && !isLoading ? onPressed : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.textOnPrimary,
-          disabledBackgroundColor: AppColors.border,
-          disabledForegroundColor: AppColors.textTertiary,
+          foregroundColor: c.textOnPrimary,
+          disabledBackgroundColor: c.border,
+          disabledForegroundColor: c.textTertiary,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: AppSpacing.borderRadiusMd,
           ),
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 width: 24,
                 height: 24,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.textOnPrimary),
+                  valueColor: AlwaysStoppedAnimation<Color>(c.textOnPrimary),
                 ),
               )
             : Row(

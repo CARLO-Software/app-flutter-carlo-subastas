@@ -77,8 +77,9 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
     final photoCount = state.interiorPhotosMap.length;
     final totalPhotos = positions.length;
 
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: const Text('Fotos Interiores'),
         leading: IconButton(
@@ -91,7 +92,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
           // Progress bar
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
-            color: AppColors.surfaceVariant,
+            color: c.surfaceVariant,
             child: Row(
               children: [
                 Expanded(
@@ -99,7 +100,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                     borderRadius: AppSpacing.borderRadiusFull,
                     child: LinearProgressIndicator(
                       value: photoCount / totalPhotos,
-                      backgroundColor: AppColors.border,
+                      backgroundColor: c.border,
                       valueColor: const AlwaysStoppedAnimation<Color>(AppColors.success),
                       minHeight: 8,
                     ),
@@ -108,9 +109,9 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                 AppSpacing.hGapMd,
                 Text(
                   '$photoCount/$totalPhotos',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: c.textSecondary,
                   ),
                 ),
               ],
@@ -146,10 +147,10 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                         onTap: () => _onPhotoTap(positionId),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: hasPhoto ? AppColors.surfaceVariant : AppColors.surface,
+                            color: hasPhoto ? c.surfaceVariant : c.surface,
                             borderRadius: AppSpacing.borderRadiusMd,
                             border: Border.all(
-                              color: hasPhoto ? AppColors.success : AppColors.border,
+                              color: hasPhoto ? AppColors.success : c.border,
                               width: hasPhoto ? 2 : 1,
                             ),
                           ),
@@ -162,8 +163,8 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                       child: Image.file(
                                         File(photoPath),
                                         fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => const Center(
-                                          child: Icon(Icons.broken_image, size: 48, color: AppColors.textTertiary),
+                                        errorBuilder: (_, __, ___) => Center(
+                                          child: Icon(Icons.broken_image, size: 48, color: c.textTertiary),
                                         ),
                                       ),
                                     ),
@@ -182,7 +183,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                         ),
                                         child: Text(
                                           position['name']!,
-                                          style: AppTypography.labelMedium.copyWith(color: AppColors.textOnPrimary),
+                                          style: AppTypography.labelMedium.copyWith(color: c.textOnPrimary),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -196,19 +197,19 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                       width: 56,
                                       height: 56,
                                       decoration: BoxDecoration(
-                                        color: AppColors.surfaceVariant,
+                                        color: c.surfaceVariant,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Icon(
                                         _iconForPosition(positionId),
                                         size: 28,
-                                        color: AppColors.textSecondary,
+                                        color: c.textSecondary,
                                       ),
                                     ),
                                     AppSpacing.vGapSm,
                                     Text(
                                       position['name']!,
-                                      style: AppTypography.labelMedium.copyWith(color: AppColors.textPrimary),
+                                      style: AppTypography.labelMedium.copyWith(color: c.textPrimary),
                                       textAlign: TextAlign.center,
                                     ),
                                     AppSpacing.vGapXs,
@@ -216,7 +217,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                                       child: Text(
                                         position['instructions']!,
-                                        style: AppTypography.caption.copyWith(color: AppColors.textTertiary),
+                                        style: AppTypography.caption.copyWith(color: c.textTertiary),
                                         textAlign: TextAlign.center,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -236,10 +237,10 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

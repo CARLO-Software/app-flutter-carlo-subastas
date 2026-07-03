@@ -14,12 +14,12 @@ class SubmissionStatusScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final vehicle = registrationState.vehicle;
     final status = registrationState.submissionStatus;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Submission Status'),
         leading: IconButton(
@@ -57,7 +57,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
             Text(
               _getStatusDescription(status),
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: c.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -73,9 +73,9 @@ class SubmissionStatusScreen extends ConsumerWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppColors.card,
+                  color: c.card,
                   borderRadius: AppSpacing.borderRadiusLg,
-                  border: Border.all(color: AppColors.cardBorder),
+                  border: Border.all(color: c.cardBorder),
                 ),
                 child: Column(
                   children: [
@@ -85,7 +85,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: c.surfaceVariant,
                             borderRadius: AppSpacing.borderRadiusSm,
                           ),
                           child: const Icon(
@@ -128,11 +128,13 @@ class SubmissionStatusScreen extends ConsumerWidget {
               subtitle: 'Vehicle information saved',
               isCompleted: true,
               isFirst: true,
+              c: c,
             ),
             _buildTimelineItem(
               title: 'Submitted',
               subtitle: 'Submitted for review',
               isCompleted: status != SubmissionStatus.draft,
+              c: c,
             ),
             _buildTimelineItem(
               title: 'Under Review',
@@ -140,18 +142,21 @@ class SubmissionStatusScreen extends ConsumerWidget {
               isCompleted: status == SubmissionStatus.underReview ||
                   status == SubmissionStatus.approved ||
                   status == SubmissionStatus.published,
+              c: c,
             ),
             _buildTimelineItem(
               title: 'Approved',
               subtitle: 'Ready for auction',
               isCompleted: status == SubmissionStatus.approved ||
                   status == SubmissionStatus.published,
+              c: c,
             ),
             _buildTimelineItem(
               title: 'Published',
               subtitle: 'Live on auction',
               isCompleted: status == SubmissionStatus.published,
               isLast: true,
+              c: c,
             ),
             AppSpacing.vGapXl,
 
@@ -165,7 +170,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.infoLight,
+                  color: c.infoLight,
                   borderRadius: AppSpacing.borderRadiusMd,
                 ),
                 child: Row(
@@ -175,10 +180,10 @@ class SubmissionStatusScreen extends ConsumerWidget {
                       color: AppColors.info,
                     ),
                     AppSpacing.hGapSm,
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'We\'ll notify you once your vehicle has been reviewed.',
-                        style: TextStyle(color: AppColors.textSecondary),
+                        style: TextStyle(color: c.textSecondary),
                       ),
                     ),
                   ],
@@ -195,6 +200,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
     required String title,
     required String subtitle,
     required bool isCompleted,
+    required AdaptiveColors c,
     bool isFirst = false,
     bool isLast = false,
   }) {
@@ -208,17 +214,17 @@ class SubmissionStatusScreen extends ConsumerWidget {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isCompleted ? AppColors.success : AppColors.surfaceVariant,
+                color: isCompleted ? AppColors.success : c.surfaceVariant,
                 border: Border.all(
-                  color: isCompleted ? AppColors.success : AppColors.border,
+                  color: isCompleted ? AppColors.success : c.border,
                   width: 2,
                 ),
               ),
               child: isCompleted
-                  ? const Icon(
+                  ? Icon(
                       Icons.check,
                       size: 14,
-                      color: AppColors.textOnPrimary,
+                      color: c.textOnPrimary,
                     )
                   : null,
             ),
@@ -226,7 +232,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
               Container(
                 width: 2,
                 height: 40,
-                color: isCompleted ? AppColors.success : AppColors.border,
+                color: isCompleted ? AppColors.success : c.border,
               ),
           ],
         ),
@@ -240,7 +246,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
                 Text(
                   title,
                   style: AppTypography.titleSmall.copyWith(
-                    color: isCompleted ? AppColors.success : AppColors.textSecondary,
+                    color: isCompleted ? AppColors.success : c.textSecondary,
                   ),
                 ),
                 Text(

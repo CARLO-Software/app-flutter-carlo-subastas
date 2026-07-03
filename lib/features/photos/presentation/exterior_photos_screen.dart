@@ -175,8 +175,9 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final totalPhotos = AppConstants.photoPositions.length;
 
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: c.background,
       appBar: AppBar(
         title: const Text('Exterior Photos'),
         leading: IconButton(
@@ -188,7 +189,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
-            color: AppColors.surfaceVariant,
+            color: c.surfaceVariant,
             child: Row(
               children: [
                 Expanded(
@@ -196,7 +197,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                     borderRadius: AppSpacing.borderRadiusFull,
                     child: LinearProgressIndicator(
                       value: _photosTakenCount / totalPhotos,
-                      backgroundColor: AppColors.border,
+                      backgroundColor: c.border,
                       valueColor: const AlwaysStoppedAnimation<Color>(AppColors.success),
                       minHeight: 8,
                     ),
@@ -205,9 +206,9 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                 AppSpacing.hGapMd,
                 Text(
                   '$_photosTakenCount/$totalPhotos',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: c.textSecondary,
                   ),
                 ),
               ],
@@ -314,10 +315,10 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

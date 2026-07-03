@@ -90,11 +90,11 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final damages = registrationState.damages;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: const Text('Condition & Damage'),
         leading: IconButton(
@@ -119,7 +119,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   Text(
                     'Type of Damage',
                     style: AppTypography.labelLarge.copyWith(
-                      color: AppColors.textSecondary,
+                      color: c.textSecondary,
                     ),
                   ),
                   AppSpacing.vGapSm,
@@ -162,7 +162,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   Text(
                     'Foto del daño (Opcional)',
                     style: AppTypography.labelLarge.copyWith(
-                      color: AppColors.textSecondary,
+                      color: c.textSecondary,
                     ),
                   ),
                   AppSpacing.vGapSm,
@@ -172,10 +172,10 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                       height: 120,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceVariant,
+                        color: c.surfaceVariant,
                         borderRadius: AppSpacing.borderRadiusMd,
                         border: Border.all(
-                          color: _damagePhotoPath != null ? AppColors.success : AppColors.border,
+                          color: _damagePhotoPath != null ? AppColors.success : c.border,
                           width: _damagePhotoPath != null ? 2 : 1,
                         ),
                       ),
@@ -208,14 +208,14 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                                 ),
                               ],
                             )
-                          : const Column(
+                          : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.add_a_photo_outlined, size: 32, color: AppColors.textSecondary),
-                                SizedBox(height: 8),
+                                Icon(Icons.add_a_photo_outlined, size: 32, color: c.textSecondary),
+                                const SizedBox(height: 8),
                                 Text(
                                   'Tomar foto del daño',
-                                  style: TextStyle(color: AppColors.textSecondary),
+                                  style: TextStyle(color: c.textSecondary),
                                 ),
                               ],
                             ),
@@ -241,7 +241,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                           padding: const EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: c.surfaceVariant,
                             borderRadius: AppSpacing.borderRadiusMd,
                           ),
                           child: Row(
@@ -259,7 +259,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                                           width: 48,
                                           height: 48,
                                           decoration: BoxDecoration(
-                                            color: AppColors.warningLight,
+                                            color: c.warningLight,
                                             borderRadius: AppSpacing.borderRadiusSm,
                                           ),
                                           child: const Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
@@ -270,7 +270,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                                       width: 48,
                                       height: 48,
                                       decoration: BoxDecoration(
-                                        color: AppColors.warningLight,
+                                        color: c.warningLight,
                                         borderRadius: AppSpacing.borderRadiusSm,
                                       ),
                                       child: const Icon(
@@ -313,7 +313,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: AppColors.successLight,
+                        color: c.successLight,
                         borderRadius: AppSpacing.borderRadiusMd,
                       ),
                       child: Row(
@@ -343,10 +343,10 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
           Container(
             padding: AppSpacing.screenPadding,
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: c.surface,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.shadow,
+                  color: c.shadow,
                   blurRadius: 8,
                   offset: const Offset(0, -2),
                 ),

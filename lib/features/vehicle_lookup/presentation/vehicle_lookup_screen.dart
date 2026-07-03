@@ -95,8 +95,8 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppSpacing.screenPadding,
@@ -132,7 +132,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
                 child: Text(
                   'We\'ll find your vehicle and give you an estimated auction value',
                   style: AppTypography.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                    color: c.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
