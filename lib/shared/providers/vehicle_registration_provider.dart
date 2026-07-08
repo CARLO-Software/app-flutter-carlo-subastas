@@ -166,6 +166,12 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(serviceDocuments: documents);
   }
 
+  void removeServiceDocument(String documentPath) {
+    final documents = List<String>.from(state.serviceDocuments);
+    documents.remove(documentPath);
+    state = state.copyWith(serviceDocuments: documents);
+  }
+
   void confirmServiceHistory() {
     state = state.copyWith(serviceHistoryConfirmed: true);
   }
