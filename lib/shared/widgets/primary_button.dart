@@ -48,14 +48,19 @@ class PrimaryButton extends StatelessWidget {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: 20),
                     AppSpacing.hGapSm,
                   ],
-                  Text(
-                    text,
-                    style: AppTypography.button,
+                  Flexible(
+                    child: Text(
+                      text,
+                      style: AppTypography.button,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ],
               ),

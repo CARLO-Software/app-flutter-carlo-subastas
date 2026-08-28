@@ -21,7 +21,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Submission Status'),
+        title: const Text('Estado del Envío'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go(AppRoutes.dashboard),
@@ -33,7 +33,6 @@ class SubmissionStatusScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AppSpacing.vGapLg,
-            // Status Icon
             Container(
               width: 120,
               height: 120,
@@ -63,11 +62,9 @@ class SubmissionStatusScreen extends ConsumerWidget {
             ),
             AppSpacing.vGapXl,
 
-            // Status Badge
             StatusBadge(status: status),
             AppSpacing.vGapXl,
 
-            // Vehicle Info Card
             if (vehicle != null) ...[
               Container(
                 width: double.infinity,
@@ -119,51 +116,49 @@ class SubmissionStatusScreen extends ConsumerWidget {
               AppSpacing.vGapLg,
             ],
 
-            // Status Timeline
             const SectionHeader(
-              title: 'Status Timeline',
+              title: 'Línea de Tiempo',
             ),
             _buildTimelineItem(
-              title: 'Draft',
-              subtitle: 'Vehicle information saved',
+              title: 'Borrador',
+              subtitle: 'Información del vehículo guardada',
               isCompleted: true,
               isFirst: true,
               c: c,
             ),
             _buildTimelineItem(
-              title: 'Submitted',
-              subtitle: 'Submitted for review',
+              title: 'Enviado',
+              subtitle: 'Enviado para revisión',
               isCompleted: status != SubmissionStatus.draft,
               c: c,
             ),
             _buildTimelineItem(
-              title: 'Under Review',
-              subtitle: 'Being reviewed by our team',
+              title: 'En Revisión',
+              subtitle: 'Siendo revisado por nuestro equipo',
               isCompleted: status == SubmissionStatus.underReview ||
                   status == SubmissionStatus.approved ||
                   status == SubmissionStatus.published,
               c: c,
             ),
             _buildTimelineItem(
-              title: 'Approved',
-              subtitle: 'Ready for auction',
+              title: 'Aprobado',
+              subtitle: 'Listo para subasta',
               isCompleted: status == SubmissionStatus.approved ||
                   status == SubmissionStatus.published,
               c: c,
             ),
             _buildTimelineItem(
-              title: 'Published',
-              subtitle: 'Live on auction',
+              title: 'Publicado',
+              subtitle: 'En subasta activa',
               isCompleted: status == SubmissionStatus.published,
               isLast: true,
               c: c,
             ),
             AppSpacing.vGapXl,
 
-            // Actions
             if (status == SubmissionStatus.draft)
               PrimaryButton(
-                text: 'Continue Registration',
+                text: 'Continuar Registro',
                 onPressed: () => context.go(AppRoutes.dashboard),
               ),
             if (status == SubmissionStatus.submitted)
@@ -182,7 +177,7 @@ class SubmissionStatusScreen extends ConsumerWidget {
                     AppSpacing.hGapSm,
                     Expanded(
                       child: Text(
-                        'We\'ll notify you once your vehicle has been reviewed.',
+                        'Te notificaremos cuando tu vehículo haya sido revisado.',
                         style: TextStyle(color: c.textSecondary),
                       ),
                     ),
@@ -298,34 +293,34 @@ class SubmissionStatusScreen extends ConsumerWidget {
   String _getStatusTitle(SubmissionStatus status) {
     switch (status) {
       case SubmissionStatus.draft:
-        return 'Registration in Progress';
+        return 'Registro en Progreso';
       case SubmissionStatus.submitted:
-        return 'Submitted Successfully';
+        return 'Enviado Exitosamente';
       case SubmissionStatus.underReview:
-        return 'Under Review';
+        return 'En Revisión';
       case SubmissionStatus.approved:
-        return 'Approved';
+        return 'Aprobado';
       case SubmissionStatus.rejected:
-        return 'Needs Attention';
+        return 'Requiere Atención';
       case SubmissionStatus.published:
-        return 'Live on Auction';
+        return 'En Subasta';
     }
   }
 
   String _getStatusDescription(SubmissionStatus status) {
     switch (status) {
       case SubmissionStatus.draft:
-        return 'Complete all steps to submit your vehicle for auction.';
+        return 'Completa todos los pasos para enviar tu vehículo a subasta.';
       case SubmissionStatus.submitted:
-        return 'Your vehicle has been submitted and is awaiting review.';
+        return 'Tu vehículo ha sido enviado y está esperando revisión.';
       case SubmissionStatus.underReview:
-        return 'Our team is currently reviewing your vehicle submission.';
+        return 'Nuestro equipo está revisando tu vehículo actualmente.';
       case SubmissionStatus.approved:
-        return 'Congratulations! Your vehicle has been approved for auction.';
+        return '¡Felicidades! Tu vehículo ha sido aprobado para subasta.';
       case SubmissionStatus.rejected:
-        return 'Please review and update the required information.';
+        return 'Por favor revisa y actualiza la información requerida.';
       case SubmissionStatus.published:
-        return 'Your vehicle is now live and available for bidding.';
+        return 'Tu vehículo está en línea y disponible para ofertas.';
     }
   }
 }

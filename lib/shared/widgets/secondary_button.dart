@@ -47,15 +47,20 @@ class SecondaryButton extends StatelessWidget {
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: 20),
                     AppSpacing.hGapSm,
                   ],
-                  Text(
-                    text,
-                    style: AppTypography.button.copyWith(
-                      color: isEnabled ? AppColors.primary : c.textTertiary,
+                  Flexible(
+                    child: Text(
+                      text,
+                      style: AppTypography.button.copyWith(
+                        color: isEnabled ? AppColors.primary : c.textTertiary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                 ],

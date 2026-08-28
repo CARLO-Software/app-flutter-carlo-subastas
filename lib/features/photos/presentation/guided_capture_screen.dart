@@ -62,7 +62,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     if (!status.isGranted) {
       setState(() {
         _hasPermission = false;
-        _errorMessage = 'Camera permission is required to take photos';
+        _errorMessage = 'Se requiere permiso de cámara para tomar fotos';
       });
       return;
     }
@@ -75,7 +75,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       _cameras = await availableCameras();
       if (_cameras == null || _cameras!.isEmpty) {
         setState(() {
-          _errorMessage = 'No cameras available on this device';
+          _errorMessage = 'No hay cámaras disponibles en este dispositivo';
         });
         return;
       }
@@ -100,7 +100,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Failed to initialize camera: $e';
+        _errorMessage = 'Error al inicializar la cámara: $e';
       });
     }
   }
@@ -142,7 +142,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       }
     } catch (e) {
       ref.read(guidedCaptureProvider.notifier).setCapturing(false);
-      ref.read(guidedCaptureProvider.notifier).setError('Failed to take photo');
+      ref.read(guidedCaptureProvider.notifier).setError('Error al tomar la foto');
     }
   }
 
@@ -380,7 +380,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                   TextButton(
                     onPressed: _finishCapture,
                     child: Text(
-                      'Done',
+                      'Listo',
                       style: AppTypography.labelLarge.copyWith(
                         color: AppColors.success,
                       ),
@@ -412,7 +412,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
           CircularProgressIndicator(color: Colors.white),
           SizedBox(height: 16),
           Text(
-            'Initializing camera...',
+            'Inicializando cámara...',
             style: TextStyle(color: Colors.white),
           ),
         ],
@@ -434,13 +434,13 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             ),
             AppSpacing.vGapMd,
             Text(
-              _errorMessage ?? 'An error occurred',
+              _errorMessage ?? 'Ocurrió un error',
               style: const TextStyle(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             AppSpacing.vGapLg,
             PrimaryButton(
-              text: 'Try Again',
+              text: 'Intentar de Nuevo',
               onPressed: _initializeCamera,
             ),
           ],
@@ -463,7 +463,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             ),
             AppSpacing.vGapMd,
             const Text(
-              'Camera permission required',
+              'Se requiere permiso de cámara',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -472,13 +472,13 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             ),
             AppSpacing.vGapSm,
             const Text(
-              'Please grant camera access to take photos of your vehicle',
+              'Por favor otorga acceso a la cámara para tomar fotos de tu vehículo',
               style: TextStyle(color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             AppSpacing.vGapLg,
             PrimaryButton(
-              text: 'Grant Permission',
+              text: 'Otorgar Permiso',
               onPressed: () async {
                 await openAppSettings();
               },

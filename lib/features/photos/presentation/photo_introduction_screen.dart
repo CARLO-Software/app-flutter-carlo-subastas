@@ -15,7 +15,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Photos'),
+        title: const Text('Fotos'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -45,13 +45,13 @@ class PhotoIntroductionScreen extends StatelessWidget {
                   ),
                   AppSpacing.vGapLg,
                   Text(
-                    'Time to take some photos',
+                    'Es hora de tomar fotos',
                     style: AppTypography.headlineMedium,
                     textAlign: TextAlign.center,
                   ),
                   AppSpacing.vGapSm,
                   Text(
-                    'Great photos help buyers see your vehicle clearly and can increase your auction value.',
+                    'Buenas fotos ayudan a los compradores a ver tu vehículo claramente y pueden aumentar el valor de subasta.',
                     style: AppTypography.bodyMedium.copyWith(
                       color: c.textSecondary,
                     ),
@@ -61,29 +61,29 @@ class PhotoIntroductionScreen extends StatelessWidget {
                   _buildTipCard(
                     context: context,
                     icon: Icons.wb_sunny_outlined,
-                    title: 'Good lighting',
-                    description: 'Take photos in daylight or well-lit areas',
+                    title: 'Buena iluminación',
+                    description: 'Toma fotos con luz natural o en áreas bien iluminadas',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
                     context: context,
                     icon: Icons.cleaning_services_outlined,
-                    title: 'Clean your vehicle',
-                    description: 'A clean car photographs better',
+                    title: 'Limpia tu vehículo',
+                    description: 'Un auto limpio se fotografía mejor',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
                     context: context,
                     icon: Icons.center_focus_strong_outlined,
-                    title: 'Keep it steady',
-                    description: 'Hold your phone steady for clear shots',
+                    title: 'Mantén firme',
+                    description: 'Sostén tu teléfono firme para fotos claras',
                   ),
                   AppSpacing.vGapMd,
                   _buildTipCard(
                     context: context,
                     icon: Icons.panorama_horizontal_outlined,
-                    title: 'Capture all angles',
-                    description: 'We\'ll guide you through each shot',
+                    title: 'Captura todos los ángulos',
+                    description: 'Te guiaremos en cada toma',
                   ),
                   AppSpacing.vGapLg,
                 ],
@@ -103,7 +103,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
               ],
             ),
             child: PrimaryButton(
-              text: 'Get Started',
+              text: 'Comenzar',
               onPressed: () => context.push(AppRoutes.photoReady),
             ),
           ),

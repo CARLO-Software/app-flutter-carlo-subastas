@@ -157,7 +157,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
     if (!mounted) return;
     setState(() => _isLoading = false);
-    context.go(AppRoutes.vehicleLookup);
+    context.go(AppRoutes.loading);
   }
 
   @override
@@ -181,9 +181,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                   math.sin(_bgAngle.value + math.pi) * 0.5,
                 ),
                 colors: const [
-                  AppColors.primaryDark,
-                  AppColors.primary,
-                  Color(0xFF7C3AED),
+                  Color(0xFF0A0A0A),
+                  Color(0xFF111111),
+                  Color(0xFF0A1A0A),
                 ],
               ),
             ),
@@ -261,10 +261,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
         child: Column(
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 100,
+              height: 100,
               decoration: BoxDecoration(
-                color: context.colors.textOnPrimary,
                 borderRadius: AppSpacing.borderRadiusXl,
                 boxShadow: [
                   BoxShadow(
@@ -274,25 +273,20 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.directions_car_rounded,
-                size: 44,
-                color: AppColors.primary,
+              child: ClipRRect(
+                borderRadius: AppSpacing.borderRadiusXl,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             AppSpacing.vGapMd,
             Text(
-              'Carlo',
+              'Carlo Subastas',
               style: AppTypography.headlineLarge.copyWith(
                 color: context.colors.textOnPrimary,
                 fontWeight: FontWeight.bold,
-              ),
-            ),
-            AppSpacing.vGapXxs,
-            Text(
-              'Subastas de vehículos',
-              style: AppTypography.bodyMedium.copyWith(
-                color: context.colors.textOnPrimary.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -369,11 +363,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                 height: 44,
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.accent,
                   borderRadius: AppSpacing.borderRadiusFull,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
+                      color: AppColors.accent.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -396,7 +390,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       style: AppTypography.labelLarge.copyWith(
                         color: _isLogin
-                            ? context.colors.textOnPrimary
+                            ? Colors.black
                             : context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -416,7 +410,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       style: AppTypography.labelLarge.copyWith(
                         color: !_isLogin
-                            ? context.colors.textOnPrimary
+                            ? Colors.black
                             : context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -601,12 +595,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
           borderRadius: AppSpacing.borderRadiusMd,
           gradient: LinearGradient(
             colors: _isLoading
-                ? [AppColors.primaryLight, AppColors.primary]
-                : [AppColors.primary, AppColors.primaryDark],
+                ? [AppColors.accentLight, AppColors.accent]
+                : [AppColors.accent, AppColors.accentDark],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.4),
+              color: AppColors.accent.withValues(alpha: 0.4),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -638,7 +632,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                     _isLogin ? 'Iniciar Sesión' : 'Crear Cuenta',
                     key: ValueKey(_isLogin ? 'login_btn' : 'register_btn'),
                     style: AppTypography.button.copyWith(
-                      color: context.colors.textOnPrimary,
+                      color: Colors.black,
                     ),
                   ),
           ),

@@ -16,7 +16,7 @@ class PhotoReadyScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Ready to Start'),
+        title: const Text('Listo para Comenzar'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -31,34 +31,34 @@ class PhotoReadyScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Before you begin',
-                    subtitle: 'Make sure you\'re ready to take exterior photos',
+                    title: 'Antes de comenzar',
+                    subtitle: 'Asegúrate de estar listo para tomar fotos exteriores',
                   ),
                   const PhotoGuide(
-                    title: 'Photo Tips',
-                    description: 'Follow these tips for the best results:',
+                    title: 'Consejos de Fotos',
+                    description: 'Sigue estos consejos para mejores resultados:',
                     tips: [
-                      'Park in an open area with good lighting',
-                      'Clean your vehicle if possible',
-                      'Remove personal items from view',
-                      'Make sure the full vehicle is in frame',
-                      'Take photos from the positions shown',
+                      'Estaciona en un área abierta con buena luz',
+                      'Limpia tu vehículo si es posible',
+                      'Retira objetos personales de la vista',
+                      'Asegúrate de que el vehículo completo esté en el encuadre',
+                      'Toma fotos desde las posiciones indicadas',
                     ],
                   ),
                   AppSpacing.vGapLg,
                   Text(
-                    'What you\'ll photograph:',
+                    'Lo que fotografiarás:',
                     style: AppTypography.titleMedium,
                   ),
                   AppSpacing.vGapMd,
-                  _buildPhotoListItem('Front view', c),
-                  _buildPhotoListItem('Rear view', c),
-                  _buildPhotoListItem('Left side', c),
-                  _buildPhotoListItem('Right side', c),
-                  _buildPhotoListItem('Front left corner', c),
-                  _buildPhotoListItem('Front right corner', c),
-                  _buildPhotoListItem('Rear left corner', c),
-                  _buildPhotoListItem('Rear right corner', c),
+                  _buildPhotoListItem('Vista frontal', c),
+                  _buildPhotoListItem('Vista trasera', c),
+                  _buildPhotoListItem('Lado izquierdo', c),
+                  _buildPhotoListItem('Lado derecho', c),
+                  _buildPhotoListItem('Esquina frontal izquierda', c),
+                  _buildPhotoListItem('Esquina frontal derecha', c),
+                  _buildPhotoListItem('Esquina trasera izquierda', c),
+                  _buildPhotoListItem('Esquina trasera derecha', c),
                   AppSpacing.vGapLg,
                 ],
               ),
@@ -79,12 +79,12 @@ class PhotoReadyScreen extends StatelessWidget {
             child: Column(
               children: [
                 PrimaryButton(
-                  text: 'I\'m Ready',
+                  text: 'Estoy Listo',
                   onPressed: () => context.push(AppRoutes.exteriorPhotos),
                 ),
                 AppSpacing.vGapSm,
                 SecondaryButton(
-                  text: 'Skip for Now',
+                  text: 'Omitir por Ahora',
                   onPressed: () => context.go(AppRoutes.dashboard),
                 ),
               ],

@@ -225,7 +225,7 @@ class PhotoCard extends StatelessWidget {
                   if (isRequired) ...[
                     AppSpacing.vGapXs,
                     Text(
-                      'Required',
+                      'Requerido',
                       style: AppTypography.caption.copyWith(
                         color: c.textTertiary,
                       ),

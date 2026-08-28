@@ -96,7 +96,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Condition & Damage'),
+        title: const Text('Condición y Daños'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -111,13 +111,13 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Report any damage',
-                    subtitle: 'Add any scratches, dents, or paint damage',
+                    title: 'Reportar daños',
+                    subtitle: 'Agrega rayones, abolladuras o daños de pintura',
                   ),
 
                   // Damage type selection
                   Text(
-                    'Type of Damage',
+                    'Tipo de Daño',
                     style: AppTypography.labelLarge.copyWith(
                       color: c.textSecondary,
                     ),
@@ -143,8 +143,8 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
 
                   // Location
                   AppTextField(
-                    label: 'Location',
-                    hint: 'e.g. Front bumper, Driver door',
+                    label: 'Ubicación',
+                    hint: 'Ej: Parachoques delantero, puerta del conductor',
                     controller: _locationController,
                   ),
                   AppSpacing.vGapMd,
@@ -155,6 +155,12 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                     hint: 'Agrega más detalles sobre el daño',
                     controller: _descriptionController,
                     maxLines: 3,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.mic_outlined),
+                      onPressed: () {
+                        // ponytail: integrar speech-to-text cuando se necesite
+                      },
+                    ),
                   ),
                   AppSpacing.vGapMd,
 
@@ -233,7 +239,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   // Damage list
                   if (damages.isNotEmpty) ...[
                     Text(
-                      'Reported Damages (${damages.length})',
+                      'Daños Reportados (${damages.length})',
                       style: AppTypography.titleMedium,
                     ),
                     AppSpacing.vGapMd,
@@ -325,7 +331,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                           AppSpacing.hGapSm,
                           const Expanded(
                             child: Text(
-                              'No damage reported. Continue if your vehicle has no damage.',
+                              'Sin daños reportados. Continúa si tu vehículo no tiene daños.',
                               style: TextStyle(
                                 color: AppColors.success,
                                 fontWeight: FontWeight.w500,
@@ -353,7 +359,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
               ],
             ),
             child: PrimaryButton(
-              text: 'Continue',
+              text: 'Continuar',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmConditionDamage();
                 context.go(AppRoutes.dashboard);

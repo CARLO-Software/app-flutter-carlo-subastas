@@ -19,7 +19,7 @@ class ExtraFeaturesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Extra Features'),
+        title: const Text('Características Extra'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -34,8 +34,8 @@ class ExtraFeaturesScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Select Features',
-                    subtitle: 'Select all the features that your vehicle has',
+                    title: 'Seleccionar Características',
+                    subtitle: 'Selecciona todas las características que tiene tu vehículo',
                   ),
                   Wrap(
                     spacing: AppSpacing.sm,
@@ -97,7 +97,7 @@ class ExtraFeaturesScreen extends ConsumerWidget {
               ],
             ),
             child: PrimaryButton(
-              text: 'Next',
+              text: 'Siguiente',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmExtraFeatures();
                 context.push(AppRoutes.keys);

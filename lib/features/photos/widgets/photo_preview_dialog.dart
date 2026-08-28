@@ -60,7 +60,7 @@ class PhotoPreviewDialog extends StatelessWidget {
                           style: AppTypography.titleMedium,
                         ),
                         Text(
-                          'Review your photo',
+                          'Revisa tu foto',
                           style: AppTypography.bodySmall.copyWith(
                             color: c.textSecondary,
                           ),
@@ -100,7 +100,7 @@ class PhotoPreviewDialog extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SecondaryButton(
-                      text: 'Retake',
+                      text: 'Retomar',
                       icon: Icons.refresh,
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -111,7 +111,7 @@ class PhotoPreviewDialog extends StatelessWidget {
                   AppSpacing.hGapMd,
                   Expanded(
                     child: PrimaryButton(
-                      text: 'Use Photo',
+                      text: 'Usar Foto',
                       icon: Icons.check,
                       onPressed: () {
                         Navigator.of(context).pop();

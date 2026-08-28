@@ -146,19 +146,19 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Photo Options'),
-        content: const Text('Would you like to retake this photo?'),
+        title: const Text('Opciones de Foto'),
+        content: const Text('¿Deseas volver a tomar esta foto?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _retakePhoto(positionId);
             },
-            child: const Text('Retake'),
+            child: const Text('Retomar'),
           ),
         ],
       ),
@@ -179,7 +179,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Exterior Photos'),
+        title: const Text('Fotos Exteriores'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -253,7 +253,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Start Guided Capture',
+                                  'Iniciar Captura Guiada',
                                   style: AppTypography.titleMedium.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -261,7 +261,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                                 ),
                                 AppSpacing.vGapXxs,
                                 Text(
-                                  'We\'ll guide you through each angle',
+                                  'Te guiaremos en cada ángulo',
                                   style: AppTypography.bodySmall.copyWith(
                                     color: Colors.white.withValues(alpha: 0.9),
                                   ),
@@ -280,8 +280,8 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                   ),
                   AppSpacing.vGapLg,
                   const SectionHeader(
-                    title: 'Photo Overview',
-                    subtitle: 'Tap any photo to capture or retake',
+                    title: 'Vista General de Fotos',
+                    subtitle: 'Toca cualquier foto para capturar o retomar',
                   ),
                   GridView.builder(
                     shrinkWrap: true,

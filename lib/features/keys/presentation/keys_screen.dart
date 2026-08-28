@@ -18,7 +18,7 @@ class KeysScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Keys'),
+        title: const Text('Llaves'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -33,12 +33,12 @@ class KeysScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'How many keys do you have?',
-                    subtitle: 'Select the number of keys that come with your vehicle',
+                    title: '¿Cuántas llaves tienes?',
+                    subtitle: 'Selecciona la cantidad de llaves que vienen con tu vehículo',
                   ),
                   SelectableOptionCard(
-                    title: '1 Key',
-                    subtitle: 'One original key',
+                    title: '1 Llave',
+                    subtitle: 'Una llave original',
                     icon: Icons.key,
                     isSelected: selectedKeys == 1,
                     onTap: () {
@@ -47,8 +47,8 @@ class KeysScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
                   SelectableOptionCard(
-                    title: '2 Keys',
-                    subtitle: 'Two original keys',
+                    title: '2 Llaves',
+                    subtitle: 'Dos llaves originales',
                     icon: Icons.key,
                     isSelected: selectedKeys == 2,
                     onTap: () {
@@ -57,8 +57,8 @@ class KeysScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
                   SelectableOptionCard(
-                    title: '3+ Keys',
-                    subtitle: 'Three or more original keys',
+                    title: '3+ Llaves',
+                    subtitle: 'Tres o más llaves originales',
                     icon: Icons.key,
                     isSelected: selectedKeys >= 3,
                     onTap: () {
@@ -83,7 +83,7 @@ class KeysScreen extends ConsumerWidget {
               ],
             ),
             child: PrimaryButton(
-              text: 'Next',
+              text: 'Siguiente',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmKeys();
                 context.push(AppRoutes.finance);

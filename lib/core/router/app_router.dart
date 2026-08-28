@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/auth_screen.dart';
+import '../../features/auth/presentation/loading_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/vehicle_lookup/presentation/vehicle_lookup_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
@@ -38,6 +39,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.auth,
       name: 'auth',
       builder: (context, state) => const AuthScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.loading,
+      name: 'loading',
+      builder: (context, state) => const LoadingScreen(),
     ),
     GoRoute(
       path: AppRoutes.vehicleLookup,

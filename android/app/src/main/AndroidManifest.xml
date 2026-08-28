@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="app_carlo_subastas_mobile"
+        android:label="Carlo Subastas"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

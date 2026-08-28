@@ -26,7 +26,7 @@ class DashboardScreen extends ConsumerWidget {
           onPressed: () => context.go(AppRoutes.vehicleLookup),
         ),
         title: Text(
-          vehicle?.plate ?? 'Vehicle',
+          vehicle?.plate ?? 'Vehículo',
           style: AppTypography.titleLarge,
         ),
         centerTitle: true,
@@ -60,7 +60,7 @@ class DashboardScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Estimated Auction Value',
+                    'Valor Estimado de Subasta',
                     style: AppTypography.labelMedium.copyWith(
                       color: c.textOnPrimary.withValues(alpha: 0.8),
                     ),
@@ -81,7 +81,7 @@ class DashboardScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Progress',
+                              'Progreso',
                               style: AppTypography.labelSmall.copyWith(
                                 color: c.textOnPrimary.withValues(alpha: 0.8),
                               ),
@@ -129,7 +129,7 @@ class DashboardScreen extends ConsumerWidget {
             // Vehicle Summary
             if (vehicle != null) ...[
               const SectionHeader(
-                title: 'Your Vehicle',
+                title: 'Tu Vehículo',
               ),
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -179,12 +179,12 @@ class DashboardScreen extends ConsumerWidget {
 
             // Progress Cards
             const SectionHeader(
-              title: 'Registration Steps',
-              subtitle: 'Complete all steps to submit your vehicle',
+              title: 'Pasos de Registro',
+              subtitle: 'Completa todos los pasos para enviar tu vehículo',
             ),
             ProgressCard(
-              title: 'Vehicle Information',
-              subtitle: 'Review and confirm your vehicle details',
+              title: 'Información del Vehículo',
+              subtitle: 'Revisa y confirma los detalles de tu vehículo',
               icon: Icons.directions_car_outlined,
               isCompleted: registrationState.vehicleDetailsConfirmed,
               onTap: () => context.push(AppRoutes.vehicleDetails),
@@ -207,24 +207,24 @@ class DashboardScreen extends ConsumerWidget {
             ),
             AppSpacing.vGapMd,
             ProgressCard(
-              title: 'Condition & Damage',
-              subtitle: 'Report any damage to your vehicle',
+              title: 'Condición y Daños',
+              subtitle: 'Reporta cualquier daño en tu vehículo',
               icon: Icons.report_problem_outlined,
               isCompleted: registrationState.conditionDamageConfirmed,
               onTap: () => context.push(AppRoutes.conditionDamage),
             ),
             AppSpacing.vGapMd,
             ProgressCard(
-              title: 'Service History',
-              subtitle: 'Upload your service records',
+              title: 'Historial de Servicio',
+              subtitle: 'Sube tus registros de servicio',
               icon: Icons.history_outlined,
               isCompleted: registrationState.serviceHistoryConfirmed,
               onTap: () => context.push(AppRoutes.serviceHistory),
             ),
             AppSpacing.vGapXl,
             PrimaryButton(
-              text: 'Add your vehicle information',
-              onPressed: () => context.push(AppRoutes.vehicleDetails),
+              text: 'Revisar y Enviar',
+              onPressed: () => context.push(AppRoutes.review),
             ),
             AppSpacing.vGapMd,
           ],
@@ -259,12 +259,12 @@ class DashboardScreen extends ConsumerWidget {
             AppSpacing.vGapLg,
             ListTile(
               leading: const Icon(Icons.home_outlined),
-              title: const Text('Dashboard'),
+              title: const Text('Panel'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.check_circle_outline),
-              title: const Text('Review & Submit'),
+              title: const Text('Revisar y Enviar'),
               onTap: () {
                 Navigator.pop(context);
                 context.push(AppRoutes.review);
@@ -272,7 +272,7 @@ class DashboardScreen extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.track_changes_outlined),
-              title: const Text('Submission Status'),
+              title: const Text('Estado del Envío'),
               onTap: () {
                 Navigator.pop(context);
                 context.push(AppRoutes.submissionStatus);

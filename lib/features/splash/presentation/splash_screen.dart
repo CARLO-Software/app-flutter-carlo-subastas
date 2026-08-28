@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: const Color(0xFF0A0A0A),
       body: Center(
         child: AnimatedBuilder(
           animation: _controller,
@@ -70,32 +70,21 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: context.colors.textOnPrimary,
-                        borderRadius: AppSpacing.borderRadiusXl,
-                      ),
-                      child: const Icon(
-                        Icons.directions_car,
-                        size: 64,
-                        color: AppColors.primary,
+                    ClipRRect(
+                      borderRadius: AppSpacing.borderRadiusXl,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     AppSpacing.vGapLg,
                     Text(
-                      'Carlo',
+                      'Carlo Subastas',
                       style: AppTypography.displaySmall.copyWith(
                         color: context.colors.textOnPrimary,
                         fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    AppSpacing.vGapSm,
-                    Text(
-                      'Vehicle App',
-                      style: AppTypography.titleLarge.copyWith(
-                        color: context.colors.textOnPrimary.withValues(alpha: 0.8),
                       ),
                     ),
                   ],

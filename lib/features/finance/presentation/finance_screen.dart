@@ -18,7 +18,7 @@ class FinanceScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Finance'),
+        title: const Text('Financiamiento'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -33,12 +33,12 @@ class FinanceScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Is there any outstanding finance?',
-                    subtitle: 'Let us know if you have any finance to settle',
+                    title: '¿Tiene algún financiamiento pendiente?',
+                    subtitle: 'Déjanos saber si tienes algún financiamiento por liquidar',
                   ),
                   SelectableOptionCard(
-                    title: 'Yes',
-                    subtitle: 'There is outstanding finance on this vehicle',
+                    title: 'Sí',
+                    subtitle: 'Tiene financiamiento pendiente en este vehículo',
                     icon: Icons.credit_card,
                     isSelected: hasFinance == true,
                     onTap: () {
@@ -48,7 +48,7 @@ class FinanceScreen extends ConsumerWidget {
                   AppSpacing.vGapMd,
                   SelectableOptionCard(
                     title: 'No',
-                    subtitle: 'This vehicle is finance free',
+                    subtitle: 'Este vehículo está libre de financiamiento',
                     icon: Icons.check_circle_outline,
                     isSelected: hasFinance == false,
                     onTap: () {
@@ -73,7 +73,7 @@ class FinanceScreen extends ConsumerWidget {
                         AppSpacing.hGapSm,
                         Expanded(
                           child: Text(
-                            'Don\'t worry if you have finance. We can help settle it from the auction proceeds.',
+                            'No te preocupes si tienes financiamiento. Podemos ayudarte a liquidarlo con los fondos de la subasta.',
                             style: TextStyle(
                               color: c.textSecondary,
                               fontSize: 14,
@@ -100,7 +100,7 @@ class FinanceScreen extends ConsumerWidget {
               ],
             ),
             child: PrimaryButton(
-              text: 'Next',
+              text: 'Siguiente',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmFinance();
                 context.push(AppRoutes.runningCondition);

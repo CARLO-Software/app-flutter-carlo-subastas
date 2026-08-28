@@ -3,6 +3,7 @@ class AppRoutes {
 
   static const String splash = '/splash';
   static const String auth = '/auth';
+  static const String loading = '/loading';
   static const String vehicleLookup = '/vehicle-lookup';
   static const String dashboard = '/dashboard';
   static const String vehicleDetails = '/vehicle-details';
