@@ -4,7 +4,7 @@ class AppConstants {
   AppConstants._();
 
   // App Info
-  static const String appName = 'Carlo Vehicle App';
+  static const String appName = 'Carlo Subastas';
   static const String appVersion = '1.0.0';
 
   // AI Configuration — passed via --dart-define-from-file=.env
@@ -14,58 +14,58 @@ class AppConstants {
   static const List<PhotoPositionData> photoPositions = [
     PhotoPositionData(
       id: 'front',
-      name: 'Front',
+      name: 'Frontal',
       angle: PhotoAngle.front,
-      instructions: 'Stand directly in front of the vehicle, about 3 meters away. Center the car in frame.',
+      instructions: 'Colócate frente al vehículo, a unos 3 metros. Centra el auto en el encuadre.',
       order: 1,
     ),
     PhotoPositionData(
       id: 'rear',
-      name: 'Rear',
+      name: 'Trasera',
       angle: PhotoAngle.rear,
-      instructions: 'Stand directly behind the vehicle, about 3 meters away. Capture the full rear view.',
+      instructions: 'Colócate detrás del vehículo, a unos 3 metros. Captura toda la vista trasera.',
       order: 2,
     ),
     PhotoPositionData(
       id: 'left_side',
-      name: 'Left Side',
+      name: 'Lado Izquierdo',
       angle: PhotoAngle.leftSide,
-      instructions: 'Stand to the left side of the vehicle. Capture the entire side profile.',
+      instructions: 'Ubícate al lado izquierdo del vehículo. Captura todo el perfil lateral.',
       order: 3,
     ),
     PhotoPositionData(
       id: 'right_side',
-      name: 'Right Side',
+      name: 'Lado Derecho',
       angle: PhotoAngle.rightSide,
-      instructions: 'Stand to the right side of the vehicle. Capture the entire side profile.',
+      instructions: 'Ubícate al lado derecho del vehículo. Captura todo el perfil lateral.',
       order: 4,
     ),
     PhotoPositionData(
       id: 'front_left_corner',
-      name: 'Front Left Corner',
+      name: 'Esquina Frontal Izq.',
       angle: PhotoAngle.frontLeftCorner,
-      instructions: 'Position yourself at a 45-degree angle from the front left. Show front and left side.',
+      instructions: 'Colócate en ángulo de 45° desde el frente izquierdo. Muestra el frente y el lado izquierdo.',
       order: 5,
     ),
     PhotoPositionData(
       id: 'front_right_corner',
-      name: 'Front Right Corner',
+      name: 'Esquina Frontal Der.',
       angle: PhotoAngle.frontRightCorner,
-      instructions: 'Position yourself at a 45-degree angle from the front right. Show front and right side.',
+      instructions: 'Colócate en ángulo de 45° desde el frente derecho. Muestra el frente y el lado derecho.',
       order: 6,
     ),
     PhotoPositionData(
       id: 'rear_left_corner',
-      name: 'Rear Left Corner',
+      name: 'Esquina Trasera Izq.',
       angle: PhotoAngle.rearLeftCorner,
-      instructions: 'Position yourself at a 45-degree angle from the rear left. Show rear and left side.',
+      instructions: 'Colócate en ángulo de 45° desde la parte trasera izquierda. Muestra la trasera y el lado izquierdo.',
       order: 7,
     ),
     PhotoPositionData(
       id: 'rear_right_corner',
-      name: 'Rear Right Corner',
+      name: 'Esquina Trasera Der.',
       angle: PhotoAngle.rearRightCorner,
-      instructions: 'Position yourself at a 45-degree angle from the rear right. Show rear and right side.',
+      instructions: 'Colócate en ángulo de 45° desde la parte trasera derecha. Muestra la trasera y el lado derecho.',
       order: 8,
     ),
   ];
@@ -82,53 +82,53 @@ class AppConstants {
 
   // Extra Features Options
   static const List<String> extraFeatureOptions = [
-    'Sat Nav',
+    'GPS / Navegación',
     'Bluetooth',
     'Apple CarPlay',
     'Android Auto',
-    'Sunroof',
-    'Keyless Entry',
-    'Heated Seats',
-    'Roof Rails',
-    'Reverse Camera',
-    'Leather Seats',
-    'Bike Rack',
-    'Blind Spot Alerts',
-    'Towbar',
+    'Techo solar',
+    'Entrada sin llave',
+    'Asientos calefactados',
+    'Barras de techo',
+    'Cámara de retroceso',
+    'Asientos de cuero',
+    'Porta bicicletas',
+    'Alerta de punto ciego',
+    'Enganche de remolque',
   ];
 
   // Mechanical Issue Options
   static const List<String> mechanicalIssueOptions = [
-    'Central Locking',
-    'Headlights',
-    'Electric Windows',
-    'Oil Leak',
-    'Strange Sound',
-    'Rear Lights',
-    'Parking Sensors',
-    'Brake Pads',
-    'Infotainment',
-    'Air Conditioning',
-    'Something Else',
+    'Cierre centralizado',
+    'Luces delanteras',
+    'Ventanas eléctricas',
+    'Fuga de aceite',
+    'Ruido extraño',
+    'Luces traseras',
+    'Sensores de estacionamiento',
+    'Pastillas de freno',
+    'Sistema multimedia',
+    'Aire acondicionado',
+    'Otro problema',
   ];
 
   // Damage Types
   static const List<String> damageTypes = [
-    'Scratch',
-    'Dent',
-    'Paint Damage',
+    'Rayón',
+    'Abolladura',
+    'Daño de pintura',
   ];
 
   // Photo Types
   static const List<String> exteriorPhotoTypes = [
-    'Front',
-    'Rear',
-    'Left Side',
-    'Right Side',
-    'Front Left Corner',
-    'Front Right Corner',
-    'Rear Left Corner',
-    'Rear Right Corner',
+    'Frontal',
+    'Trasera',
+    'Lado Izquierdo',
+    'Lado Derecho',
+    'Esquina Frontal Izq.',
+    'Esquina Frontal Der.',
+    'Esquina Trasera Izq.',
+    'Esquina Trasera Der.',
   ];
 
   // Animation Durations

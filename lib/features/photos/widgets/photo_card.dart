@@ -153,11 +153,11 @@ class PhotoCard extends StatelessWidget {
                               isInvalid
                                   ? (validationFeedback ?? title)
                                   : title,
-                              style: AppTypography.labelMedium.copyWith(
+                              style: AppTypography.labelSmall.copyWith(
                                 color: c.textOnPrimary,
                               ),
                               textAlign: TextAlign.center,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

@@ -33,11 +33,13 @@ class AngleValidationResult {
 }
 
 class AngleValidatorService {
+  final String _apiKey;
   final GenerativeModel _model;
   bool _isProcessing = false;
 
   AngleValidatorService({required String apiKey})
-      : _model = GenerativeModel(
+      : _apiKey = apiKey,
+        _model = GenerativeModel(
           model: 'gemini-2.5-flash',
           apiKey: apiKey,
         );
@@ -49,6 +51,13 @@ class AngleValidatorService {
     required PhotoAngle expectedAngle,
   }) async {
     if (_isProcessing) return AngleValidationResult.error();
+
+    if (_apiKey.isEmpty) {
+      return AngleValidationResult.invalid(
+        'API key no configurada. Recompila con --dart-define-from-file=.env',
+      );
+    }
+
     _isProcessing = true;
 
     try {
@@ -71,11 +80,22 @@ class AngleValidatorService {
     } catch (e, stack) {
       debugPrint('>>> Gemini exception: $e');
       debugPrint('>>> Stack: $stack');
-      return AngleValidationResult.error();
+      // ponytail: surface real error so user knows what failed without USB
+      final msg = e.toString();
+      if (msg.contains('API key') || msg.contains('401') || msg.contains('403')) {
+        return AngleValidationResult.invalid('Error de API key. Verifica tu GEMINI_API_KEY.');
+      }
+      if (msg.contains('SocketException') || msg.contains('ClientException') || msg.contains('TimeoutException')) {
+        return AngleValidationResult.invalid('Sin conexión a internet. Verifica tu red.');
+      }
+      return AngleValidationResult.invalid('Error al validar: ${_truncate(msg, 80)}');
     } finally {
       _isProcessing = false;
     }
   }
+
+  static String _truncate(String s, int max) =>
+      s.length <= max ? s : '${s.substring(0, max)}...';
 
   String _buildPrompt(PhotoAngle angle) {
     final angleDesc = _getAngleDescription(angle);

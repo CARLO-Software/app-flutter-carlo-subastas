@@ -165,6 +165,9 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     );
   }
 
+  bool get _hasInvalidPhotos =>
+      _validationStatus.values.contains(PhotoValidationStatus.invalid);
+
   int get _photosTakenCount {
     final state = ref.watch(vehicleRegistrationProvider);
     return state.exteriorPhotosMap.length;
@@ -325,9 +328,9 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
               ],
             ),
             child: PrimaryButton(
-              text: _isValidating ? 'Validando fotos...' : 'Continuar',
-              isEnabled: _photosTakenCount >= 4 && !_isValidating,
-              onPressed: _photosTakenCount >= 4 && !_isValidating
+              text: _isValidating ? 'Validando fotos...' : _hasInvalidPhotos ? 'Corrige las fotos marcadas' : 'Continuar',
+              isEnabled: _photosTakenCount >= 4 && !_isValidating && !_hasInvalidPhotos,
+              onPressed: _photosTakenCount >= 4 && !_isValidating && !_hasInvalidPhotos
                   ? _validateAllPhotos
                   : null,
             ),
