@@ -50,7 +50,7 @@ class PhotoCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 160,
+        constraints: const BoxConstraints(minHeight: 160),
         decoration: BoxDecoration(
           color: hasPhoto ? c.surfaceVariant : c.surface,
           borderRadius: AppSpacing.borderRadiusMd,
@@ -131,11 +131,14 @@ class PhotoCard extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.sm),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
                       decoration: BoxDecoration(
                         color: isInvalid
                             ? AppColors.error.withValues(alpha: 0.9)
-                            : AppColors.success.withValues(alpha: 0.9),
+                            : Colors.black.withValues(alpha: 0.75),
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(AppSpacing.radiusMd),
                           bottomRight: Radius.circular(AppSpacing.radiusMd),
@@ -154,11 +157,9 @@ class PhotoCard extends StatelessWidget {
                                   ? (validationFeedback ?? title)
                                   : title,
                               style: AppTypography.labelSmall.copyWith(
-                                color: c.textOnPrimary,
+                                color: Colors.white,
                               ),
                               textAlign: TextAlign.center,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

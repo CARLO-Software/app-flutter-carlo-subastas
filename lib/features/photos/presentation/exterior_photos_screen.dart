@@ -229,7 +229,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.primary, Color(0xFF8B5CF6)],
+                          colors: [Color(0xFF064E3B), AppColors.success],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),

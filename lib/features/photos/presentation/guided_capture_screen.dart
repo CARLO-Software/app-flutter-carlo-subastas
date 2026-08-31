@@ -288,7 +288,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                           const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.primary
+                            ? AppColors.success
                             : isCompleted
                                 ? AppColors.success.withValues(alpha: 0.3)
                                 : Colors.white.withValues(alpha: 0.1),
@@ -296,7 +296,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                             BorderRadius.circular(AppSpacing.radiusSm),
                         border: Border.all(
                           color: isSelected
-                              ? AppColors.primary
+                              ? AppColors.success
                               : isCompleted
                                   ? AppColors.success
                                   : Colors.white.withValues(alpha: 0.3),
