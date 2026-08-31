@@ -21,7 +21,7 @@ class ReviewScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Review'),
+        title: const Text('Revisión'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -35,7 +35,6 @@ class ReviewScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Progress Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(AppSpacing.lg),
@@ -54,7 +53,7 @@ class ReviewScreen extends ConsumerWidget {
                         ),
                         AppSpacing.vGapSm,
                         Text(
-                          progress == 100 ? 'Ready to Submit' : 'Almost There',
+                          progress == 100 ? 'Listo para Enviar' : 'Casi Listo',
                           style: AppTypography.titleLarge.copyWith(
                             color: progress == 100 ? AppColors.success : AppColors.warning,
                           ),
@@ -62,8 +61,8 @@ class ReviewScreen extends ConsumerWidget {
                         AppSpacing.vGapXs,
                         Text(
                           progress == 100
-                              ? 'All steps completed!'
-                              : '$progress% complete - finish remaining steps',
+                              ? '¡Todos los pasos completados!'
+                              : '$progress% completado - finaliza los pasos restantes',
                           style: AppTypography.bodyMedium.copyWith(
                             color: c.textSecondary,
                           ),
@@ -73,33 +72,31 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapLg,
 
-                  // Vehicle Summary
                   if (vehicle != null) ...[
                     _buildSectionCard(
-                      title: 'Vehicle Information',
+                      title: 'Información del Vehículo',
                       icon: Icons.directions_car_outlined,
                       isComplete: registrationState.vehicleDetailsConfirmed,
                       c: c,
                       children: [
-                        _buildDetailRow('Vehicle', '${vehicle.brand} ${vehicle.model}', c),
-                        _buildDetailRow('Year', vehicle.year.toString(), c),
-                        _buildDetailRow('Plate', vehicle.plate, c),
-                        _buildDetailRow('Mileage', '${registrationState.mileage} km', c),
+                        _buildDetailRow('Vehículo', '${vehicle.brand} ${vehicle.model}', c),
+                        _buildDetailRow('Año', vehicle.year.toString(), c),
+                        _buildDetailRow('Placa', vehicle.plate, c),
+                        _buildDetailRow('Kilometraje', '${registrationState.mileage} km', c),
                       ],
                     ),
                     AppSpacing.vGapMd,
                   ],
 
-                  // Extra Features
                   _buildSectionCard(
-                    title: 'Extra Features',
+                    title: 'Características Extra',
                     icon: Icons.star_outline,
                     isComplete: registrationState.extraFeaturesConfirmed,
                     c: c,
                     children: [
                       Text(
                         registrationState.extraFeatures.isEmpty
-                            ? 'No extra features selected'
+                            ? 'Sin características extra'
                             : registrationState.extraFeatures.join(', '),
                         style: AppTypography.bodyMedium,
                       ),
@@ -107,41 +104,38 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Keys
                   _buildSectionCard(
-                    title: 'Keys',
+                    title: 'Llaves',
                     icon: Icons.key,
                     isComplete: registrationState.keysConfirmed,
                     c: c,
                     children: [
                       Text(
-                        '${registrationState.numberOfKeys} key(s)',
+                        '${registrationState.numberOfKeys} llave(s)',
                         style: AppTypography.bodyMedium,
                       ),
                     ],
                   ),
                   AppSpacing.vGapMd,
 
-                  // Finance
                   _buildSectionCard(
-                    title: 'Finance',
+                    title: 'Financiamiento',
                     icon: Icons.credit_card,
                     isComplete: registrationState.financeConfirmed,
                     c: c,
                     children: [
                       Text(
                         registrationState.hasFinance
-                            ? 'Outstanding finance'
-                            : 'No outstanding finance',
+                            ? 'Tiene financiamiento pendiente'
+                            : 'Sin financiamiento pendiente',
                         style: AppTypography.bodyMedium,
                       ),
                     ],
                   ),
                   AppSpacing.vGapMd,
 
-                  // Running Condition
                   _buildSectionCard(
-                    title: 'Running Condition',
+                    title: 'Estado de Funcionamiento',
                     icon: Icons.engineering_outlined,
                     isComplete: registrationState.runningConditionConfirmed,
                     c: c,
@@ -154,16 +148,15 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Mechanical Issues
                   _buildSectionCard(
-                    title: 'Mechanical Issues',
+                    title: 'Problemas Mecánicos',
                     icon: Icons.build_outlined,
                     isComplete: registrationState.mechanicalIssuesConfirmed,
                     c: c,
                     children: [
                       Text(
                         registrationState.mechanicalIssues.isEmpty
-                            ? 'No mechanical issues'
+                            ? 'Sin problemas mecánicos'
                             : registrationState.mechanicalIssues.join(', '),
                         style: AppTypography.bodyMedium,
                       ),
@@ -171,7 +164,6 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Exterior Photos
                   _buildSectionCard(
                     title: 'Fotos Exteriores',
                     icon: Icons.camera_alt_outlined,
@@ -186,7 +178,6 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Interior Photos
                   _buildSectionCard(
                     title: 'Fotos Interiores',
                     icon: Icons.chair_outlined,
@@ -201,26 +192,24 @@ class ReviewScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
 
-                  // Condition & Damage
                   _buildSectionCard(
-                    title: 'Condition & Damage',
+                    title: 'Condición y Daños',
                     icon: Icons.report_problem_outlined,
                     isComplete: registrationState.conditionDamageConfirmed,
                     c: c,
                     children: [
                       Text(
                         registrationState.damages.isEmpty
-                            ? 'No damage reported'
-                            : '${registrationState.damages.length} damage item(s)',
+                            ? 'Sin daños reportados'
+                            : '${registrationState.damages.length} daño(s) reportado(s)',
                         style: AppTypography.bodyMedium,
                       ),
                     ],
                   ),
                   AppSpacing.vGapMd,
 
-                  // Service History
                   _buildSectionCard(
-                    title: 'Service History',
+                    title: 'Historial de Servicio',
                     icon: Icons.history_outlined,
                     isComplete: registrationState.serviceHistoryConfirmed,
                     c: c,
@@ -249,7 +238,7 @@ class ReviewScreen extends ConsumerWidget {
               ],
             ),
             child: PrimaryButton(
-              text: 'Submit For Review',
+              text: 'Enviar para Revisión',
               isEnabled: progress == 100,
               onPressed: progress == 100
                   ? () {
@@ -343,26 +332,26 @@ class ReviewScreen extends ConsumerWidget {
   String _getRunningConditionText(RunningCondition? condition) {
     switch (condition) {
       case RunningCondition.startsAndDrivesSmoothly:
-        return 'Starts and drives smoothly';
+        return 'Enciende y funciona correctamente';
       case RunningCondition.startsAndDrivesWithIssues:
-        return 'Starts and drives with issues';
+        return 'Enciende y funciona con problemas';
       case RunningCondition.doesNotStart:
-        return 'Does not start';
+        return 'No enciende';
       case null:
-        return 'Not specified';
+        return 'No especificado';
     }
   }
 
   String _getServiceHistoryText(ServiceHistoryType? type) {
     switch (type) {
       case ServiceHistoryType.full:
-        return 'Full service history';
+        return 'Historial de servicio completo';
       case ServiceHistoryType.partial:
-        return 'Partial service history';
+        return 'Historial de servicio parcial';
       case ServiceHistoryType.none:
-        return 'No service history';
+        return 'Sin historial de servicio';
       case null:
-        return 'Not specified';
+        return 'No especificado';
     }
   }
 }
