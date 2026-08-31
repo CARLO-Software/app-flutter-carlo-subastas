@@ -6,12 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../models/photo_position.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../providers/guided_capture_provider.dart';
+import '../services/plate_blur_service.dart';
 import '../widgets/widgets.dart';
 
 class GuidedCaptureScreen extends ConsumerStatefulWidget {
@@ -29,6 +31,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   bool _isInitialized = false;
   bool _hasPermission = false;
   String? _errorMessage;
+  final _plateBlurService = PlateBlurService();
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _cameraController?.dispose();
+    _plateBlurService.dispose();
     super.dispose();
   }
 
@@ -125,6 +129,12 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
 
       await File(photo.path).copy(savedPath);
 
+      // ponytail: blur plate on angles where it's visible
+      final angle = captureState.currentPosition.angle;
+      if (_shouldBlurPlate(angle)) {
+        await _plateBlurService.blurPlateInFile(savedPath);
+      }
+
       if (mounted) {
         ref.read(guidedCaptureProvider.notifier).setCapturing(false);
 
@@ -144,6 +154,15 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       ref.read(guidedCaptureProvider.notifier).setCapturing(false);
       ref.read(guidedCaptureProvider.notifier).setError('Error al tomar la foto');
     }
+  }
+
+  bool _shouldBlurPlate(PhotoAngle angle) {
+    return angle == PhotoAngle.front ||
+        angle == PhotoAngle.rear ||
+        angle == PhotoAngle.frontLeftCorner ||
+        angle == PhotoAngle.frontRightCorner ||
+        angle == PhotoAngle.rearLeftCorner ||
+        angle == PhotoAngle.rearRightCorner;
   }
 
   void _acceptPhoto(String path) {
@@ -288,7 +307,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                           const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? AppColors.success
+                            ? AppColors.primary
                             : isCompleted
                                 ? AppColors.success.withValues(alpha: 0.3)
                                 : Colors.white.withValues(alpha: 0.1),
@@ -296,7 +315,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                             BorderRadius.circular(AppSpacing.radiusSm),
                         border: Border.all(
                           color: isSelected
-                              ? AppColors.success
+                              ? AppColors.primary
                               : isCompleted
                                   ? AppColors.success
                                   : Colors.white.withValues(alpha: 0.3),

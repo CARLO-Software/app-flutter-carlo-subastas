@@ -33,7 +33,7 @@ class CaptureProgressIndicator extends StatelessWidget {
               color: isCompleted
                   ? AppColors.success
                   : isCurrent
-                      ? AppColors.success
+                      ? AppColors.primary
                       : c.border,
               borderRadius: BorderRadius.circular(6),
             ),

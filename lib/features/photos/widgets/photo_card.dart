@@ -138,7 +138,7 @@ class PhotoCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isInvalid
                             ? AppColors.error.withValues(alpha: 0.9)
-                            : Colors.black.withValues(alpha: 0.75),
+                            : AppColors.primary.withValues(alpha: 0.85),
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(AppSpacing.radiusMd),
                           bottomRight: Radius.circular(AppSpacing.radiusMd),

@@ -132,7 +132,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     final hasPhoto = registrationState.exteriorPhotosMap.containsKey(positionId);
 
     if (hasPhoto) {
-      _showRetakeDialog(positionId);
+      _showPhotoOptions(positionId);
     } else {
       final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
       if (index >= 0) {
@@ -142,25 +142,70 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     }
   }
 
-  void _showRetakeDialog(String positionId) {
-    showDialog(
+  void _showPhotoOptions(String positionId) {
+    final photoPath = ref.read(vehicleRegistrationProvider).exteriorPhotosMap[positionId];
+    if (photoPath == null) return;
+
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Opciones de Foto'),
-        content: const Text('¿Deseas volver a tomar esta foto?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+      backgroundColor: context.colors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.fullscreen),
+                title: const Text('Ver foto completa'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _showFullPhoto(photoPath, positionId);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt_outlined),
+                title: const Text('Volver a tomar foto'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _retakePhoto(positionId);
+                },
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _retakePhoto(positionId);
-            },
-            child: const Text('Retomar'),
+        ),
+      ),
+    );
+  }
+
+  void _showFullPhoto(String photoPath, String positionId) {
+    final positionName = AppConstants.photoPositions
+        .firstWhere((p) => p.id == positionId)
+        .name;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            title: Text(positionName),
           ),
-        ],
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.file(
+                File(photoPath),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -229,7 +274,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF064E3B), AppColors.success],
+                          colors: [AppColors.primary, Color(0xFF8B5CF6)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),

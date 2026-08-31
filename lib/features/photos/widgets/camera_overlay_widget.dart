@@ -125,16 +125,16 @@ class CameraOverlayWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border(
             top: isTop
-                ? const BorderSide(color: AppColors.success, width: 4)
+                ? const BorderSide(color: AppColors.primary, width: 4)
                 : BorderSide.none,
             bottom: !isTop
-                ? const BorderSide(color: AppColors.success, width: 4)
+                ? const BorderSide(color: AppColors.primary, width: 4)
                 : BorderSide.none,
             left: isLeft
-                ? const BorderSide(color: AppColors.success, width: 4)
+                ? const BorderSide(color: AppColors.primary, width: 4)
                 : BorderSide.none,
             right: !isLeft
-                ? const BorderSide(color: AppColors.success, width: 4)
+                ? const BorderSide(color: AppColors.primary, width: 4)
                 : BorderSide.none,
           ),
         ),
