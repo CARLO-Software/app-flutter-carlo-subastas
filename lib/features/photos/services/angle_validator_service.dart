@@ -103,9 +103,14 @@ class AngleValidatorService {
     return '''
 Analiza esta imagen de un vehículo. Necesito saber si la foto muestra el vehículo desde: $angleDesc.
 
+IMPORTANTE para distinguir izquierda de derecha:
+- El LADO IZQUIERDO del vehículo es donde está la puerta del conductor (en vehículos con volante a la izquierda).
+- El LADO DERECHO es el lado del copiloto.
+- Si ves el vehículo de perfil, identifica si el frente del auto apunta hacia tu derecha (estás viendo el lado izquierdo) o hacia tu izquierda (estás viendo el lado derecho).
+
 Responde SOLO con una de estas opciones:
 - "CORRECTO" si el ángulo coincide
-- "INCORRECTO: [razón breve]" si no coincide (ej: "INCORRECTO: es vista lateral, no frontal")
+- "INCORRECTO: [razón breve]" si no coincide (ej: "INCORRECTO: es el lado derecho, no el izquierdo")
 - "NO_VEHICULO" si no hay vehículo visible
 
 Sé estricto: el ángulo debe coincidir claramente.

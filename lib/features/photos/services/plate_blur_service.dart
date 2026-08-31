@@ -20,9 +20,14 @@ class PlateBlurService {
       // Pass 1: full image
       var regions = await _detectPlateRegions(filePath);
 
-      // Pass 2: if nothing found, crop lower half, upscale 2x, detect there
+      // Pass 2: crop lower 60%, upscale 2x
       if (regions.isEmpty) {
-        regions = await _detectInCroppedZone(filePath);
+        regions = await _detectInCroppedZone(filePath, scale: 2.0);
+      }
+
+      // Pass 3: crop lower 40%, upscale 3x for very distant plates
+      if (regions.isEmpty) {
+        regions = await _detectInCroppedZone(filePath, scale: 3.0, cropRatio: 0.6);
       }
 
       if (regions.isEmpty) return false;
@@ -45,24 +50,27 @@ class PlateBlurService {
     return _findPlateBlocks(recognized, offsetX: 0, offsetY: 0, scale: 1.0);
   }
 
-  /// Crops the lower 60% of the image, upscales 2x, runs detection,
+  /// Crops the lower portion of the image, upscales, runs detection,
   /// then maps coordinates back to the original image space.
-  Future<List<_Region>> _detectInCroppedZone(String filePath) async {
+  Future<List<_Region>> _detectInCroppedZone(
+    String filePath, {
+    double scale = 2.0,
+    double cropRatio = 0.4,
+  }) async {
     final originalBytes = await File(filePath).readAsBytes();
     final original = await compute(_decodeDimensions, originalBytes);
     if (original == null) return [];
 
-    final cropTop = (original.height * 0.4).toInt();
+    final cropTop = (original.height * cropRatio).toInt();
     final cropHeight = original.height - cropTop;
 
-    // Create upscaled crop in a temp file for ML Kit
     final tempDir = p.dirname(filePath);
     final tempPath = p.join(tempDir, '_plate_detect_${DateTime.now().millisecondsSinceEpoch}.jpg');
 
     try {
       final cropped = await compute(
         _cropAndUpscale,
-        _CropParams(originalBytes, 0, cropTop, original.width, cropHeight, 2.0),
+        _CropParams(originalBytes, 0, cropTop, original.width, cropHeight, scale),
       );
       if (cropped == null) return [];
 
@@ -71,12 +79,11 @@ class PlateBlurService {
       final inputImage = InputImage.fromFilePath(tempPath);
       final recognized = await _textRecognizer.processImage(inputImage);
 
-      // ponytail: map detected coords back to original image space
       return _findPlateBlocks(
         recognized,
         offsetX: 0,
         offsetY: cropTop,
-        scale: 0.5, // coordinates are 2x, divide by 2 to get original coords
+        scale: 1.0 / scale,
       );
     } finally {
       try {

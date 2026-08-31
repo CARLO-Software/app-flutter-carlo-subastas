@@ -32,6 +32,10 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   bool _hasPermission = false;
   String? _errorMessage;
   final _plateBlurService = PlateBlurService();
+  double _minZoom = 1.0;
+  double _maxZoom = 1.0;
+  double _currentZoom = 1.0;
+  double _baseZoom = 1.0;
 
   @override
   void initState() {
@@ -96,6 +100,9 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       );
 
       await _cameraController!.initialize();
+      _minZoom = await _cameraController!.getMinZoomLevel();
+      _maxZoom = await _cameraController!.getMaxZoomLevel();
+      _currentZoom = _minZoom;
 
       if (mounted) {
         setState(() {
@@ -252,7 +259,17 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     return Stack(
       children: [
         Positioned.fill(
-          child: CameraPreview(_cameraController!),
+          child: GestureDetector(
+            onScaleStart: (details) => _baseZoom = _currentZoom,
+            onScaleUpdate: (details) {
+              final newZoom = (_baseZoom * details.scale).clamp(_minZoom, _maxZoom);
+              if (newZoom != _currentZoom) {
+                _currentZoom = newZoom;
+                _cameraController?.setZoomLevel(_currentZoom);
+              }
+            },
+            child: CameraPreview(_cameraController!),
+          ),
         ),
         Positioned.fill(
           child: CameraOverlayWidget(

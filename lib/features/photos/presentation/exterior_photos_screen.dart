@@ -108,14 +108,13 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     }
   }
 
-  void _retakePhoto(String positionId) {
+  Future<void> _retakePhoto(String positionId) async {
     ref.read(vehicleRegistrationProvider.notifier).removeExteriorPhotoByPosition(positionId);
     setState(() {
       _validationStatus.remove(positionId);
       _validationFeedback.remove(positionId);
     });
 
-    // Navigate to capture at this position
     final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
     if (index >= 0) {
       final registrationState = ref.read(vehicleRegistrationProvider);
@@ -123,7 +122,49 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
         registrationState.exteriorPhotosMap,
       );
       ref.read(guidedCaptureProvider.notifier).goToPosition(index);
-      context.push(AppRoutes.guidedCapture);
+      await context.push(AppRoutes.guidedCapture);
+
+      // After returning from capture, validate the retaken photo
+      if (mounted) {
+        _validateSinglePhoto(positionId);
+      }
+    }
+  }
+
+  Future<void> _validateSinglePhoto(String positionId) async {
+    final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
+    final path = photos[positionId];
+    if (path == null) return;
+
+    final position = AppConstants.photoPositions.firstWhere((p) => p.id == positionId);
+
+    setState(() {
+      _validationStatus[positionId] = PhotoValidationStatus.validating;
+    });
+
+    try {
+      final bytes = await File(path).readAsBytes();
+      final result = await validator.validateAngle(
+        imageBytes: bytes,
+        expectedAngle: position.angle,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        if (result.isValid) {
+          _validationStatus[positionId] = PhotoValidationStatus.valid;
+          _validationFeedback.remove(positionId);
+        } else {
+          _validationStatus[positionId] = PhotoValidationStatus.invalid;
+          _validationFeedback[positionId] = result.feedback ?? 'Ángulo incorrecto';
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _validationStatus[positionId] = PhotoValidationStatus.valid;
+      });
     }
   }
 
