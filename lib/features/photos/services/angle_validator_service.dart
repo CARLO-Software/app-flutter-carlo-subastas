@@ -123,13 +123,13 @@ Sé estricto: el ángulo debe coincidir claramente.
       case PhotoAngle.rightSide:
         return 'el LADO DERECHO (perfil derecho completo, viendo ambas puertas del lado derecho)';
       case PhotoAngle.frontLeftCorner:
-        return 'la ESQUINA FRONTAL IZQUIERDA (vista 3/4 frontal izquierda, viendo el frente y el lado izquierdo)';
+        return 'la ESQUINA FRONTAL IZQUIERDA (vista 3/4 frontal desde el lado del conductor/izquierdo. Se debe ver más el lateral izquierdo que el derecho, junto con el frente)';
       case PhotoAngle.frontRightCorner:
-        return 'la ESQUINA FRONTAL DERECHA (vista 3/4 frontal derecha, viendo el frente y el lado derecho)';
+        return 'la ESQUINA FRONTAL DERECHA (vista 3/4 frontal desde el lado del copiloto/derecho. Se debe ver más el lateral derecho que el izquierdo, junto con el frente)';
       case PhotoAngle.rearLeftCorner:
-        return 'la ESQUINA TRASERA IZQUIERDA (vista 3/4 trasera izquierda, viendo la parte trasera y el lado izquierdo)';
+        return 'la ESQUINA TRASERA IZQUIERDA (vista 3/4 trasera desde el lado del conductor/izquierdo. Se debe ver más el lateral izquierdo que el derecho, junto con la parte trasera)';
       case PhotoAngle.rearRightCorner:
-        return 'la ESQUINA TRASERA DERECHA (vista 3/4 trasera derecha, viendo la parte trasera y el lado derecho)';
+        return 'la ESQUINA TRASERA DERECHA (vista 3/4 trasera desde el lado del copiloto/derecho. Se debe ver más el lateral derecho que el izquierdo, junto con la parte trasera)';
     }
   }
 

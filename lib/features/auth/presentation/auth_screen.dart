@@ -182,8 +182,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                 ),
                 colors: const [
                   Color(0xFF0A0A0A),
-                  Color(0xFF111111),
-                  Color(0xFF0A1A0A),
+                  Color(0xFF110A1A),
+                  Color(0xFF1A0A2E),
                 ],
               ),
             ),
@@ -363,11 +363,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                 height: 44,
                 margin: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
-                  color: AppColors.accent,
+                  color: AppColors.primary,
                   borderRadius: AppSpacing.borderRadiusFull,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -390,7 +390,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       style: AppTypography.labelLarge.copyWith(
                         color: _isLogin
-                            ? Colors.black
+                            ? Colors.white
                             : context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -410,7 +410,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       style: AppTypography.labelLarge.copyWith(
                         color: !_isLogin
-                            ? Colors.black
+                            ? Colors.white
                             : context.colors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
@@ -595,12 +595,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
           borderRadius: AppSpacing.borderRadiusMd,
           gradient: LinearGradient(
             colors: _isLoading
-                ? [AppColors.accentLight, AppColors.accent]
-                : [AppColors.accent, AppColors.accentDark],
+                ? [AppColors.primaryLight, AppColors.primary]
+                : [AppColors.primary, AppColors.primaryDark],
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.accent.withValues(alpha: 0.4),
+              color: AppColors.primary.withValues(alpha: 0.4),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -632,7 +632,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                     _isLogin ? 'Iniciar Sesión' : 'Crear Cuenta',
                     key: ValueKey(_isLogin ? 'login_btn' : 'register_btn'),
                     style: AppTypography.button.copyWith(
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
           ),

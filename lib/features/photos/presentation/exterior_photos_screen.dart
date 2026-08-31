@@ -50,7 +50,15 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
 
     final photosToValidate = AppConstants.photoPositions
         .where((p) => photos.containsKey(p.id))
+        .where((p) => _validationStatus[p.id] != PhotoValidationStatus.valid)
         .toList();
+
+    if (photosToValidate.isEmpty) {
+      setState(() => _isValidating = false);
+      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
+      context.go(AppRoutes.dashboard);
+      return;
+    }
 
     for (var i = 0; i < photosToValidate.length; i++) {
       final position = photosToValidate[i];

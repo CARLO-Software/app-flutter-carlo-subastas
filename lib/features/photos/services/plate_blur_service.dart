@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
+import 'package:path/path.dart' as p;
 
 class PlateBlurService {
   final _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
@@ -12,16 +13,22 @@ class PlateBlurService {
 
   /// Detects license plate text and applies blur over it.
   /// Overwrites the file in place.
+  /// Uses multi-pass: full image first, then cropped lower half upscaled
+  /// to catch plates that are too small for ML Kit at full resolution.
   Future<bool> blurPlateInFile(String filePath) async {
     try {
-      final inputImage = InputImage.fromFilePath(filePath);
-      final recognized = await _textRecognizer.processImage(inputImage);
+      // Pass 1: full image
+      var regions = await _detectPlateRegions(filePath);
 
-      final plateBlocks = _findPlateBlocks(recognized);
-      if (plateBlocks.isEmpty) return false;
+      // Pass 2: if nothing found, crop lower half, upscale 2x, detect there
+      if (regions.isEmpty) {
+        regions = await _detectInCroppedZone(filePath);
+      }
+
+      if (regions.isEmpty) return false;
 
       final bytes = await File(filePath).readAsBytes();
-      final blurred = await compute(_blurRegions, _BlurParams(bytes, plateBlocks));
+      final blurred = await compute(_blurRegions, _BlurParams(bytes, regions));
       if (blurred == null) return false;
 
       await File(filePath).writeAsBytes(blurred);
@@ -32,9 +39,58 @@ class PlateBlurService {
     }
   }
 
-  /// Heuristic: a plate is a text block with 5-10 chars, mostly alphanumeric,
-  /// with a roughly horizontal rectangular bounding box.
-  List<_Region> _findPlateBlocks(RecognizedText recognized) {
+  Future<List<_Region>> _detectPlateRegions(String filePath) async {
+    final inputImage = InputImage.fromFilePath(filePath);
+    final recognized = await _textRecognizer.processImage(inputImage);
+    return _findPlateBlocks(recognized, offsetX: 0, offsetY: 0, scale: 1.0);
+  }
+
+  /// Crops the lower 60% of the image, upscales 2x, runs detection,
+  /// then maps coordinates back to the original image space.
+  Future<List<_Region>> _detectInCroppedZone(String filePath) async {
+    final originalBytes = await File(filePath).readAsBytes();
+    final original = await compute(_decodeDimensions, originalBytes);
+    if (original == null) return [];
+
+    final cropTop = (original.height * 0.4).toInt();
+    final cropHeight = original.height - cropTop;
+
+    // Create upscaled crop in a temp file for ML Kit
+    final tempDir = p.dirname(filePath);
+    final tempPath = p.join(tempDir, '_plate_detect_${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+    try {
+      final cropped = await compute(
+        _cropAndUpscale,
+        _CropParams(originalBytes, 0, cropTop, original.width, cropHeight, 2.0),
+      );
+      if (cropped == null) return [];
+
+      await File(tempPath).writeAsBytes(cropped);
+
+      final inputImage = InputImage.fromFilePath(tempPath);
+      final recognized = await _textRecognizer.processImage(inputImage);
+
+      // ponytail: map detected coords back to original image space
+      return _findPlateBlocks(
+        recognized,
+        offsetX: 0,
+        offsetY: cropTop,
+        scale: 0.5, // coordinates are 2x, divide by 2 to get original coords
+      );
+    } finally {
+      try {
+        await File(tempPath).delete();
+      } catch (_) {}
+    }
+  }
+
+  List<_Region> _findPlateBlocks(
+    RecognizedText recognized, {
+    required int offsetX,
+    required int offsetY,
+    required double scale,
+  }) {
     final regions = <_Region>[];
 
     for (final block in recognized.blocks) {
@@ -48,15 +104,15 @@ class PlateBlurService {
 
       final rect = block.boundingBox;
       final aspect = rect.width / rect.height;
-      // ponytail: plates are wide rectangles, aspect 1.5-8
       if (aspect < 1.2 || aspect > 10) continue;
 
-      // Expand region a bit for padding
+      // Map back to original coordinates
+      final padding = 15.0;
       regions.add(_Region(
-        left: (rect.left - 10).clamp(0, double.infinity).toInt(),
-        top: (rect.top - 10).clamp(0, double.infinity).toInt(),
-        right: (rect.right + 10).toInt(),
-        bottom: (rect.bottom + 10).toInt(),
+        left: ((rect.left * scale) + offsetX - padding).clamp(0, double.infinity).toInt(),
+        top: ((rect.top * scale) + offsetY - padding).clamp(0, double.infinity).toInt(),
+        right: ((rect.right * scale) + offsetX + padding).toInt(),
+        bottom: ((rect.bottom * scale) + offsetY + padding).toInt(),
       ));
     }
 
@@ -72,7 +128,6 @@ class _Region {
     required this.right,
     required this.bottom,
   });
-
 }
 
 class _BlurParams {
@@ -81,7 +136,38 @@ class _BlurParams {
   _BlurParams(this.imageBytes, this.regions);
 }
 
-/// Runs in isolate via compute()
+class _CropParams {
+  final Uint8List imageBytes;
+  final int x, y, width, height;
+  final double upscale;
+  _CropParams(this.imageBytes, this.x, this.y, this.width, this.height, this.upscale);
+}
+
+class _ImageSize {
+  final int width, height;
+  _ImageSize(this.width, this.height);
+}
+
+_ImageSize? _decodeDimensions(Uint8List bytes) {
+  final image = img.decodeImage(bytes);
+  if (image == null) return null;
+  return _ImageSize(image.width, image.height);
+}
+
+Uint8List? _cropAndUpscale(_CropParams p) {
+  final image = img.decodeImage(p.imageBytes);
+  if (image == null) return null;
+
+  final cropped = img.copyCrop(image,
+      x: p.x, y: p.y, width: p.width, height: p.height);
+  final upscaled = img.copyResize(cropped,
+      width: (p.width * p.upscale).toInt(),
+      height: (p.height * p.upscale).toInt(),
+      interpolation: img.Interpolation.cubic);
+
+  return Uint8List.fromList(img.encodeJpg(upscaled, quality: 90));
+}
+
 Uint8List? _blurRegions(_BlurParams params) {
   final image = img.decodeImage(params.imageBytes);
   if (image == null) return null;
@@ -95,7 +181,6 @@ Uint8List? _blurRegions(_BlurParams params) {
     final h = bottom - top;
     if (w <= 0 || h <= 0) continue;
 
-    // Extract, blur heavily, paste back
     final cropped = img.copyCrop(image, x: left, y: top, width: w, height: h);
     final blurred = img.gaussianBlur(cropped, radius: 25);
     img.compositeImage(image, blurred, dstX: left, dstY: top);
