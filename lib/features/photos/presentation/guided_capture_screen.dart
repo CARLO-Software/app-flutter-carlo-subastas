@@ -186,10 +186,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   }
 
   void _finishCapture() {
-    final captureState = ref.read(guidedCaptureProvider);
-    if (captureState.completedCount >= 4) {
-      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
-    }
     context.pop();
   }
 
@@ -271,10 +267,12 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
           ),
         ),
         Positioned.fill(
-          child: CameraOverlayWidget(
-            angle: captureState.currentPosition.angle,
-            positionName: captureState.currentPosition.name,
-            instructions: captureState.currentPosition.instructions,
+          child: IgnorePointer(
+            child: CameraOverlayWidget(
+              angle: captureState.currentPosition.angle,
+              positionName: captureState.currentPosition.name,
+              instructions: captureState.currentPosition.instructions,
+            ),
           ),
         ),
       ],
@@ -410,8 +408,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
                     ),
                   ),
                 ),
-                if (captureState.isLastPosition ||
-                    captureState.completedCount >= 4)
+                if (captureState.completedCount >= captureState.totalPositions)
                   TextButton(
                     onPressed: _finishCapture,
                     child: Text(
