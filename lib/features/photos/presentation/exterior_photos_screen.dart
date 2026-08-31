@@ -166,6 +166,20 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
         _validationStatus[positionId] = PhotoValidationStatus.valid;
       });
     }
+
+    _navigateIfAllValid();
+  }
+
+  void _navigateIfAllValid() {
+    final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
+    final allValidated = AppConstants.photoPositions
+        .where((p) => photos.containsKey(p.id))
+        .every((p) => _validationStatus[p.id] == PhotoValidationStatus.valid);
+
+    if (allValidated && photos.isNotEmpty) {
+      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
+      context.go(AppRoutes.dashboard);
+    }
   }
 
   void _startGuidedCapture() {
