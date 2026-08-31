@@ -241,15 +241,24 @@ class ReviewScreen extends ConsumerWidget {
               text: 'Enviar para Revisión',
               isEnabled: progress == 100,
               onPressed: progress == 100
-                  ? () {
-                      ref.read(vehicleRegistrationProvider.notifier).submitForReview();
-                      context.go(AppRoutes.submissionStatus);
-                    }
+                  ? () => _showSubmissionDialog(context, ref)
                   : null,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void _showSubmissionDialog(BuildContext context, WidgetRef ref) {
+    final registrationState = ref.read(vehicleRegistrationProvider);
+    ref.read(submissionProvider.notifier).reset();
+    ref.read(submissionProvider.notifier).submit(registrationState);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const _SubmissionProgressDialog(),
     );
   }
 
@@ -353,5 +362,98 @@ class ReviewScreen extends ConsumerWidget {
       case null:
         return 'No especificado';
     }
+  }
+}
+
+class _SubmissionProgressDialog extends ConsumerWidget {
+  const _SubmissionProgressDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final progress = ref.watch(submissionProvider);
+    final c = context.colors;
+
+    ref.listen<SubmissionProgress>(submissionProvider, (prev, next) {
+      if (next.phase == SubmissionPhase.done) {
+        ref.read(vehicleRegistrationProvider.notifier).submitForReview();
+        Navigator.of(context).pop();
+        context.go(AppRoutes.submissionStatus);
+      }
+    });
+
+    return AlertDialog(
+      backgroundColor: c.surface,
+      shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (progress.phase == SubmissionPhase.uploadingPhotos) ...[
+            const Icon(Icons.cloud_upload_outlined, size: 48, color: AppColors.primary),
+            AppSpacing.vGapMd,
+            Text('Subiendo fotos...', style: AppTypography.titleMedium),
+            AppSpacing.vGapSm,
+            Text(
+              '${progress.uploadedPhotos}/${progress.totalPhotos} - ${progress.currentPhotoLabel}',
+              style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            AppSpacing.vGapMd,
+            ClipRRect(
+              borderRadius: AppSpacing.borderRadiusFull,
+              child: LinearProgressIndicator(
+                value: progress.totalPhotos > 0
+                    ? (progress.uploadedPhotos + progress.currentFileProgress) / progress.totalPhotos
+                    : 0,
+                backgroundColor: c.border,
+                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                minHeight: 8,
+              ),
+            ),
+          ] else if (progress.phase == SubmissionPhase.submittingData) ...[
+            const Icon(Icons.send_outlined, size: 48, color: AppColors.primary),
+            AppSpacing.vGapMd,
+            Text('Enviando datos del vehículo...', style: AppTypography.titleMedium),
+            AppSpacing.vGapMd,
+            const LinearProgressIndicator(color: AppColors.primary),
+          ] else if (progress.phase == SubmissionPhase.error) ...[
+            const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+            AppSpacing.vGapMd,
+            Text('Error al enviar', style: AppTypography.titleMedium),
+            AppSpacing.vGapSm,
+            Text(
+              progress.errorMessage ?? 'Error inesperado',
+              style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            AppSpacing.vGapLg,
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancelar'),
+                  ),
+                ),
+                AppSpacing.hGapMd,
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                    onPressed: () {
+                      final state = ref.read(vehicleRegistrationProvider);
+                      ref.read(submissionProvider.notifier).submit(state);
+                    },
+                    child: const Text('Reintentar', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ] else ...[
+            const CircularProgressIndicator(color: AppColors.primary),
+            AppSpacing.vGapMd,
+            Text('Preparando envío...', style: AppTypography.titleMedium),
+          ],
+        ],
+      ),
+    );
   }
 }

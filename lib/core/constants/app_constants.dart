@@ -7,6 +7,12 @@ class AppConstants {
   static const String appName = 'Carlo Subastas';
   static const String appVersion = '1.0.0';
 
+  // API Configuration — passed via --dart-define-from-file=.env
+  static const String apiBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://api.carlo.pe/v1',
+  );
+
   // AI Configuration — passed via --dart-define-from-file=.env
   static const String geminiApiKey = String.fromEnvironment('GEMINI_API_KEY');
 
