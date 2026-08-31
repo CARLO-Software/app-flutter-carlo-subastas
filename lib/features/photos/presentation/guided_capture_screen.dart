@@ -136,12 +136,6 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
 
       await File(photo.path).copy(savedPath);
 
-      // ponytail: blur plate on angles where it's visible
-      final angle = captureState.currentPosition.angle;
-      if (_shouldBlurPlate(angle)) {
-        await _plateBlurService.blurPlateInFile(savedPath);
-      }
-
       if (mounted) {
         ref.read(guidedCaptureProvider.notifier).setCapturing(false);
 
@@ -150,7 +144,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
           imagePath: savedPath,
           positionName: captureState.currentPosition.name,
           onAccept: () {
-            _acceptPhoto(savedPath);
+            _acceptPhoto(savedPath, captureState.currentPosition.angle);
           },
           onRetake: () {
             File(savedPath).deleteSync();
@@ -172,9 +166,14 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
         angle == PhotoAngle.rearRightCorner;
   }
 
-  void _acceptPhoto(String path) {
+  Future<void> _acceptPhoto(String path, PhotoAngle angle) async {
     final captureState = ref.read(guidedCaptureProvider);
     final positionId = captureState.currentPosition.id;
+
+    // ponytail: blur plate after accept, before AI validation
+    if (_shouldBlurPlate(angle)) {
+      _plateBlurService.blurPlateInFile(path);
+    }
 
     ref.read(guidedCaptureProvider.notifier).capturePhoto(positionId, path);
     ref
