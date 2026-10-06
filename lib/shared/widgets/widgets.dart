@@ -7,3 +7,5 @@ export 'info_card.dart';
 export 'progress_card.dart';
 export 'status_badge.dart';
 export 'section_header.dart';
+export 'bottom_action_bar.dart';
+export 'feedback_banner.dart';

@@ -162,27 +162,9 @@ class SubmissionStatusScreen extends ConsumerWidget {
                 onPressed: () => context.go(AppRoutes.dashboard),
               ),
             if (status == SubmissionStatus.submitted)
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: c.infoLight,
-                  borderRadius: AppSpacing.borderRadiusMd,
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: AppColors.info,
-                    ),
-                    AppSpacing.hGapSm,
-                    Expanded(
-                      child: Text(
-                        'Te notificaremos cuando tu vehículo haya sido revisado.',
-                        style: TextStyle(color: c.textSecondary),
-                      ),
-                    ),
-                  ],
-                ),
+              const FeedbackBanner(
+                type: FeedbackType.info,
+                text: 'Te notificaremos cuando tu vehículo haya sido revisado.',
               ),
             AppSpacing.vGapMd,
           ],

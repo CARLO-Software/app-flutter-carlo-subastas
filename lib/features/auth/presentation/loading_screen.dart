@@ -25,7 +25,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) context.go(AppRoutes.vehicleLookup);
     });
   }
@@ -39,7 +39,7 @@ class _LoadingScreenState extends State<LoadingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.colors.surface,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Stack(

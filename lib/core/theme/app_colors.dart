@@ -8,10 +8,10 @@ class AppColors {
   static const Color primaryLight = Color(0xFF8B5CF6);
   static const Color primaryDark = Color(0xFF4C1D95);
 
-  // Accent Colors (Secondary)
-  static const Color accent = Color(0xFFAEF318);
-  static const Color accentLight = Color(0xFFC5F74D);
-  static const Color accentDark = Color(0xFF8BC612);
+  // Secondary (derived from primary)
+  static const Color secondary = Color(0xFF8B5CF6);
+  static const Color secondaryLight = Color(0xFFA78BFA);
+  static const Color secondaryDark = Color(0xFF6D28D9);
 
   // Status Colors (same in both themes)
   static const Color success = Color(0xFF10B981);

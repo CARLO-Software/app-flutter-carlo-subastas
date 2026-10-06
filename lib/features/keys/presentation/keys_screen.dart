@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/router/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
@@ -12,7 +10,6 @@ class KeysScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedKeys = registrationState.numberOfKeys;
 
@@ -70,23 +67,12 @@ class KeysScreen extends ConsumerWidget {
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
-              text: 'Siguiente',
+              text: 'Confirmar',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmKeys();
-                context.push(AppRoutes.finance);
+                context.pop();
               },
             ),
           ),

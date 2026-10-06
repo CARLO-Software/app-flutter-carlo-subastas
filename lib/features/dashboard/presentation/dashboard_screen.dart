@@ -44,79 +44,56 @@ class DashboardScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Estimated Value Card
+            // Progress Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.primary, AppColors.primaryLight],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: AppColors.primary,
                 borderRadius: AppSpacing.borderRadiusLg,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Valor Estimado de Subasta',
-                    style: AppTypography.labelMedium.copyWith(
-                      color: c.textOnPrimary.withValues(alpha: 0.8),
+                    progress == 100
+                        ? 'Registro Completo'
+                        : 'Progreso de Registro',
+                    style: AppTypography.titleMedium.copyWith(
+                      color: c.textOnPrimary,
                     ),
                   ),
-                  AppSpacing.vGapSm,
+                  AppSpacing.vGapXs,
                   Text(
-                    'S/ 45,000 - S/ 52,000',
-                    style: AppTypography.headlineMedium.copyWith(
-                      color: c.textOnPrimary,
-                      fontWeight: FontWeight.bold,
+                    progress == 100
+                        ? 'Listo para enviar a subasta'
+                        : 'Completa todos los pasos para enviar tu vehículo',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: c.textOnPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                   AppSpacing.vGapMd,
                   Row(
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Progreso',
-                              style: AppTypography.labelSmall.copyWith(
-                                color: c.textOnPrimary.withValues(alpha: 0.8),
-                              ),
+                        child: ClipRRect(
+                          borderRadius: AppSpacing.borderRadiusFull,
+                          child: LinearProgressIndicator(
+                            value: progress / 100,
+                            backgroundColor:
+                                c.textOnPrimary.withValues(alpha: 0.2),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              c.textOnPrimary,
                             ),
-                            AppSpacing.vGapXs,
-                            ClipRRect(
-                              borderRadius: AppSpacing.borderRadiusFull,
-                              child: LinearProgressIndicator(
-                                value: progress / 100,
-                                backgroundColor:
-                                    c.textOnPrimary.withValues(alpha: 0.3),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  c.textOnPrimary,
-                                ),
-                                minHeight: 8,
-                              ),
-                            ),
-                          ],
+                            minHeight: 6,
+                          ),
                         ),
                       ),
                       AppSpacing.hGapMd,
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: c.textOnPrimary.withValues(alpha: 0.2),
-                          borderRadius: AppSpacing.borderRadiusFull,
-                        ),
-                        child: Text(
-                          '$progress%',
-                          style: AppTypography.titleMedium.copyWith(
-                            color: c.textOnPrimary,
-                          ),
+                      Text(
+                        '$progress%',
+                        style: AppTypography.titleSmall.copyWith(
+                          color: c.textOnPrimary,
                         ),
                       ),
                     ],
@@ -177,46 +154,100 @@ class DashboardScreen extends ConsumerWidget {
               AppSpacing.vGapLg,
             ],
 
-            // Progress Cards
+            // Datos del vehículo
             const SectionHeader(
-              title: 'Pasos de Registro',
-              subtitle: 'Completa todos los pasos para enviar tu vehículo',
+              title: 'Datos del Vehículo',
             ),
             ProgressCard(
               title: 'Información del Vehículo',
-              subtitle: 'Revisa y confirma los detalles de tu vehículo',
+              subtitle: 'Revisa y confirma los detalles',
               icon: Icons.directions_car_outlined,
               isCompleted: registrationState.vehicleDetailsConfirmed,
               onTap: () => context.push(AppRoutes.vehicleDetails),
             ),
-            AppSpacing.vGapMd,
+            AppSpacing.vGapSm,
             ProgressCard(
-              title: 'Fotos Exteriores',
-              subtitle: 'Toma fotos del exterior del vehículo',
-              icon: Icons.camera_alt_outlined,
-              isCompleted: registrationState.photosConfirmed,
-              onTap: () => context.push(AppRoutes.photoIntroduction),
+              title: 'Características Extra',
+              subtitle: 'GPS, bluetooth, techo solar, etc.',
+              icon: Icons.star_outline,
+              isCompleted: registrationState.extraFeaturesConfirmed,
+              onTap: () => context.push(AppRoutes.extraFeatures),
             ),
-            AppSpacing.vGapMd,
+            AppSpacing.vGapSm,
             ProgressCard(
-              title: 'Fotos Interiores',
-              subtitle: 'Toma fotos del interior del vehículo',
-              icon: Icons.chair_outlined,
-              isCompleted: registrationState.interiorPhotosConfirmed,
-              onTap: () => context.push(AppRoutes.interiorPhotos),
+              title: 'Llaves',
+              subtitle: 'Cantidad de llaves del vehículo',
+              icon: Icons.key,
+              isCompleted: registrationState.keysConfirmed,
+              onTap: () => context.push(AppRoutes.keys),
             ),
-            AppSpacing.vGapMd,
+            AppSpacing.vGapSm,
+            ProgressCard(
+              title: 'Financiamiento',
+              subtitle: 'Estado de financiamiento pendiente',
+              icon: Icons.credit_card,
+              isCompleted: registrationState.financeConfirmed,
+              onTap: () => context.push(AppRoutes.finance),
+            ),
+            AppSpacing.vGapLg,
+
+            // Condición
+            const SectionHeader(
+              title: 'Condición',
+            ),
+            ProgressCard(
+              title: 'Estado de Funcionamiento',
+              subtitle: 'Cómo enciende y funciona',
+              icon: Icons.engineering_outlined,
+              isCompleted: registrationState.runningConditionConfirmed,
+              onTap: () => context.push(AppRoutes.runningCondition),
+            ),
+            AppSpacing.vGapSm,
+            ProgressCard(
+              title: 'Problemas Mecánicos',
+              subtitle: 'Reporta problemas existentes',
+              icon: Icons.build_outlined,
+              isCompleted: registrationState.mechanicalIssuesConfirmed,
+              onTap: () => context.push(AppRoutes.mechanicalIssues),
+            ),
+            AppSpacing.vGapSm,
             ProgressCard(
               title: 'Condición y Daños',
-              subtitle: 'Reporta cualquier daño en tu vehículo',
+              subtitle: 'Rayones, abolladuras, pintura',
               icon: Icons.report_problem_outlined,
               isCompleted: registrationState.conditionDamageConfirmed,
               onTap: () => context.push(AppRoutes.conditionDamage),
             ),
-            AppSpacing.vGapMd,
+            AppSpacing.vGapLg,
+
+            // Media
+            const SectionHeader(
+              title: 'Fotos',
+            ),
+            ProgressCard(
+              title: 'Fotos Exteriores',
+              subtitle: '8 ángulos del exterior',
+              icon: Icons.camera_alt_outlined,
+              isCompleted: registrationState.photosConfirmed,
+              onTap: () => context.push(AppRoutes.photoIntroduction),
+            ),
+            AppSpacing.vGapSm,
+            ProgressCard(
+              title: 'Fotos Interiores',
+              subtitle: 'Tablero, asientos, maletero',
+              icon: Icons.chair_outlined,
+              isCompleted: registrationState.interiorPhotosConfirmed,
+              onTap: () => context.push(AppRoutes.interiorPhotos),
+            ),
+            AppSpacing.vGapLg,
+
+            // Documentos
+            const SectionHeader(
+              title: 'Documentos',
+            ),
             ProgressCard(
               title: 'Historial de Servicio',
-              subtitle: 'Sube tus registros de servicio',
+              subtitle: 'Registros de mantenimiento',
               icon: Icons.history_outlined,
               isCompleted: registrationState.serviceHistoryConfirmed,
               onTap: () => context.push(AppRoutes.serviceHistory),

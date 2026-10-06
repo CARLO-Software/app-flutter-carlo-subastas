@@ -22,9 +22,9 @@ class AppTheme {
         primary: AppColors.primary,
         onPrimary: c.textOnPrimary,
         primaryContainer: AppColors.primaryLight,
-        secondary: AppColors.accent,
+        secondary: AppColors.secondary,
         onSecondary: c.textOnPrimary,
-        secondaryContainer: AppColors.accentLight,
+        secondaryContainer: AppColors.secondaryLight,
         surface: c.surface,
         onSurface: c.textPrimary,
         error: AppColors.error,
@@ -90,7 +90,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.accent,
+          foregroundColor: AppColors.primary,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.sm,

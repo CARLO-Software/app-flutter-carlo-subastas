@@ -336,11 +336,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, Color(0xFF8B5CF6)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                       child: Row(
@@ -423,18 +419,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
               text: _isValidating ? 'Validando fotos...' : _hasInvalidPhotos ? 'Corrige las fotos marcadas' : 'Continuar',
               isEnabled: _photosTakenCount >= 4 && !_isValidating && !_hasInvalidPhotos,

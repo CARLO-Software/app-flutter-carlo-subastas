@@ -316,48 +316,16 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                           ),
                         )),
                   ] else
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: c.successLight,
-                        borderRadius: AppSpacing.borderRadiusMd,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.success,
-                          ),
-                          AppSpacing.hGapSm,
-                          const Expanded(
-                            child: Text(
-                              'Sin daños reportados. Continúa si tu vehículo no tiene daños.',
-                              style: TextStyle(
-                                color: AppColors.success,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    const FeedbackBanner(
+                      type: FeedbackType.success,
+                      text: 'Sin daños reportados. Continúa si tu vehículo no tiene daños.',
                     ),
                   AppSpacing.vGapLg,
                 ],
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
               text: 'Continuar',
               onPressed: () {

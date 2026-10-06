@@ -70,17 +70,17 @@ class StatusBadge extends StatelessWidget {
   String _getStatusText() {
     switch (status) {
       case SubmissionStatus.draft:
-        return 'Draft';
+        return 'Borrador';
       case SubmissionStatus.submitted:
-        return 'Submitted';
+        return 'Enviado';
       case SubmissionStatus.underReview:
-        return 'Under Review';
+        return 'En Revisión';
       case SubmissionStatus.approved:
-        return 'Approved';
+        return 'Aprobado';
       case SubmissionStatus.rejected:
-        return 'Rejected';
+        return 'Rechazado';
       case SubmissionStatus.published:
-        return 'Published';
+        return 'Publicado';
     }
   }
 }

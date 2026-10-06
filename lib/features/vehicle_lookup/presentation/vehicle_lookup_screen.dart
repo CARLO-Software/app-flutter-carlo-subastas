@@ -38,17 +38,17 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
       _mileageError = null;
 
       if (_plateController.text.trim().isEmpty) {
-        _plateError = 'Please enter your registration plate';
+        _plateError = 'Ingresa la placa de tu vehículo';
         isValid = false;
       }
 
       if (_mileageController.text.trim().isEmpty) {
-        _mileageError = 'Please enter your mileage';
+        _mileageError = 'Ingresa el kilometraje';
         isValid = false;
       } else {
         final mileage = int.tryParse(_mileageController.text.replaceAll(',', ''));
         if (mileage == null || mileage < 0) {
-          _mileageError = 'Please enter a valid mileage';
+          _mileageError = 'Ingresa un kilometraje válido';
           isValid = false;
         }
       }
@@ -79,7 +79,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Failed to lookup vehicle. Please try again.'),
+            content: Text('Error al buscar vehículo. Intenta de nuevo.'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -122,7 +122,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapLg,
               Center(
                 child: Text(
-                  'Enter Your Vehicle Details',
+                  'Ingresa los datos de tu vehículo',
                   style: AppTypography.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -130,7 +130,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapSm,
               Center(
                 child: Text(
-                  'We\'ll find your vehicle and give you an estimated auction value',
+                  'Buscaremos tu vehículo y te daremos un valor estimado de subasta',
                   style: AppTypography.bodyMedium.copyWith(
                     color: c.textSecondary,
                   ),
@@ -139,8 +139,8 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               ),
               AppSpacing.vGapXxl,
               AppTextField(
-                label: 'Registration Plate',
-                hint: 'e.g. ABC 123',
+                label: 'Placa',
+                hint: 'Ej: ABC 123',
                 controller: _plateController,
                 errorText: _plateError,
                 textCapitalization: TextCapitalization.characters,
@@ -148,8 +148,8 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               ),
               AppSpacing.vGapMd,
               AppTextField(
-                label: 'Mileage',
-                hint: 'e.g. 45000',
+                label: 'Kilometraje',
+                hint: 'Ej: 45000',
                 controller: _mileageController,
                 errorText: _mileageError,
                 keyboardType: TextInputType.number,
@@ -160,14 +160,14 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               ),
               AppSpacing.vGapXl,
               PrimaryButton(
-                text: 'Confirm',
+                text: 'Buscar Vehículo',
                 onPressed: _onConfirm,
                 isLoading: _isLoading,
               ),
               AppSpacing.vGapMd,
               Center(
                 child: Text(
-                  'Your data is secure and will only be used for auction purposes',
+                  'Tus datos están seguros y solo se usarán para la subasta',
                   style: AppTypography.caption,
                   textAlign: TextAlign.center,
                 ),

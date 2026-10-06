@@ -29,7 +29,7 @@ class SectionHeader extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTypography.headlineSmall,
+                  style: AppTypography.titleLarge,
                 ),
                 if (subtitle != null) ...[
                   AppSpacing.vGapXs,

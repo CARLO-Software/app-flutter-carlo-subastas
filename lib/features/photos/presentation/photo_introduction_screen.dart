@@ -15,7 +15,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Fotos'),
+        title: const Text('Fotos Exteriores'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -27,84 +27,64 @@ class PhotoIntroductionScreen extends StatelessWidget {
             child: SingleChildScrollView(
               padding: AppSpacing.screenPadding,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSpacing.vGapLg,
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.camera_alt_outlined,
-                      size: 56,
-                      color: AppColors.primary,
-                    ),
+                  const SectionHeader(
+                    title: 'Prepárate para las fotos',
+                    subtitle: 'Buenas fotos ayudan a los compradores y pueden aumentar el valor de subasta.',
                   ),
-                  AppSpacing.vGapLg,
-                  Text(
-                    'Es hora de tomar fotos',
-                    style: AppTypography.headlineMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  AppSpacing.vGapSm,
-                  Text(
-                    'Buenas fotos ayudan a los compradores a ver tu vehículo claramente y pueden aumentar el valor de subasta.',
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: c.textSecondary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  AppSpacing.vGapXl,
                   _buildTipCard(
                     context: context,
                     icon: Icons.wb_sunny_outlined,
                     title: 'Buena iluminación',
-                    description: 'Toma fotos con luz natural o en áreas bien iluminadas',
+                    description: 'Estaciona en un área abierta con luz natural',
                   ),
-                  AppSpacing.vGapMd,
+                  AppSpacing.vGapSm,
                   _buildTipCard(
                     context: context,
                     icon: Icons.cleaning_services_outlined,
                     title: 'Limpia tu vehículo',
                     description: 'Un auto limpio se fotografía mejor',
                   ),
-                  AppSpacing.vGapMd,
+                  AppSpacing.vGapSm,
                   _buildTipCard(
                     context: context,
                     icon: Icons.center_focus_strong_outlined,
                     title: 'Mantén firme',
                     description: 'Sostén tu teléfono firme para fotos claras',
                   ),
-                  AppSpacing.vGapMd,
-                  _buildTipCard(
-                    context: context,
-                    icon: Icons.panorama_horizontal_outlined,
-                    title: 'Captura todos los ángulos',
-                    description: 'Te guiaremos en cada toma',
+                  AppSpacing.vGapLg,
+                  Text(
+                    'Tomarás 8 fotos:',
+                    style: AppTypography.titleMedium,
                   ),
+                  AppSpacing.vGapSm,
+                  _buildPhotoListItem('Vista frontal', c),
+                  _buildPhotoListItem('Vista trasera', c),
+                  _buildPhotoListItem('Lado izquierdo', c),
+                  _buildPhotoListItem('Lado derecho', c),
+                  _buildPhotoListItem('Esquina frontal izquierda', c),
+                  _buildPhotoListItem('Esquina frontal derecha', c),
+                  _buildPhotoListItem('Esquina trasera izquierda', c),
+                  _buildPhotoListItem('Esquina trasera derecha', c),
                   AppSpacing.vGapLg,
                 ],
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
+          BottomActionBar(
+            child: Column(
+              children: [
+                PrimaryButton(
+                  text: 'Comenzar',
+                  onPressed: () => context.push(AppRoutes.exteriorPhotos),
+                ),
+                AppSpacing.vGapSm,
+                SecondaryButton(
+                  text: 'Omitir por Ahora',
+                  onPressed: () => context.pop(),
                 ),
               ],
-            ),
-            child: PrimaryButton(
-              text: 'Comenzar',
-              onPressed: () => context.push(AppRoutes.photoReady),
             ),
           ),
         ],
@@ -127,8 +107,8 @@ class PhotoIntroductionScreen extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: AppSpacing.borderRadiusSm,
@@ -136,7 +116,7 @@ class PhotoIntroductionScreen extends StatelessWidget {
             child: Icon(
               icon,
               color: AppColors.primary,
-              size: 24,
+              size: 20,
             ),
           ),
           AppSpacing.hGapMd,
@@ -144,18 +124,25 @@ class PhotoIntroductionScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: AppTypography.titleSmall,
-                ),
+                Text(title, style: AppTypography.titleSmall),
                 AppSpacing.vGapXxs,
-                Text(
-                  description,
-                  style: AppTypography.bodySmall,
-                ),
+                Text(description, style: AppTypography.bodySmall),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPhotoListItem(String text, AdaptiveColors c) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: Row(
+        children: [
+          Icon(Icons.check_circle_outline, color: c.textTertiary, size: 18),
+          AppSpacing.hGapSm,
+          Text(text, style: AppTypography.bodyMedium),
         ],
       ),
     );

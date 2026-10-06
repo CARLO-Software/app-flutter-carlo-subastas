@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,14 +31,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
   // Animations
   late AnimationController _entryController;
-  late AnimationController _bgController;
   late AnimationController _switchController;
 
   late Animation<double> _logoFade;
   late Animation<double> _logoScale;
   late Animation<Offset> _cardSlide;
   late Animation<double> _cardFade;
-  late Animation<double> _bgAngle;
 
   // Staggered field animations
   final List<Animation<Offset>> _fieldSlides = [];
@@ -48,14 +45,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-
-    // Background gradient rotation
-    _bgController = AnimationController(
-      duration: const Duration(seconds: 8),
-      vsync: this,
-    )..repeat();
-
-    _bgAngle = Tween<double>(begin: 0, end: 2 * math.pi).animate(_bgController);
 
     // Entry animation
     _entryController = AnimationController(
@@ -133,7 +122,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
   @override
   void dispose() {
     _entryController.dispose();
-    _bgController.dispose();
     _switchController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -166,31 +154,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: AnimatedBuilder(
-        animation: _bgAngle,
-        builder: (context, child) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(
-                  math.cos(_bgAngle.value) * 0.5,
-                  math.sin(_bgAngle.value) * 0.5,
-                ),
-                end: Alignment(
-                  math.cos(_bgAngle.value + math.pi) * 0.5,
-                  math.sin(_bgAngle.value + math.pi) * 0.5,
-                ),
-                colors: const [
-                  Color(0xFF0A0A0A),
-                  Color(0xFF110A1A),
-                  Color(0xFF1A0A2E),
-                ],
-              ),
-            ),
-            child: child,
-          );
-        },
-        child: SafeArea(
+      backgroundColor: AppColors.primaryDark,
+      body: SafeArea(
           child: Stack(
             children: [
               Padding(
@@ -226,7 +191,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
             ],
           ),
         ),
-      ),
     );
   }
 
@@ -265,13 +229,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: AppSpacing.borderRadiusXl,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
               ),
               child: ClipRRect(
                 borderRadius: AppSpacing.borderRadiusXl,
@@ -304,13 +261,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
           decoration: BoxDecoration(
             color: context.colors.surface,
             borderRadius: AppSpacing.borderRadiusXl,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 30,
-                offset: const Offset(0, 12),
-              ),
-            ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -365,13 +315,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: AppSpacing.borderRadiusFull,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
               ),
             ),
@@ -593,18 +536,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           borderRadius: AppSpacing.borderRadiusMd,
-          gradient: LinearGradient(
-            colors: _isLoading
-                ? [AppColors.primaryLight, AppColors.primary]
-                : [AppColors.primary, AppColors.primaryDark],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: _isLoading ? AppColors.primaryLight : AppColors.primary,
         ),
         child: ElevatedButton(
           onPressed: _isLoading ? null : _submit,

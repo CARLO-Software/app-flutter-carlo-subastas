@@ -240,18 +240,7 @@ class _ServiceHistoryScreenState extends ConsumerState<ServiceHistoryScreen> {
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
               text: 'Continuar',
               isEnabled: selectedType != null,

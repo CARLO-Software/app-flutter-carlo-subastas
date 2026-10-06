@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/router/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
@@ -13,13 +11,12 @@ class MechanicalIssuesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedIssues = registrationState.mechanicalIssues;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mechanical Issues'),
+        title: const Text('Problemas Mecánicos'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -34,8 +31,8 @@ class MechanicalIssuesScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Any mechanical issues?',
-                    subtitle: 'Select all that apply to your vehicle',
+                    title: '¿Algún problema mecánico?',
+                    subtitle: 'Selecciona todos los que apliquen a tu vehículo',
                   ),
                   Wrap(
                     spacing: AppSpacing.sm,
@@ -55,77 +52,26 @@ class MechanicalIssuesScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapLg,
                   if (selectedIssues.isEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: c.successLight,
-                        borderRadius: AppSpacing.borderRadiusMd,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.success,
-                          ),
-                          AppSpacing.hGapSm,
-                          const Expanded(
-                            child: Text(
-                              'No mechanical issues reported. Continue if your vehicle has no problems.',
-                              style: TextStyle(
-                                color: AppColors.success,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    const FeedbackBanner(
+                      type: FeedbackType.success,
+                      text: 'Sin problemas mecánicos reportados. Continúa si tu vehículo no tiene problemas.',
                     )
                   else
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: c.warningLight,
-                        borderRadius: AppSpacing.borderRadiusMd,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.warning_amber,
-                            color: AppColors.warning,
-                          ),
-                          AppSpacing.hGapSm,
-                          Text(
-                            '${selectedIssues.length} issue(s) reported',
-                            style: const TextStyle(
-                              color: AppColors.warning,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                    FeedbackBanner(
+                      type: FeedbackType.warning,
+                      text: '${selectedIssues.length} problema(s) reportado(s)',
                     ),
                   AppSpacing.vGapLg,
                 ],
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
-              text: 'Next',
+              text: 'Confirmar',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmMechanicalIssues();
-                context.go(AppRoutes.dashboard);
+                context.pop();
               },
             ),
           ),

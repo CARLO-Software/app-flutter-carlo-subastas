@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -27,7 +26,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle Details'),
+        title: const Text('Detalles del Vehículo'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -103,46 +102,35 @@ class VehicleDetailsScreen extends ConsumerWidget {
                   AppSpacing.vGapLg,
 
                   const SectionHeader(
-                    title: 'Vehicle Information',
-                    subtitle: 'Please verify your vehicle details',
+                    title: 'Información del Vehículo',
+                    subtitle: 'Verifica los datos de tu vehículo',
                   ),
 
-                  _buildDetailRow('Plate', vehicle.plate, c),
-                  _buildDetailRow('Brand', vehicle.brand, c),
-                  _buildDetailRow('Model', vehicle.model, c),
-                  _buildDetailRow('Year', vehicle.year.toString(), c),
-                  _buildDetailRow('Mileage', '${registrationState.mileage} km', c),
+                  _buildDetailRow('Placa', vehicle.plate, c),
+                  _buildDetailRow('Marca', vehicle.brand, c),
+                  _buildDetailRow('Modelo', vehicle.model, c),
+                  _buildDetailRow('Año', vehicle.year.toString(), c),
+                  _buildDetailRow('Kilometraje', '${registrationState.mileage} km', c),
                   _buildDetailRow('Color', vehicle.color, c),
-                  _buildDetailRow('Body Type', vehicle.bodyType, c),
-                  _buildDetailRow('Doors', vehicle.doors.toString(), c),
-                  _buildDetailRow('Transmission', vehicle.transmission, c),
-                  _buildDetailRow('Fuel Type', vehicle.fuelType, c),
-                  _buildDetailRow('Engine Size', vehicle.engineSize, c),
-                  _buildDetailRow('Ownership', vehicle.ownership, c),
-                  _buildDetailRow('MOT Expiry', vehicle.motExpiry, c),
+                  _buildDetailRow('Carrocería', vehicle.bodyType, c),
+                  _buildDetailRow('Puertas', vehicle.doors.toString(), c),
+                  _buildDetailRow('Transmisión', vehicle.transmission, c),
+                  _buildDetailRow('Combustible', vehicle.fuelType, c),
+                  _buildDetailRow('Motor', vehicle.engineSize, c),
+                  _buildDetailRow('Propietario', vehicle.ownership, c),
+                  _buildDetailRow('Venc. Revisión', vehicle.motExpiry, c),
 
                   AppSpacing.vGapLg,
                 ],
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
-              text: 'Confirm Details',
+              text: 'Confirmar Detalles',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmVehicleDetails();
-                context.push(AppRoutes.extraFeatures);
+                context.pop();
               },
             ),
           ),

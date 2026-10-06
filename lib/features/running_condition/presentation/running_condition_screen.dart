@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/router/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../models/models.dart';
 import '../../../shared/providers/providers.dart';
@@ -13,13 +11,12 @@ class RunningConditionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedCondition = registrationState.runningCondition;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Running Condition'),
+        title: const Text('Condición de Funcionamiento'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -34,12 +31,12 @@ class RunningConditionScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'How does your vehicle run?',
-                    subtitle: 'Tell us about the current running condition',
+                    title: '¿Cómo funciona tu vehículo?',
+                    subtitle: 'Cuéntanos sobre el estado actual de funcionamiento',
                   ),
                   SelectableOptionCard(
-                    title: 'Starts and drives smoothly',
-                    subtitle: 'No issues with the vehicle',
+                    title: 'Enciende y funciona correctamente',
+                    subtitle: 'Sin problemas con el vehículo',
                     icon: Icons.thumb_up_outlined,
                     isSelected: selectedCondition == RunningCondition.startsAndDrivesSmoothly,
                     onTap: () {
@@ -50,8 +47,8 @@ class RunningConditionScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
                   SelectableOptionCard(
-                    title: 'Starts and drives with issues',
-                    subtitle: 'Some minor issues while driving',
+                    title: 'Enciende y funciona con problemas',
+                    subtitle: 'Algunos problemas menores al conducir',
                     icon: Icons.warning_amber_outlined,
                     isSelected: selectedCondition == RunningCondition.startsAndDrivesWithIssues,
                     onTap: () {
@@ -62,8 +59,8 @@ class RunningConditionScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapMd,
                   SelectableOptionCard(
-                    title: 'Doesn\'t start',
-                    subtitle: 'The vehicle is not starting',
+                    title: 'No enciende',
+                    subtitle: 'El vehículo no arranca',
                     icon: Icons.error_outline,
                     isSelected: selectedCondition == RunningCondition.doesNotStart,
                     onTap: () {
@@ -77,25 +74,14 @@ class RunningConditionScreen extends ConsumerWidget {
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
-              text: 'Next',
+              text: 'Confirmar',
               isEnabled: selectedCondition != null,
               onPressed: selectedCondition != null
                   ? () {
                       ref.read(vehicleRegistrationProvider.notifier).confirmRunningCondition();
-                      context.push(AppRoutes.mechanicalIssues);
+                      context.pop();
                     }
                   : null,
             ),
@@ -105,3 +91,4 @@ class RunningConditionScreen extends ConsumerWidget {
     );
   }
 }
+

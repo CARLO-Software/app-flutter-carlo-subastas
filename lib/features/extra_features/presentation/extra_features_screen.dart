@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/router/app_routes.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
@@ -13,7 +11,6 @@ class ExtraFeaturesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
     final registrationState = ref.watch(vehicleRegistrationProvider);
     final selectedFeatures = registrationState.extraFeatures;
 
@@ -55,28 +52,9 @@ class ExtraFeaturesScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapLg,
                   if (selectedFeatures.isNotEmpty) ...[
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: BoxDecoration(
-                        color: c.successLight,
-                        borderRadius: AppSpacing.borderRadiusMd,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.success,
-                          ),
-                          AppSpacing.hGapSm,
-                          Text(
-                            '${selectedFeatures.length} feature(s) selected',
-                            style: const TextStyle(
-                              color: AppColors.success,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                    FeedbackBanner(
+                      type: FeedbackType.success,
+                      text: '${selectedFeatures.length} característica(s) seleccionada(s)',
                     ),
                   ],
                   AppSpacing.vGapLg,
@@ -84,23 +62,12 @@ class ExtraFeaturesScreen extends ConsumerWidget {
               ),
             ),
           ),
-          Container(
-            padding: AppSpacing.screenPadding,
-            decoration: BoxDecoration(
-              color: c.surface,
-              boxShadow: [
-                BoxShadow(
-                  color: c.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
+          BottomActionBar(
             child: PrimaryButton(
-              text: 'Siguiente',
+              text: 'Confirmar',
               onPressed: () {
                 ref.read(vehicleRegistrationProvider.notifier).confirmExtraFeatures();
-                context.push(AppRoutes.keys);
+                context.pop();
               },
             ),
           ),
