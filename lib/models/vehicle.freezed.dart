@@ -34,6 +34,7 @@ mixin _$Vehicle {
   String get ownership => throw _privateConstructorUsedError;
   String get motExpiry => throw _privateConstructorUsedError;
   int get mileage => throw _privateConstructorUsedError;
+  double get estimatedPrice => throw _privateConstructorUsedError;
 
   /// Serializes this Vehicle to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -63,6 +64,7 @@ abstract class $VehicleCopyWith<$Res> {
     String ownership,
     String motExpiry,
     int mileage,
+    double estimatedPrice,
   });
 }
 
@@ -94,6 +96,7 @@ class _$VehicleCopyWithImpl<$Res, $Val extends Vehicle>
     Object? ownership = null,
     Object? motExpiry = null,
     Object? mileage = null,
+    Object? estimatedPrice = null,
   }) {
     return _then(
       _value.copyWith(
@@ -149,6 +152,10 @@ class _$VehicleCopyWithImpl<$Res, $Val extends Vehicle>
                 ? _value.mileage
                 : mileage // ignore: cast_nullable_to_non_nullable
                       as int,
+            estimatedPrice: null == estimatedPrice
+                ? _value.estimatedPrice
+                : estimatedPrice // ignore: cast_nullable_to_non_nullable
+                      as double,
           )
           as $Val,
     );
@@ -177,6 +184,7 @@ abstract class _$$VehicleImplCopyWith<$Res> implements $VehicleCopyWith<$Res> {
     String ownership,
     String motExpiry,
     int mileage,
+    double estimatedPrice,
   });
 }
 
@@ -207,6 +215,7 @@ class __$$VehicleImplCopyWithImpl<$Res>
     Object? ownership = null,
     Object? motExpiry = null,
     Object? mileage = null,
+    Object? estimatedPrice = null,
   }) {
     return _then(
       _$VehicleImpl(
@@ -262,6 +271,10 @@ class __$$VehicleImplCopyWithImpl<$Res>
             ? _value.mileage
             : mileage // ignore: cast_nullable_to_non_nullable
                   as int,
+        estimatedPrice: null == estimatedPrice
+            ? _value.estimatedPrice
+            : estimatedPrice // ignore: cast_nullable_to_non_nullable
+                  as double,
       ),
     );
   }
@@ -284,6 +297,7 @@ class _$VehicleImpl implements _Vehicle {
     this.ownership = '',
     this.motExpiry = '',
     this.mileage = 0,
+    this.estimatedPrice = 0,
   });
 
   factory _$VehicleImpl.fromJson(Map<String, dynamic> json) =>
@@ -322,10 +336,13 @@ class _$VehicleImpl implements _Vehicle {
   @override
   @JsonKey()
   final int mileage;
+  @override
+  @JsonKey()
+  final double estimatedPrice;
 
   @override
   String toString() {
-    return 'Vehicle(plate: $plate, brand: $brand, model: $model, year: $year, color: $color, fuelType: $fuelType, bodyType: $bodyType, doors: $doors, transmission: $transmission, engineSize: $engineSize, ownership: $ownership, motExpiry: $motExpiry, mileage: $mileage)';
+    return 'Vehicle(plate: $plate, brand: $brand, model: $model, year: $year, color: $color, fuelType: $fuelType, bodyType: $bodyType, doors: $doors, transmission: $transmission, engineSize: $engineSize, ownership: $ownership, motExpiry: $motExpiry, mileage: $mileage, estimatedPrice: $estimatedPrice)';
   }
 
   @override
@@ -351,7 +368,9 @@ class _$VehicleImpl implements _Vehicle {
                 other.ownership == ownership) &&
             (identical(other.motExpiry, motExpiry) ||
                 other.motExpiry == motExpiry) &&
-            (identical(other.mileage, mileage) || other.mileage == mileage));
+            (identical(other.mileage, mileage) || other.mileage == mileage) &&
+            (identical(other.estimatedPrice, estimatedPrice) ||
+                other.estimatedPrice == estimatedPrice));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -371,6 +390,7 @@ class _$VehicleImpl implements _Vehicle {
     ownership,
     motExpiry,
     mileage,
+    estimatedPrice,
   );
 
   /// Create a copy of Vehicle
@@ -402,6 +422,7 @@ abstract class _Vehicle implements Vehicle {
     final String ownership,
     final String motExpiry,
     final int mileage,
+    final double estimatedPrice,
   }) = _$VehicleImpl;
 
   factory _Vehicle.fromJson(Map<String, dynamic> json) = _$VehicleImpl.fromJson;
@@ -432,6 +453,8 @@ abstract class _Vehicle implements Vehicle {
   String get motExpiry;
   @override
   int get mileage;
+  @override
+  double get estimatedPrice;
 
   /// Create a copy of Vehicle
   /// with the given fields replaced by the non-null parameter values.

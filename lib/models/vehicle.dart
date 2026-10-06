@@ -19,6 +19,7 @@ class Vehicle with _$Vehicle {
     @Default('') String ownership,
     @Default('') String motExpiry,
     @Default(0) int mileage,
+    @Default(0) double estimatedPrice,
   }) = _Vehicle;
 
   factory Vehicle.fromJson(Map<String, dynamic> json) => _$VehicleFromJson(json);

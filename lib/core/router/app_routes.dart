@@ -5,6 +5,8 @@ class AppRoutes {
   static const String auth = '/auth';
   static const String loading = '/loading';
   static const String vehicleLookup = '/vehicle-lookup';
+  static const String estimatedPrice = '/estimated-price';
+  static const String notificationPermission = '/notification-permission';
   static const String dashboard = '/dashboard';
   static const String vehicleDetails = '/vehicle-details';
   static const String extraFeatures = '/extra-features';

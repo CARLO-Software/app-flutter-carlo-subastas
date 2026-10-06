@@ -235,3 +235,23 @@ final progressPercentageProvider = Provider<int>((ref) {
   ref.watch(vehicleRegistrationProvider);
   return notifier.calculateProgressPercentage();
 });
+
+final dashboardProgressProvider = Provider<int>((ref) {
+  final state = ref.watch(vehicleRegistrationProvider);
+  int completed = 0;
+  const total = 4;
+
+  final infoCompleted = state.vehicleDetailsConfirmed &&
+      state.extraFeaturesConfirmed &&
+      state.keysConfirmed &&
+      state.financeConfirmed &&
+      state.runningConditionConfirmed &&
+      state.mechanicalIssuesConfirmed;
+  if (infoCompleted) completed++;
+
+  if (state.photosConfirmed && state.interiorPhotosConfirmed) completed++;
+  if (state.conditionDamageConfirmed) completed++;
+  if (state.serviceHistoryConfirmed) completed++;
+
+  return ((completed / total) * 100).round();
+});

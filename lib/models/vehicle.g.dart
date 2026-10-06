@@ -21,6 +21,7 @@ _$VehicleImpl _$$VehicleImplFromJson(Map<String, dynamic> json) =>
       ownership: json['ownership'] as String? ?? '',
       motExpiry: json['motExpiry'] as String? ?? '',
       mileage: (json['mileage'] as num?)?.toInt() ?? 0,
+      estimatedPrice: (json['estimatedPrice'] as num?)?.toDouble() ?? 0,
     );
 
 Map<String, dynamic> _$$VehicleImplToJson(_$VehicleImpl instance) =>
@@ -38,4 +39,5 @@ Map<String, dynamic> _$$VehicleImplToJson(_$VehicleImpl instance) =>
       'ownership': instance.ownership,
       'motExpiry': instance.motExpiry,
       'mileage': instance.mileage,
+      'estimatedPrice': instance.estimatedPrice,
     };

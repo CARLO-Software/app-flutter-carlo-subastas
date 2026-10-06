@@ -14,7 +14,8 @@ class VehicleLookupScreen extends ConsumerStatefulWidget {
   const VehicleLookupScreen({super.key});
 
   @override
-  ConsumerState<VehicleLookupScreen> createState() => _VehicleLookupScreenState();
+  ConsumerState<VehicleLookupScreen> createState() =>
+      _VehicleLookupScreenState();
 }
 
 class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
@@ -46,7 +47,8 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
         _mileageError = 'Ingresa el kilometraje';
         isValid = false;
       } else {
-        final mileage = int.tryParse(_mileageController.text.replaceAll(',', ''));
+        final mileage =
+            int.tryParse(_mileageController.text.replaceAll(',', ''));
         if (mileage == null || mileage < 0) {
           _mileageError = 'Ingresa un kilometraje válido';
           isValid = false;
@@ -56,12 +58,10 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
     return isValid;
   }
 
-  Future<void> _onConfirm() async {
+  Future<void> _onSearch() async {
     if (!_validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       final mileage = int.parse(_mileageController.text.replaceAll(',', ''));
@@ -73,7 +73,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
       if (vehicle != null && mounted) {
         ref.read(vehicleRegistrationProvider.notifier).setVehicle(vehicle);
         ref.read(vehicleRegistrationProvider.notifier).setMileage(mileage);
-        context.go(AppRoutes.dashboard);
+        context.go(AppRoutes.estimatedPrice);
       }
     } catch (e) {
       if (mounted) {
@@ -85,11 +85,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
         );
       }
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -97,6 +93,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Scaffold(
+      backgroundColor: c.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppSpacing.screenPadding,
@@ -122,7 +119,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapLg,
               Center(
                 child: Text(
-                  'Ingresa los datos de tu vehículo',
+                  'Vende tu auto al mejor precio',
                   style: AppTypography.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -130,7 +127,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapSm,
               Center(
                 child: Text(
-                  'Buscaremos tu vehículo y te daremos un valor estimado de subasta',
+                  'Ingresa los datos de tu vehículo para obtener una cotización',
                   style: AppTypography.bodyMedium.copyWith(
                     color: c.textSecondary,
                   ),
@@ -153,15 +150,13 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
                 controller: _mileageController,
                 errorText: _mileageError,
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 prefixIcon: const Icon(Icons.speed_outlined),
               ),
               AppSpacing.vGapXl,
               PrimaryButton(
-                text: 'Buscar Vehículo',
-                onPressed: _onConfirm,
+                text: 'Obtener cotización',
+                onPressed: _onSearch,
                 isLoading: _isLoading,
               ),
               AppSpacing.vGapMd,
