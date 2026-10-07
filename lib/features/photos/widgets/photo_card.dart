@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../models/photo_position.dart';
-import 'car_silhouette_painter.dart';
 
 enum PhotoValidationStatus { none, validating, valid, invalid }
 
@@ -190,48 +190,63 @@ class PhotoCard extends StatelessWidget {
                     ),
                 ],
               )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            : Stack(
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: c.surfaceVariant,
-                      shape: BoxShape.circle,
+                  if (angle != null)
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.sm),
+                        child: Image.asset(
+                          AppConstants.templateForAngle(angle!),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
-                    child: angle != null
-                        ? Center(
-                            child: CarSilhouetteWidget(
-                              angle: angle!,
-                              color: c.textSecondary,
-                              size: 48,
-                              strokeWidth: 1.5,
-                            ),
-                          )
-                        : Icon(
-                            Icons.camera_alt_outlined,
-                            size: 32,
-                            color: c.textSecondary,
-                          ),
-                  ),
-                  AppSpacing.vGapSm,
-                  Text(
-                    title,
-                    style: AppTypography.labelMedium.copyWith(
-                      color: c.textPrimary,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (isRequired) ...[
-                    AppSpacing.vGapXs,
-                    Text(
-                      'Requerido',
-                      style: AppTypography.caption.copyWith(
+                  if (angle == null)
+                    Center(
+                      child: Icon(
+                        Icons.camera_alt_outlined,
+                        size: 48,
                         color: c.textTertiary,
                       ),
                     ),
-                  ],
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
+                      decoration: BoxDecoration(
+                        color: c.surfaceVariant.withValues(alpha: 0.9),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(AppSpacing.radiusMd),
+                          bottomRight: Radius.circular(AppSpacing.radiusMd),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            style: AppTypography.labelMedium.copyWith(
+                              color: c.textPrimary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (isRequired)
+                            Text(
+                              'Requerido',
+                              style: AppTypography.caption.copyWith(
+                                color: c.textTertiary,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
       ),

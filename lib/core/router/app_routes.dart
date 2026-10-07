@@ -8,6 +8,7 @@ class AppRoutes {
   static const String estimatedPrice = '/estimated-price';
   static const String notificationPermission = '/notification-permission';
   static const String dashboard = '/dashboard';
+  static const String vehicleInfoHub = '/vehicle-info-hub';
   static const String vehicleDetails = '/vehicle-details';
   static const String extraFeatures = '/extra-features';
   static const String keys = '/keys';

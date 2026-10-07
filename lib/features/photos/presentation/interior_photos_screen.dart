@@ -190,7 +190,41 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                     ),
                                   ],
                                 )
-                              : Column(
+                              : AppConstants.templateForInteriorPosition(positionId) != null
+                                ? Stack(
+                                    children: [
+                                      Positioned.fill(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(AppSpacing.sm),
+                                          child: Image.asset(
+                                            AppConstants.templateForInteriorPosition(positionId)!,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(AppSpacing.sm),
+                                          decoration: BoxDecoration(
+                                            color: c.surfaceVariant.withValues(alpha: 0.9),
+                                            borderRadius: const BorderRadius.only(
+                                              bottomLeft: Radius.circular(AppSpacing.radiusMd),
+                                              bottomRight: Radius.circular(AppSpacing.radiusMd),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            position['name']!,
+                                            style: AppTypography.labelMedium.copyWith(color: c.textPrimary),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(

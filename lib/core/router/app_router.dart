@@ -8,6 +8,7 @@ import '../../features/vehicle_lookup/presentation/vehicle_lookup_screen.dart';
 import '../../features/vehicle_lookup/presentation/estimated_price_screen.dart';
 import '../../features/onboarding/presentation/notification_permission_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../../features/vehicle_details/presentation/vehicle_info_hub_screen.dart';
 import '../../features/vehicle_details/presentation/vehicle_details_screen.dart';
 import '../../features/extra_features/presentation/extra_features_screen.dart';
 import '../../features/keys/presentation/keys_screen.dart';
@@ -65,6 +66,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.dashboard,
       name: 'dashboard',
       builder: (context, state) => const DashboardScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.vehicleInfoHub,
+      name: 'vehicleInfoHub',
+      builder: (context, state) => const VehicleInfoHubScreen(),
     ),
     GoRoute(
       path: AppRoutes.vehicleDetails,

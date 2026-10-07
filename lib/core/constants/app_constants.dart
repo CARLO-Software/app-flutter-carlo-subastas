@@ -137,6 +137,42 @@ class AppConstants {
     'Esquina Trasera Der.',
   ];
 
+  // Photo Templates
+  static String templateForAngle(PhotoAngle angle) => switch (angle) {
+    PhotoAngle.front => 'assets/images/plantillas/exterior/3.png',
+    PhotoAngle.rear => 'assets/images/plantillas/exterior/4.png',
+    PhotoAngle.leftSide => 'assets/images/plantillas/exterior/1.png',
+    PhotoAngle.rightSide => 'assets/images/plantillas/exterior/2.png',
+    PhotoAngle.frontLeftCorner => 'assets/images/plantillas/exterior/5.png',
+    PhotoAngle.frontRightCorner => 'assets/images/plantillas/exterior/6.png',
+    PhotoAngle.rearLeftCorner => 'assets/images/plantillas/exterior/7.png',
+    PhotoAngle.rearRightCorner => 'assets/images/plantillas/exterior/8.png',
+  };
+
+  static String? templateForInteriorPosition(String positionId) => switch (positionId) {
+    'dashboard' => 'assets/images/plantillas/interior/12.png',
+    'front_seats' => 'assets/images/plantillas/interior/11.png',
+    'trunk' => 'assets/images/plantillas/interior/10.png',
+    'odometer' => 'assets/images/plantillas/interior/14.png',
+    _ => null,
+  };
+
+  static bool templateHasLightBackground(PhotoAngle angle) => switch (angle) {
+    PhotoAngle.front || PhotoAngle.rear || PhotoAngle.leftSide || PhotoAngle.rightSide => true,
+    _ => false,
+  };
+
+  static String overlayInstruction(PhotoAngle angle) => switch (angle) {
+    PhotoAngle.front => 'Posiciona el frente del vehículo dentro de la guía',
+    PhotoAngle.rear => 'Posiciona la parte trasera dentro de la guía',
+    PhotoAngle.leftSide => 'Alinea el perfil izquierdo con la guía',
+    PhotoAngle.rightSide => 'Alinea el perfil derecho con la guía',
+    PhotoAngle.frontLeftCorner => 'Vista diagonal frontal izquierda',
+    PhotoAngle.frontRightCorner => 'Vista diagonal frontal derecha',
+    PhotoAngle.rearLeftCorner => 'Vista diagonal trasera izquierda',
+    PhotoAngle.rearRightCorner => 'Vista diagonal trasera derecha',
+  };
+
   // Animation Durations
   static const Duration animationFast = Duration(milliseconds: 200);
   static const Duration animationNormal = Duration(milliseconds: 300);

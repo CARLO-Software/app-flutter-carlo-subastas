@@ -226,7 +226,7 @@ class DashboardScreen extends ConsumerWidget {
         title: 'Información del vehículo',
         description: 'Déjanos conocer las características de tu auto',
         completed: infoCompleted,
-        route: AppRoutes.vehicleDetails,
+        route: AppRoutes.vehicleInfoHub,
       ),
       _DashboardStep(
         title: 'Fotos',
