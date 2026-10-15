@@ -78,12 +78,11 @@ class AppConstants {
 
   // Interior Photo Positions
   static const List<Map<String, String>> interiorPhotoPositions = [
-    {'id': 'dashboard', 'name': 'Tablero', 'instructions': 'Fotografía el tablero completo con el volante visible'},
-    {'id': 'front_seats', 'name': 'Asientos delanteros', 'instructions': 'Captura ambos asientos delanteros desde la puerta trasera'},
-    {'id': 'rear_seats', 'name': 'Asientos traseros', 'instructions': 'Fotografía los asientos traseros desde el frente'},
-    {'id': 'trunk', 'name': 'Maletero', 'instructions': 'Abre el maletero y fotografía el espacio completo'},
-    {'id': 'odometer', 'name': 'Odómetro', 'instructions': 'Acércate al odómetro para que el kilometraje sea legible'},
-    {'id': 'center_console', 'name': 'Consola central', 'instructions': 'Fotografía la consola central y la palanca de cambios'},
+    {'id': 'front_seats', 'name': 'Asientos frontales', 'instructions': '', 'reference': 'assets/images/interior/interior-asiento-1.webp'},
+    {'id': 'instrument_panel', 'name': 'Tablero de instrumentos', 'instructions': 'Siéntate en el asiento del conductor y enciende el motor', 'reference': 'assets/images/interior/interior-tablero-instrumentos.webp'},
+    {'id': 'rear_seats', 'name': 'Asientos traseros', 'instructions': 'Abre todas las puertas para una mejor iluminación', 'reference': 'assets/images/interior/interior-asiento-4.webp', 'optional': 'true'},
+    {'id': 'dashboard', 'name': 'Tablero', 'instructions': 'Endereza el volante y mantén el motor encendido para que el tablero esté iluminado', 'reference': 'assets/images/interior/interior-seccion-delantera.webp'},
+    {'id': 'trunk', 'name': 'Maletera', 'instructions': 'Abre la maletera y fotografía el espacio completo', 'reference': 'assets/images/interior/interior-maletera.webp', 'optional': 'true'},
   ];
 
   // Extra Features Options
@@ -137,30 +136,74 @@ class AppConstants {
     'Esquina Trasera Der.',
   ];
 
-  // Photo Templates
+  // Exterior reference photos (real photos showing expected angle)
+  static String referenceForAngle(PhotoAngle angle) => switch (angle) {
+    PhotoAngle.front => 'assets/images/exterior/exterior-frontal.webp',
+    PhotoAngle.rear => 'assets/images/exterior/exterior-trasero.webp',
+    PhotoAngle.leftSide => 'assets/images/exterior/exterior-lado-izquierdo.webp',
+    PhotoAngle.rightSide => 'assets/images/exterior/exterior-lado-derecho.webp',
+    PhotoAngle.frontLeftCorner => 'assets/images/exterior/exterior-angulo-izquierdo.webp',
+    PhotoAngle.frontRightCorner => 'assets/images/exterior/exterior-angulo-derecho.webp',
+    PhotoAngle.rearLeftCorner => 'assets/images/exterior/exterior-trasero-angulo-izquierdo.webp',
+    PhotoAngle.rearRightCorner => 'assets/images/exterior/exterior-trasero-angulo-derecho.webp',
+  };
+
+  // Card silhouettes (black, for cards before photo is taken)
   static String templateForAngle(PhotoAngle angle) => switch (angle) {
-    PhotoAngle.front => 'assets/images/plantillas/exterior/3.png',
-    PhotoAngle.rear => 'assets/images/plantillas/exterior/4.png',
-    PhotoAngle.leftSide => 'assets/images/plantillas/exterior/1.png',
-    PhotoAngle.rightSide => 'assets/images/plantillas/exterior/2.png',
-    PhotoAngle.frontLeftCorner => 'assets/images/plantillas/exterior/5.png',
-    PhotoAngle.frontRightCorner => 'assets/images/plantillas/exterior/6.png',
-    PhotoAngle.rearLeftCorner => 'assets/images/plantillas/exterior/7.png',
-    PhotoAngle.rearRightCorner => 'assets/images/plantillas/exterior/8.png',
+    PhotoAngle.front => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-frontal.png',
+    PhotoAngle.rear => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-trasera.png',
+    PhotoAngle.leftSide => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-lateral-izquierdo.png',
+    PhotoAngle.rightSide => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-lateral-derecho.png',
+    PhotoAngle.frontLeftCorner => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-diagonal-frontal-izquierda.png',
+    PhotoAngle.frontRightCorner => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-diagonal-frontal-derecha.png',
+    PhotoAngle.rearLeftCorner => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-diagonal-trasera-izquierda.png',
+    PhotoAngle.rearRightCorner => 'assets/images/plantillas/siluetas_negro/exterior/png/exterior-diagonal-trasera-derecha.png',
+  };
+
+  // Camera overlay silhouettes (white, shown on camera preview)
+  static String cameraOverlayForAngle(PhotoAngle angle) => switch (angle) {
+    PhotoAngle.front => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-frontal.png',
+    PhotoAngle.rear => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-trasera.png',
+    PhotoAngle.leftSide => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-izquierdo.png',
+    PhotoAngle.rightSide => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-derecho.png',
+    PhotoAngle.frontLeftCorner => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-diagonal-frontal-izquierda.png',
+    PhotoAngle.frontRightCorner => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-diagonal-frontal-derecha.png',
+    PhotoAngle.rearLeftCorner => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-diagonal-trasera-izquierda.png',
+    PhotoAngle.rearRightCorner => 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-diagonal-trasera-derecha.png',
   };
 
   static String? templateForInteriorPosition(String positionId) => switch (positionId) {
-    'dashboard' => 'assets/images/plantillas/interior/12.png',
-    'front_seats' => 'assets/images/plantillas/interior/11.png',
-    'trunk' => 'assets/images/plantillas/interior/10.png',
-    'odometer' => 'assets/images/plantillas/interior/14.png',
+    'front_seats' => 'assets/images/plantillas/siluetas_negro/interior/png/interior-asientos-traseros.png',
+    'instrument_panel' => 'assets/images/plantillas/siluetas_negro/interior/png/interior-panel-instrumentos.png',
+    'rear_seats' => 'assets/images/plantillas/siluetas_negro/interior/png/interior-asientos-traseros.png',
+    'dashboard' => 'assets/images/plantillas/siluetas_negro/interior/png/interior-tablero.png',
+    'trunk' => 'assets/images/plantillas/siluetas_negro/interior/png/interior-maletera.png',
     _ => null,
   };
 
-  static bool templateHasLightBackground(PhotoAngle angle) => switch (angle) {
-    PhotoAngle.front || PhotoAngle.rear || PhotoAngle.leftSide || PhotoAngle.rightSide => true,
-    _ => false,
+  static String? cameraOverlayForInteriorPosition(String positionId) => switch (positionId) {
+    'front_seats' => 'assets/images/plantillas/siluetas_blanco/interior/png/interior-asientos-traseros.png',
+    'instrument_panel' => 'assets/images/plantillas/siluetas_blanco/interior/png/interior-panel-instrumentos.png',
+    'rear_seats' => 'assets/images/plantillas/siluetas_blanco/interior/png/interior-asientos-traseros.png',
+    'dashboard' => 'assets/images/plantillas/siluetas_blanco/interior/png/interior-tablero.png',
+    'trunk' => 'assets/images/plantillas/siluetas_blanco/interior/png/interior-maletera.png',
+    _ => null,
   };
+
+  // Wheel silhouettes (card = negro, camera = blanco)
+  static String? templateForWheelPosition(String wheelId) =>
+    'assets/images/plantillas/siluetas_negro/llantas/png/llantas-neumatico.png';
+
+  static String? cameraOverlayForWheelPosition(String wheelId) =>
+    'assets/images/plantillas/siluetas_blanco/llantas/png/llantas-neumatico.png';
+
+  // Wheel silhouettes
+  static const String wheelRimTemplate = 'assets/images/plantillas/siluetas_negro/llantas/png/llantas-aro-delantero.png';
+  static const String wheelTireTemplate = 'assets/images/plantillas/siluetas_negro/llantas/png/llantas-neumatico.png';
+  static const String wheelRimOverlay = 'assets/images/plantillas/siluetas_blanco/llantas/png/llantas-aro-delantero.png';
+  static const String wheelTireOverlay = 'assets/images/plantillas/siluetas_blanco/llantas/png/llantas-neumatico.png';
+
+  static bool templateHasLightBackground(PhotoAngle angle) => false;
 
   static String overlayInstruction(PhotoAngle angle) => switch (angle) {
     PhotoAngle.front => 'Posiciona el frente del vehículo dentro de la guía',

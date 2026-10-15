@@ -24,6 +24,161 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
   AngleValidatorService? _validator;
   bool _isValidating = false;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
+  }
+
+  static const _exteriorSections = [
+    {'name': 'Lado del conductor', 'reference': 'assets/images/exterior/exterior-lado-izquierdo.webp', 'instructions': ''},
+    {'name': 'Lado del copiloto', 'reference': 'assets/images/exterior/exterior-lado-derecho.webp', 'instructions': ''},
+    {'name': 'Lado trasero', 'reference': 'assets/images/exterior/exterior-trasero.webp', 'instructions': ''},
+    {'name': 'Lado frontal', 'reference': 'assets/images/exterior/exterior-frontal.webp', 'instructions': ''},
+  ];
+
+  void _showIntroPopup() {
+    final c = context.colors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (ctx) => FractionallySizedBox(
+        heightFactor: 0.96,
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusXl),
+            ),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(ctx).pop(),
+                    child: Text(
+                      'Cerrar',
+                      style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fotos exteriores',
+                        style: AppTypography.headlineSmall.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      AppSpacing.vGapLg,
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceVariant,
+                          borderRadius: AppSpacing.borderRadiusMd,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Toma las fotos a unos 3 metros de distancia del vehículo.',
+                                    style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            AppSpacing.vGapSm,
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Asegúrate de que todo el vehículo esté visible en la foto.',
+                                    style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      AppSpacing.vGapXxl,
+                      ..._exteriorSections.map((section) => Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              section['name']!,
+                              style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            if (section['instructions']!.isNotEmpty) ...[
+                              AppSpacing.vGapXs,
+                              Text(
+                                section['instructions']!,
+                                style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
+                              ),
+                            ],
+                            AppSpacing.vGapMd,
+                            ClipRRect(
+                              borderRadius: AppSpacing.borderRadiusMd,
+                              child: Image.asset(
+                                section['reference']!,
+                                width: double.infinity,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF292929),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
+                    ),
+                    child: Text(
+                      'OK, entendido',
+                      style: AppTypography.button.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   final Map<String, PhotoValidationStatus> _validationStatus = {};
   final Map<String, String> _validationFeedback = {};
 
@@ -285,6 +440,12 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showIntroPopup,
+          ),
+        ],
       ),
       body: Column(
         children: [

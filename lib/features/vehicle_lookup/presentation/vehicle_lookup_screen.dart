@@ -43,61 +43,31 @@ class VehicleLookupScreen extends ConsumerStatefulWidget {
 
 class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
   final _plateController = TextEditingController();
-  final _mileageController = TextEditingController();
   bool _isLoading = false;
   String? _plateError;
-  String? _mileageError;
 
   @override
   void dispose() {
     _plateController.dispose();
-    _mileageController.dispose();
     super.dispose();
   }
 
-  bool _validate() {
-    bool isValid = true;
+  Future<void> _onSearch() async {
+    final plate = _plateController.text.replaceAll('-', '').trim();
+    if (plate.isEmpty) {
+      setState(() => _plateError = 'Ingresa la placa de tu vehículo');
+      return;
+    }
     setState(() {
       _plateError = null;
-      _mileageError = null;
-
-      if (_plateController.text.trim().isEmpty) {
-        _plateError = 'Ingresa la placa de tu vehículo';
-        isValid = false;
-      }
-
-      if (_mileageController.text.trim().isEmpty) {
-        _mileageError = 'Ingresa el kilometraje';
-        isValid = false;
-      } else {
-        final mileage =
-            double.tryParse(_mileageController.text.replaceAll(',', ''));
-        if (mileage == null || mileage < 0) {
-          _mileageError = 'Ingresa un kilometraje válido';
-          isValid = false;
-        }
-      }
+      _isLoading = true;
     });
-    return isValid;
-  }
-
-  Future<void> _onSearch() async {
-    if (!_validate()) return;
-
-    setState(() => _isLoading = true);
 
     try {
-      final mileage = double.parse(_mileageController.text.replaceAll(',', ''));
-      final plate = _plateController.text.replaceAll('-', '').trim();
-      final vehicle = await mockVehicleRepository.lookupVehicle(
-        plate,
-        mileage,
-      );
-
+      final vehicle = await mockVehicleRepository.lookupByPlate(plate);
       if (vehicle != null && mounted) {
         ref.read(vehicleRegistrationProvider.notifier).setVehicle(vehicle);
-        ref.read(vehicleRegistrationProvider.notifier).setMileage(mileage);
-        context.go(AppRoutes.estimatedPrice);
+        context.go(AppRoutes.vehicleResult);
       }
     } catch (e) {
       if (mounted) {
@@ -151,7 +121,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapSm,
               Center(
                 child: Text(
-                  'Ingresa los datos de tu vehículo para obtener una cotización',
+                  'Ingresa la placa de tu vehículo para comenzar',
                   style: AppTypography.bodyMedium.copyWith(
                     color: c.textSecondary,
                   ),
@@ -168,21 +138,9 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
                 inputFormatters: [_PlateInputFormatter()],
                 prefixIcon: const Icon(Icons.confirmation_number_outlined),
               ),
-              AppSpacing.vGapMd,
-              AppTextField(
-                label: 'Kilometraje',
-                hint: 'Ej: 45000.5',
-                controller: _mileageController,
-                errorText: _mileageError,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
-                ],
-                prefixIcon: const Icon(Icons.speed_outlined),
-              ),
               AppSpacing.vGapXl,
               PrimaryButton(
-                text: 'Obtener cotización',
+                text: 'Buscar vehículo',
                 onPressed: _onSearch,
                 isLoading: _isLoading,
               ),

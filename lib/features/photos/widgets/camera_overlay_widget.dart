@@ -16,9 +16,12 @@ class CameraOverlayWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       child: Opacity(
         opacity: 0.55,
-        child: Image.asset(
-          AppConstants.templateForAngle(angle),
-          fit: BoxFit.contain,
+        child: RotatedBox(
+          quarterTurns: 1,
+          child: Image.asset(
+            AppConstants.cameraOverlayForAngle(angle),
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

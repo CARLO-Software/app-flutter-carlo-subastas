@@ -11,7 +11,6 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
-import '../widgets/photo_validation_sheet.dart';
 
 class InteriorPhotosScreen extends ConsumerStatefulWidget {
   const InteriorPhotosScreen({super.key});
@@ -20,27 +19,190 @@ class InteriorPhotosScreen extends ConsumerStatefulWidget {
   ConsumerState<InteriorPhotosScreen> createState() => _InteriorPhotosScreenState();
 }
 
-const _photoValidationHints = {
-  'front_seats': {
-    'title': 'Captura ambos asientos claramente',
-    'desc': 'Asegúrate de que ambos asientos delanteros se vean claramente antes de tomar la foto.',
-  },
-  'rear_seats': {
-    'title': 'Captura los asientos traseros',
-    'desc': 'Muestra el estado completo de los asientos traseros, incluyendo respaldos y cojines.',
-  },
-  'dashboard': {
-    'title': 'Captura el tablero completo',
-    'desc': 'Asegúrate de que el panel de instrumentos y la pantalla central se vean claramente.',
-  },
-  'trunk': {
-    'title': 'Captura la maletera abierta',
-    'desc': 'Muestra el interior completo de la maletera, incluyendo el piso y laterales.',
-  },
-};
-
 class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
   final _picker = ImagePicker();
+  final Set<String> _disabledPositions = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
+  }
+
+  void _showIntroPopup() {
+    final c = context.colors;
+    final positions = AppConstants.interiorPhotoPositions;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (ctx) => FractionallySizedBox(
+        heightFactor: 0.96,
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusXl),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(ctx).pop(),
+                    child: Text(
+                      'Cerrar',
+                      style: AppTypography.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Scrollable content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fotos interiores',
+                        style: AppTypography.headlineSmall.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      AppSpacing.vGapLg,
+
+                      // Tips card
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceVariant,
+                          borderRadius: AppSpacing.borderRadiusMd,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Toma fotos amplias mostrando la mayor parte del interior posible.',
+                                    style: AppTypography.bodySmall.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            AppSpacing.vGapSm,
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Asegúrate de que las fotos estén bien iluminadas y nítidas.',
+                                    style: AppTypography.bodySmall.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      AppSpacing.vGapXxl,
+
+                      // Photo sections
+                      ...positions.map((pos) => _buildPhotoSection(pos, c)),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Bottom button
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF292929),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppSpacing.borderRadiusXl,
+                      ),
+                    ),
+                    child: Text(
+                      'OK, entendido',
+                      style: AppTypography.button.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPhotoSection(Map<String, String> position, AdaptiveColors c) {
+    final reference = position['reference'];
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            position['name']!,
+            style: AppTypography.titleMedium.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (position['instructions']?.isNotEmpty ?? false) ...[
+            AppSpacing.vGapXs,
+            Text(
+              position['instructions']!,
+              style: AppTypography.bodySmall.copyWith(
+                color: c.textSecondary,
+              ),
+            ),
+          ],
+          if (reference != null) ...[
+            AppSpacing.vGapMd,
+            ClipRRect(
+              borderRadius: AppSpacing.borderRadiusMd,
+              child: Image.asset(
+                reference,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 
   Future<void> _takePhoto(String positionId) async {
     final xFile = await _picker.pickImage(
@@ -54,35 +216,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
     final savedFile = await File(xFile.path).copy('${appDir.path}/$fileName');
     if (!mounted) return;
 
-    // Guardar la foto primero
     ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(positionId, savedFile.path);
-
-    // Luego mostrar validación si tiene hint
-    final hint = _photoValidationHints[positionId];
-    if (hint != null) {
-      _showValidationSheet(positionId, savedFile.path, hint);
-    }
-  }
-
-  void _showValidationSheet(String positionId, String photoPath, Map<String, String> hint) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => PhotoValidationSheet(
-        takenPhotoPath: photoPath,
-        title: hint['title']!,
-        description: hint['desc']!,
-        goodExampleAsset: AppConstants.templateForInteriorPosition(positionId),
-        onRetake: () {
-          ref.read(vehicleRegistrationProvider.notifier).removeInteriorPhoto(positionId);
-          _takePhoto(positionId);
-        },
-        onAccept: () {
-          // Foto ya guardada, no hacer nada más
-        },
-      ),
-    );
   }
 
   void _onPhotoTap(String positionId) {
@@ -134,10 +268,15 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showIntroPopup,
+          ),
+        ],
       ),
       body: Column(
         children: [
-          // Progress bar
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             color: c.surfaceVariant,
@@ -166,154 +305,125 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: ListView.separated(
               padding: AppSpacing.screenPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SectionHeader(
-                    title: 'Fotos del interior',
-                    subtitle: 'Toca cada posición para tomar la foto',
-                  ),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: AppSpacing.md,
-                      mainAxisSpacing: AppSpacing.md,
-                    ),
-                    itemCount: positions.length,
-                    itemBuilder: (context, index) {
-                      final position = positions[index];
-                      final positionId = position['id']!;
-                      final photoPath = state.interiorPhotosMap[positionId];
-                      final hasPhoto = photoPath != null;
+              itemCount: positions.length,
+              separatorBuilder: (_, __) => AppSpacing.vGapMd,
+              itemBuilder: (context, index) {
+                final position = positions[index];
+                final positionId = position['id']!;
+                final photoPath = state.interiorPhotosMap[positionId];
+                final hasPhoto = photoPath != null;
+                final plantilla = AppConstants.templateForInteriorPosition(positionId);
+                final isOptional = position['optional'] == 'true';
+                final isDisabled = _disabledPositions.contains(positionId);
 
-                      return GestureDetector(
-                        onTap: () => _onPhotoTap(positionId),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: hasPhoto ? c.surfaceVariant : c.surface,
-                            borderRadius: AppSpacing.borderRadiusMd,
-                            border: Border.all(
-                              color: hasPhoto ? AppColors.success : c.border,
-                              width: hasPhoto ? 2 : 1,
+                return GestureDetector(
+                  onTap: isDisabled ? null : () => _onPhotoTap(positionId),
+                  child: Opacity(
+                    opacity: isDisabled ? 0.4 : 1.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: c.surface,
+                        borderRadius: AppSpacing.borderRadiusLg,
+                        border: Border.all(
+                          color: hasPhoto ? AppColors.success : c.border,
+                          width: hasPhoto ? 2 : 1,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          // Image area with optional toggle
+                          Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(AppSpacing.radiusLg),
+                                ),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 200,
+                                  child: hasPhoto
+                                      ? Image.file(
+                                          File(photoPath),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) => Center(
+                                            child: Icon(Icons.broken_image, size: 48, color: c.textTertiary),
+                                          ),
+                                        )
+                                      : plantilla != null
+                                          ? Image.asset(plantilla, fit: BoxFit.contain)
+                                          : Icon(Icons.camera_alt_outlined, size: 48, color: c.textTertiary),
+                                ),
+                              ),
+                              if (isOptional)
+                                Positioned(
+                                  top: AppSpacing.sm,
+                                  right: AppSpacing.sm,
+                                  child: Transform.scale(
+                                    scale: 0.9,
+                                    child: Switch(
+                                      value: !isDisabled,
+                                      onChanged: (val) {
+                                        setState(() {
+                                          if (val) {
+                                            _disabledPositions.remove(positionId);
+                                          } else {
+                                            _disabledPositions.add(positionId);
+                                            if (hasPhoto) {
+                                              ref.read(vehicleRegistrationProvider.notifier).removeInteriorPhoto(positionId);
+                                            }
+                                          }
+                                        });
+                                      },
+                                      activeThumbColor: AppColors.primary,
+                                      activeTrackColor: AppColors.primaryLight,
+                                      inactiveThumbColor: Colors.white,
+                                      inactiveTrackColor: c.border,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          // Bottom row: name + camera button
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm + 4,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    position['name']!,
+                                    style: AppTypography.titleMedium.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                if (!isDisabled)
+                                  Container(
+                                    width: 44,
+                                    height: 44,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      hasPhoto ? Icons.check : Icons.camera_alt_outlined,
+                                      color: Colors.white,
+                                      size: 22,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                          child: hasPhoto
-                              ? Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: AppSpacing.borderRadiusMd,
-                                      child: Image.file(
-                                        File(photoPath),
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Center(
-                                          child: Icon(Icons.broken_image, size: 48, color: c.textTertiary),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(AppSpacing.sm),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.success.withValues(alpha: 0.9),
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(AppSpacing.radiusMd),
-                                            bottomRight: Radius.circular(AppSpacing.radiusMd),
-                                          ),
-                                        ),
-                                        child: Text(
-                                          position['name']!,
-                                          style: AppTypography.labelMedium.copyWith(color: c.textOnPrimary),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : AppConstants.templateForInteriorPosition(positionId) != null
-                                ? Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(AppSpacing.sm),
-                                          child: Image.asset(
-                                            AppConstants.templateForInteriorPosition(positionId)!,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(AppSpacing.sm),
-                                          decoration: BoxDecoration(
-                                            color: c.surfaceVariant.withValues(alpha: 0.9),
-                                            borderRadius: const BorderRadius.only(
-                                              bottomLeft: Radius.circular(AppSpacing.radiusMd),
-                                              bottomRight: Radius.circular(AppSpacing.radiusMd),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            position['name']!,
-                                            style: AppTypography.labelMedium.copyWith(color: c.textPrimary),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        color: c.surfaceVariant,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        _iconForPosition(positionId),
-                                        size: 28,
-                                        color: c.textSecondary,
-                                      ),
-                                    ),
-                                    AppSpacing.vGapSm,
-                                    Text(
-                                      position['name']!,
-                                      style: AppTypography.labelMedium.copyWith(color: c.textPrimary),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    AppSpacing.vGapXs,
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                                      child: Text(
-                                        position['instructions']!,
-                                        style: AppTypography.caption.copyWith(color: c.textTertiary),
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        ),
-                      );
-                    },
+                        ],
+                      ),
+                    ),
                   ),
-                  AppSpacing.vGapLg,
-                ],
-              ),
+                );
+              },
             ),
           ),
           BottomActionBar(
@@ -331,17 +441,5 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
         ],
       ),
     );
-  }
-
-  IconData _iconForPosition(String positionId) {
-    return switch (positionId) {
-      'dashboard' => Icons.dashboard_outlined,
-      'front_seats' => Icons.airline_seat_recline_normal,
-      'rear_seats' => Icons.event_seat_outlined,
-      'trunk' => Icons.inventory_2_outlined,
-      'odometer' => Icons.speed_outlined,
-      'center_console' => Icons.tune_outlined,
-      _ => Icons.camera_alt_outlined,
-    };
   }
 }

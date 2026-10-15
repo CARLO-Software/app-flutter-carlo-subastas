@@ -1,28 +1,26 @@
 import '../../../models/models.dart';
 
 class MockVehicleRepository {
-  Future<Vehicle?> lookupVehicle(String plate, double mileage) async {
+  Future<Vehicle?> lookupByPlate(String plate) async {
     await Future.delayed(const Duration(seconds: 1));
 
     return Vehicle(
       plate: _formatPlate(plate),
       brand: 'Toyota',
-      model: 'Corolla',
+      model: 'Corolla Cross V6 Auto',
       year: 2021,
-      color: 'White',
-      fuelType: 'Petrol',
-      bodyType: 'Sedan',
+      color: 'Blanco',
+      fuelType: 'Gasolina',
+      bodyType: 'SUV',
       doors: 4,
-      transmission: 'Automatic',
+      transmission: 'Automático',
       engineSize: '1.8L',
       ownership: 'First Owner',
       motExpiry: '2025-06-15',
-      mileage: mileage,
-      estimatedPrice: _estimatePrice(mileage),
     );
   }
 
-  double _estimatePrice(double mileage) {
+  double estimatePrice(double mileage) {
     const basePrice = 55000.0;
     final deduction = (mileage / 1000) * 200;
     return (basePrice - deduction).clamp(8000.0, 55000.0);

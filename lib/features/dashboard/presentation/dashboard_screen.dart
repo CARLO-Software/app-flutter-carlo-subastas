@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -73,7 +74,7 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        'S/ ${formatter.format(vehicle?.estimatedPrice.round() ?? 0)}',
+                        'S/${formatter.format(vehicle?.estimatedPrice.round() ?? 0)}',
                         style: AppTypography.headlineMedium.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -88,31 +89,33 @@ class DashboardScreen extends ConsumerWidget {
                     vertical: AppSpacing.xxs,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    border: Border.all(color: Colors.white54),
+                    color: Colors.white,
                     borderRadius: AppSpacing.borderRadiusSm,
                   ),
                   child: Text(
                     vehicle?.plate ?? '',
                     style: AppTypography.labelMedium.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 1.2,
                     ),
                   ),
                 ),
                 AppSpacing.hGapSm,
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.person_outline,
-                    color: Colors.white,
-                    size: 20,
+                GestureDetector(
+                  onTap: () => _showUserMenu(context),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.person_outline,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
@@ -143,10 +146,13 @@ class DashboardScreen extends ConsumerWidget {
                   AppSpacing.vGapMd,
 
                   Center(
-                    child: Text(
-                      '¿Necesitas ayuda?',
-                      style: AppTypography.titleSmall.copyWith(
-                        fontWeight: FontWeight.w600,
+                    child: GestureDetector(
+                      onTap: () => _openWhatsApp(),
+                      child: Text(
+                        '¿Necesitas ayuda?',
+                        style: AppTypography.titleSmall.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -228,7 +234,7 @@ class DashboardScreen extends ConsumerWidget {
                       ElevatedButton(
                         onPressed: onPressed,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _headerColor,
+                          backgroundColor: const Color(0xFF292929),
                           foregroundColor: Colors.white,
                           elevation: 0,
                           minimumSize: Size.zero,
@@ -261,6 +267,61 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _openWhatsApp() async {
+    final url = Uri.parse('https://wa.me/51934140010?text=${Uri.encodeComponent('Hola, necesito ayuda con el registro de mi vehículo en Carlo.')}');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  void _showUserMenu(BuildContext context) {
+    final c = context.colors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: c.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusXl)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: c.border,
+                  borderRadius: AppSpacing.borderRadiusFull,
+                ),
+              ),
+              AppSpacing.vGapLg,
+              ListTile(
+                leading: Icon(Icons.person_outline, color: c.textPrimary),
+                title: Text('Mi perfil', style: AppTypography.titleSmall),
+                onTap: () => Navigator.of(ctx).pop(),
+              ),
+              ListTile(
+                leading: Icon(Icons.help_outline, color: c.textPrimary),
+                title: Text('Ayuda', style: AppTypography.titleSmall),
+                onTap: () => Navigator.of(ctx).pop(),
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout, color: AppColors.error),
+                title: Text('Cerrar sesión', style: AppTypography.titleSmall.copyWith(color: AppColors.error)),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  context.go(AppRoutes.vehicleLookup);
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

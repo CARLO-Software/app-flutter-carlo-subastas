@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -199,32 +200,45 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                                   ],
                                 )
                               : Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: 64,
-                                      height: 64,
-                                      decoration: BoxDecoration(
-                                        color: c.surfaceVariant,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.tire_repair,
-                                        size: 32,
-                                        color: c.textSecondary,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(AppSpacing.sm),
+                                        child: Image.asset(
+                                          AppConstants.wheelTireTemplate,
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
                                     ),
-                                    AppSpacing.vGapSm,
-                                    Text(
-                                      wheelName,
-                                      style: AppTypography.labelMedium.copyWith(color: c.textPrimary),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    AppSpacing.vGapXs,
-                                    Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 20,
-                                      color: c.textTertiary,
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: AppSpacing.md,
+                                        right: AppSpacing.md,
+                                        bottom: AppSpacing.sm + 4,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              wheelName,
+                                              style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: 44,
+                                            height: 44,
+                                            decoration: const BoxDecoration(
+                                              color: AppColors.primary,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(
+                                              Icons.camera_alt_outlined,
+                                              color: Colors.white,
+                                              size: 22,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

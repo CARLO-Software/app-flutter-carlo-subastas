@@ -73,6 +73,11 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/images/plantillas/exterior/
-    - assets/images/plantillas/interior/
-    - assets/images/plantillas/ruedas/
+    - assets/images/exterior/
+    - assets/images/interior/
+    - assets/images/plantillas/siluetas_negro/exterior/png/
+    - assets/images/plantillas/siluetas_negro/interior/png/
+    - assets/images/plantillas/siluetas_negro/llantas/png/
+    - assets/images/plantillas/siluetas_blanco/exterior/png/
+    - assets/images/plantillas/siluetas_blanco/interior/png/
+    - assets/images/plantillas/siluetas_blanco/llantas/png/
