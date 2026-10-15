@@ -10,6 +10,29 @@ import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../data/mock_vehicle_repository.dart';
 
+class _PlateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final raw = newValue.text.replaceAll('-', '').toUpperCase();
+    if (raw.length > 6) {
+      return oldValue;
+    }
+    final buffer = StringBuffer();
+    for (int i = 0; i < raw.length; i++) {
+      if (i == 3) buffer.write('-');
+      buffer.write(raw[i]);
+    }
+    final formatted = buffer.toString();
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
 class VehicleLookupScreen extends ConsumerStatefulWidget {
   const VehicleLookupScreen({super.key});
 
@@ -48,7 +71,7 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
         isValid = false;
       } else {
         final mileage =
-            int.tryParse(_mileageController.text.replaceAll(',', ''));
+            double.tryParse(_mileageController.text.replaceAll(',', ''));
         if (mileage == null || mileage < 0) {
           _mileageError = 'Ingresa un kilometraje válido';
           isValid = false;
@@ -64,9 +87,10 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final mileage = int.parse(_mileageController.text.replaceAll(',', ''));
+      final mileage = double.parse(_mileageController.text.replaceAll(',', ''));
+      final plate = _plateController.text.replaceAll('-', '').trim();
       final vehicle = await mockVehicleRepository.lookupVehicle(
-        _plateController.text.trim(),
+        plate,
         mileage,
       );
 
@@ -137,20 +161,23 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
               AppSpacing.vGapXxl,
               AppTextField(
                 label: 'Placa',
-                hint: 'Ej: ABC 123',
+                hint: 'Ej: AB2-12C',
                 controller: _plateController,
                 errorText: _plateError,
                 textCapitalization: TextCapitalization.characters,
+                inputFormatters: [_PlateInputFormatter()],
                 prefixIcon: const Icon(Icons.confirmation_number_outlined),
               ),
               AppSpacing.vGapMd,
               AppTextField(
                 label: 'Kilometraje',
-                hint: 'Ej: 45000',
+                hint: 'Ej: 45000.5',
                 controller: _mileageController,
                 errorText: _mileageError,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                ],
                 prefixIcon: const Icon(Icons.speed_outlined),
               ),
               AppSpacing.vGapXl,

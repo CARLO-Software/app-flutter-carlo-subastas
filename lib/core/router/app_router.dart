@@ -19,6 +19,17 @@ import '../../features/photos/presentation/photo_introduction_screen.dart';
 import '../../features/photos/presentation/exterior_photos_screen.dart';
 import '../../features/photos/presentation/guided_capture_screen.dart';
 import '../../features/photos/presentation/interior_photos_screen.dart';
+import '../../features/proof_of_purchase/presentation/proof_of_purchase_screen.dart';
+import '../../features/smoking/presentation/smoking_screen.dart';
+import '../../features/private_plate/presentation/private_plate_screen.dart';
+import '../../features/photos/presentation/wheels_photos_screen.dart';
+import '../../features/tire_condition/presentation/tire_condition_screen.dart';
+import '../../features/seat_material/presentation/seat_material_screen.dart';
+import '../../features/tool_pack/presentation/tool_pack_screen.dart';
+import '../../features/locking_wheel_nut/presentation/locking_wheel_nut_screen.dart';
+import '../../features/paintwork/presentation/paintwork_problems_screen.dart';
+import '../../features/broken_fittings/presentation/broken_fittings_screen.dart';
+import '../../features/wheel_damage/presentation/wheel_damage_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
@@ -121,6 +132,61 @@ GoRoute(
       path: AppRoutes.interiorPhotos,
       name: 'interiorPhotos',
       builder: (context, state) => const InteriorPhotosScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.proofOfPurchase,
+      name: 'proofOfPurchase',
+      builder: (context, state) => const ProofOfPurchaseScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.smoking,
+      name: 'smoking',
+      builder: (context, state) => const SmokingScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.privatePlate,
+      name: 'privatePlate',
+      builder: (context, state) => const PrivatePlateScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.wheelsPhotos,
+      name: 'wheelsPhotos',
+      builder: (context, state) => const WheelsPhotosScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.tireCondition,
+      name: 'tireCondition',
+      builder: (context, state) => const TireConditionScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.seatMaterial,
+      name: 'seatMaterial',
+      builder: (context, state) => const SeatMaterialScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.toolPack,
+      name: 'toolPack',
+      builder: (context, state) => const ToolPackScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.lockingWheelNut,
+      name: 'lockingWheelNut',
+      builder: (context, state) => const LockingWheelNutScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.paintworkProblems,
+      name: 'paintworkProblems',
+      builder: (context, state) => const PaintworkProblemsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.brokenFittings,
+      name: 'brokenFittings',
+      builder: (context, state) => const BrokenFittingsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.wheelDamage,
+      name: 'wheelDamage',
+      builder: (context, state) => const WheelDamageScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,

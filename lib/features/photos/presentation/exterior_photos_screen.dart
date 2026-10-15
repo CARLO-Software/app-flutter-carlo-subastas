@@ -33,16 +33,6 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
   }
 
   Future<void> _validateAllPhotos() async {
-    // ponytail: AI validation disabled until API quota issue resolved
-    // TODO: re-enable when Gemini API key has proper quota
-    const useAiValidation = true;
-
-    if (!useAiValidation) {
-      ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
-      context.go(AppRoutes.dashboard);
-      return;
-    }
-
     final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
     if (photos.isEmpty) return;
 

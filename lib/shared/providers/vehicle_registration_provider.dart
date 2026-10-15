@@ -12,7 +12,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(vehicle: vehicle);
   }
 
-  void setMileage(int mileage) {
+  void setMileage(double mileage) {
     state = state.copyWith(mileage: mileage);
   }
 
@@ -139,6 +139,107 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(interiorPhotosConfirmed: true);
   }
 
+  // Wheels Photos
+  void addWheelPhoto(String wheelId, String filePath) {
+    final photos = Map<String, String>.from(state.wheelsPhotosMap);
+    photos[wheelId] = filePath;
+    state = state.copyWith(wheelsPhotosMap: photos);
+  }
+
+  void removeWheelPhoto(String wheelId) {
+    final photos = Map<String, String>.from(state.wheelsPhotosMap);
+    photos.remove(wheelId);
+    state = state.copyWith(wheelsPhotosMap: photos);
+  }
+
+  void confirmWheelsPhotos() {
+    state = state.copyWith(wheelsPhotosConfirmed: true);
+  }
+
+  // Tire Condition
+  void setTireCondition(String condition) {
+    state = state.copyWith(tireCondition: condition);
+  }
+
+  void confirmTireCondition() {
+    state = state.copyWith(tireConditionConfirmed: true);
+  }
+
+  // Seat Material
+  void setSeatMaterial(String material) {
+    state = state.copyWith(seatMaterial: material);
+  }
+
+  void confirmSeatMaterial() {
+    state = state.copyWith(seatMaterialConfirmed: true);
+  }
+
+  // Paintwork Problems
+  void addPaintworkMark(PaintworkMark mark) {
+    final marks = List<PaintworkMark>.from(state.paintworkMarks);
+    marks.add(mark);
+    state = state.copyWith(paintworkMarks: marks);
+  }
+
+  void removePaintworkMark(String markId) {
+    final marks = state.paintworkMarks.where((m) => m.id != markId).toList();
+    state = state.copyWith(paintworkMarks: marks);
+  }
+
+  void confirmPaintwork() {
+    state = state.copyWith(paintworkConfirmed: true);
+  }
+
+  // Broken or Missing Fittings
+  void setHasBrokenFittings(bool value) {
+    state = state.copyWith(hasBrokenFittings: value);
+  }
+
+  void addBrokenFittingPhoto(String path) {
+    final photos = List<String>.from(state.brokenFittingsPhotos);
+    photos.add(path);
+    state = state.copyWith(brokenFittingsPhotos: photos);
+  }
+
+  void removeBrokenFittingPhoto(String path) {
+    final photos = List<String>.from(state.brokenFittingsPhotos);
+    photos.remove(path);
+    state = state.copyWith(brokenFittingsPhotos: photos);
+  }
+
+  void confirmBrokenFittings() {
+    state = state.copyWith(brokenFittingsConfirmed: true);
+  }
+
+  // Wheel Damage
+  void setWheelDamage(String wheelId, bool hasDamage) {
+    final map = Map<String, bool>.from(state.wheelDamageMap);
+    map[wheelId] = hasDamage;
+    state = state.copyWith(wheelDamageMap: map);
+  }
+
+  void confirmWheelDamage() {
+    state = state.copyWith(wheelDamageConfirmed: true);
+  }
+
+  // Tool Pack
+  void setHasToolPack(bool value) {
+    state = state.copyWith(hasToolPack: value);
+  }
+
+  void confirmToolPack() {
+    state = state.copyWith(toolPackConfirmed: true);
+  }
+
+  // Locking Wheel Nut
+  void setHasLockingWheelNut(bool value) {
+    state = state.copyWith(hasLockingWheelNut: value);
+  }
+
+  void confirmLockingWheelNut() {
+    state = state.copyWith(lockingWheelNutConfirmed: true);
+  }
+
   // Condition & Damage
   void addDamage(DamageItem damage) {
     final damages = List<DamageItem>.from(state.damages);
@@ -176,6 +277,33 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(serviceHistoryConfirmed: true);
   }
 
+  // Proof of Purchase
+  void setHasProofOfPurchase(bool value) {
+    state = state.copyWith(hasProofOfPurchase: value);
+  }
+
+  void confirmProofOfPurchase() {
+    state = state.copyWith(proofOfPurchaseConfirmed: true);
+  }
+
+  // Smoking
+  void setHasBeenSmokedIn(bool value) {
+    state = state.copyWith(hasBeenSmokedIn: value);
+  }
+
+  void confirmSmoking() {
+    state = state.copyWith(smokingConfirmed: true);
+  }
+
+  // Private Plate
+  void setHasPrivatePlate(bool value) {
+    state = state.copyWith(hasPrivatePlate: value);
+  }
+
+  void confirmPrivatePlate() {
+    state = state.copyWith(privatePlateConfirmed: true);
+  }
+
   // Submission
   void setSubmissionStatus(SubmissionStatus status) {
     state = state.copyWith(submissionStatus: status);
@@ -188,7 +316,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
   // Progress Calculation
   double calculateProgress() {
     int completedSteps = 0;
-    const int totalSteps = 10;
+    const int totalSteps = 21;
 
     if (state.vehicleDetailsConfirmed) completedSteps++;
     if (state.extraFeaturesConfirmed) completedSteps++;
@@ -196,9 +324,20 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     if (state.financeConfirmed) completedSteps++;
     if (state.runningConditionConfirmed) completedSteps++;
     if (state.mechanicalIssuesConfirmed) completedSteps++;
+    if (state.proofOfPurchaseConfirmed) completedSteps++;
+    if (state.smokingConfirmed) completedSteps++;
+    if (state.privatePlateConfirmed) completedSteps++;
+    if (state.seatMaterialConfirmed) completedSteps++;
+    if (state.toolPackConfirmed) completedSteps++;
+    if (state.lockingWheelNutConfirmed) completedSteps++;
     if (state.photosConfirmed) completedSteps++;
     if (state.interiorPhotosConfirmed) completedSteps++;
+    if (state.wheelsPhotosConfirmed) completedSteps++;
+    if (state.tireConditionConfirmed) completedSteps++;
     if (state.conditionDamageConfirmed) completedSteps++;
+    if (state.paintworkConfirmed) completedSteps++;
+    if (state.brokenFittingsConfirmed) completedSteps++;
+    if (state.wheelDamageConfirmed) completedSteps++;
     if (state.serviceHistoryConfirmed) completedSteps++;
 
     return completedSteps / totalSteps;
@@ -246,11 +385,17 @@ final dashboardProgressProvider = Provider<int>((ref) {
       state.keysConfirmed &&
       state.financeConfirmed &&
       state.runningConditionConfirmed &&
-      state.mechanicalIssuesConfirmed;
+      state.mechanicalIssuesConfirmed &&
+      state.proofOfPurchaseConfirmed &&
+      state.smokingConfirmed &&
+      state.privatePlateConfirmed &&
+      state.seatMaterialConfirmed &&
+      state.toolPackConfirmed &&
+      state.lockingWheelNutConfirmed;
   if (infoCompleted) completed++;
 
-  if (state.photosConfirmed && state.interiorPhotosConfirmed) completed++;
-  if (state.conditionDamageConfirmed) completed++;
+  if (state.photosConfirmed && state.interiorPhotosConfirmed && state.wheelsPhotosConfirmed && state.tireConditionConfirmed) completed++;
+  if (state.conditionDamageConfirmed && state.paintworkConfirmed && state.brokenFittingsConfirmed && state.wheelDamageConfirmed) completed++;
   if (state.serviceHistoryConfirmed) completed++;
 
   return ((completed / total) * 100).round();

@@ -110,7 +110,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
                   _buildDetailRow('Marca', vehicle.brand, c),
                   _buildDetailRow('Modelo', vehicle.model, c),
                   _buildDetailRow('Año', vehicle.year.toString(), c),
-                  _buildDetailRow('Kilometraje', '${registrationState.mileage} km', c),
+                  _buildDetailRow('Kilometraje', '${registrationState.mileage % 1 == 0 ? registrationState.mileage.toInt() : registrationState.mileage} km', c),
                   _buildDetailRow('Color', vehicle.color, c),
                   _buildDetailRow('Carrocería', vehicle.bodyType, c),
                   _buildDetailRow('Puertas', vehicle.doors.toString(), c),

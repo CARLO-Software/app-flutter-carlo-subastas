@@ -9,6 +9,8 @@ import '../../../core/theme/app_typography.dart';
 import '../../../models/models.dart';
 import '../../../shared/providers/providers.dart';
 
+const _headerColor = Color(0xFF6327E2);
+
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -21,77 +23,97 @@ class DashboardScreen extends ConsumerWidget {
     final formatter = NumberFormat('#,###', 'es_PE');
 
     final steps = _buildSteps(state);
+    final allDone = steps.every((s) => s.completed);
     final nextStep = steps.firstWhere(
       (s) => !s.completed,
       orElse: () => steps.last,
     );
 
+    String bottomLabel;
+    String buttonText;
+    VoidCallback onPressed;
+
+    if (allDone) {
+      bottomLabel = '¡Solo un paso más!';
+      buttonText = 'Completar';
+      onPressed = () => context.push(AppRoutes.review);
+    } else {
+      bottomLabel = 'Siguiente: ${nextStep.title}';
+      buttonText = progress > 0 ? 'Continuar' : 'Siguiente paso';
+      onPressed = () => context.push(nextStep.route);
+    }
+
+    // Siempre mostrar opción de vista previa
+    final canPreview = progress > 0;
+
     return Scaffold(
       backgroundColor: c.background,
       body: Column(
         children: [
-          // Header morado
+          // Yellow header
           Container(
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + AppSpacing.md,
+              top: MediaQuery.of(context).padding.top + AppSpacing.sm,
               left: AppSpacing.md,
               right: AppSpacing.md,
-              bottom: AppSpacing.lg,
+              bottom: AppSpacing.md,
             ),
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(AppSpacing.radiusXl),
-                bottomRight: Radius.circular(AppSpacing.radiusXl),
-              ),
-            ),
+            color: _headerColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Valor estimado',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: Colors.white.withValues(alpha: 0.8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Valor estimado',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: Colors.white70,
+                        ),
                       ),
-                    ),
-                    AppSpacing.vGapXs,
-                    Text(
-                      'S/ ${formatter.format(vehicle?.estimatedPrice.round() ?? 0)}',
-                      style: AppTypography.headlineMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
+                      Text(
+                        'S/ ${formatter.format(vehicle?.estimatedPrice.round() ?? 0)}',
+                        style: AppTypography.headlineMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      vehicle?.plate ?? '',
-                      style: AppTypography.titleSmall.copyWith(
-                        color: Colors.white,
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xxs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    border: Border.all(color: Colors.white54),
+                    borderRadius: AppSpacing.borderRadiusSm,
+                  ),
+                  child: Text(
+                    vehicle?.plate ?? '',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
                     ),
-                    AppSpacing.vGapXs,
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.person_outline,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ],
+                  ),
+                ),
+                AppSpacing.hGapSm,
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.person_outline,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
               ],
             ),
@@ -104,33 +126,54 @@ class DashboardScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  AppSpacing.vGapLg,
                   Text(
                     'Pon tu vehículo a la venta',
-                    style: AppTypography.headlineSmall,
+                    style: AppTypography.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   AppSpacing.vGapLg,
 
-                  // Step cards
                   ...steps.map((step) => Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
                         child: _StepCard(step: step),
                       )),
 
-                  AppSpacing.vGapLg,
+                  AppSpacing.vGapMd,
 
-                  // Help link
                   Center(
-                    child: GestureDetector(
-                      onTap: () => _openHelp(),
-                      child: Text(
-                        '¿Necesitas ayuda?',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
+                    child: Text(
+                      '¿Necesitas ayuda?',
+                      style: AppTypography.titleSmall.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                  AppSpacing.vGapMd,
+                  if (canPreview)
+                    Center(
+                      child: GestureDetector(
+                        onTap: () => context.push(AppRoutes.review),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: _headerColor),
+                            borderRadius: AppSpacing.borderRadiusMd,
+                          ),
+                          child: Text(
+                            'Ver resumen del perfil',
+                            style: AppTypography.titleSmall.copyWith(
+                              color: _headerColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   AppSpacing.vGapXl,
                 ],
               ),
@@ -154,8 +197,8 @@ class DashboardScreen extends ConsumerWidget {
                     child: LinearProgressIndicator(
                       value: progress / 100,
                       backgroundColor: c.surfaceVariant,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.primary),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(_headerColor),
                       minHeight: 6,
                     ),
                   ),
@@ -168,11 +211,13 @@ class DashboardScreen extends ConsumerWidget {
                           children: [
                             Text(
                               '$progress% completado',
-                              style: AppTypography.titleSmall,
+                              style: AppTypography.titleSmall.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             AppSpacing.vGapXxs,
                             Text(
-                              'Siguiente: ${nextStep.title}',
+                              bottomLabel,
                               style: AppTypography.caption.copyWith(
                                 color: c.textSecondary,
                               ),
@@ -181,9 +226,9 @@ class DashboardScreen extends ConsumerWidget {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () => context.push(nextStep.route),
+                        onPressed: onPressed,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF292929),
+                          backgroundColor: _headerColor,
                           foregroundColor: Colors.white,
                           elevation: 0,
                           minimumSize: Size.zero,
@@ -195,9 +240,19 @@ class DashboardScreen extends ConsumerWidget {
                             borderRadius: AppSpacing.borderRadiusMd,
                           ),
                         ),
-                        child: Text('Next Step',
-                            style: AppTypography.buttonSmall
-                                .copyWith(color: Colors.white)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(buttonText,
+                                style: AppTypography.buttonSmall
+                                    .copyWith(color: Colors.white)),
+                            if (allDone) ...[
+                              const SizedBox(width: 4),
+                              const Icon(Icons.arrow_forward,
+                                  size: 16, color: Colors.white),
+                            ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -216,53 +271,75 @@ class DashboardScreen extends ConsumerWidget {
         state.keysConfirmed &&
         state.financeConfirmed &&
         state.runningConditionConfirmed &&
-        state.mechanicalIssuesConfirmed;
+        state.mechanicalIssuesConfirmed &&
+        state.proofOfPurchaseConfirmed &&
+        state.smokingConfirmed &&
+        state.privatePlateConfirmed &&
+        state.seatMaterialConfirmed &&
+        state.toolPackConfirmed &&
+        state.lockingWheelNutConfirmed;
 
     final photosCompleted =
-        state.photosConfirmed && state.interiorPhotosConfirmed;
+        state.photosConfirmed && state.interiorPhotosConfirmed &&
+        state.wheelsPhotosConfirmed && state.tireConditionConfirmed;
+
+    final photosStarted = state.exteriorPhotos.isNotEmpty ||
+        state.interiorPhotos.isNotEmpty ||
+        state.exteriorPhotosMap.isNotEmpty ||
+        state.interiorPhotosMap.isNotEmpty ||
+        state.wheelsPhotosMap.isNotEmpty;
+
+    String? photosWarning;
+    if (photosStarted && !photosCompleted) {
+      photosWarning = 'Fotos pendientes por completar';
+    }
+
+    final conditionCompleted = state.conditionDamageConfirmed &&
+        state.paintworkConfirmed &&
+        state.brokenFittingsConfirmed &&
+        state.wheelDamageConfirmed;
 
     return [
       _DashboardStep(
         title: 'Información del vehículo',
-        description: 'Déjanos conocer las características de tu auto',
+        subtitle: 'Déjanos conocer las características de tu auto.',
         completed: infoCompleted,
         route: AppRoutes.vehicleInfoHub,
       ),
       _DashboardStep(
         title: 'Fotos',
-        description: photosCompleted ? 'Completado' : 'Toma fotos de tu vehículo',
+        subtitle: null,
         completed: photosCompleted,
+        warning: photosWarning,
         route: AppRoutes.photoIntroduction,
       ),
       _DashboardStep(
         title: 'Daño y condición',
-        description: 'Reporta el estado actual de tu auto',
-        completed: state.conditionDamageConfirmed,
+        subtitle: null,
+        completed: conditionCompleted,
         route: AppRoutes.conditionDamage,
       ),
       _DashboardStep(
         title: 'Historial de mantenimiento',
-        description: 'Registros de servicio y mantenimiento',
+        subtitle: null,
         completed: state.serviceHistoryConfirmed,
         route: AppRoutes.serviceHistory,
       ),
     ];
   }
-
-  void _openHelp() {
-    // TODO: abrir https://carlo.pe con url_launcher
-  }
 }
 
 class _DashboardStep {
   final String title;
-  final String description;
+  final String? subtitle;
+  final String? warning;
   final bool completed;
   final String route;
 
   const _DashboardStep({
     required this.title,
-    required this.description,
+    this.subtitle,
+    this.warning,
     required this.completed,
     required this.route,
   });
@@ -279,53 +356,77 @@ class _StepCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push(step.route),
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.lg,
+        ),
         decoration: BoxDecoration(
           color: c.card,
-          borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(
-            color: step.completed ? AppColors.success : c.cardBorder,
-          ),
+          borderRadius: AppSpacing.borderRadiusLg,
+          border: Border.all(color: c.cardBorder),
         ),
         child: Row(
           children: [
+            if (step.completed)
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.sm),
+                child: Icon(
+                  Icons.check_circle_outline,
+                  color: Colors.black87,
+                  size: 24,
+                ),
+              ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(step.title, style: AppTypography.titleMedium),
-                  AppSpacing.vGapXs,
                   Text(
-                    step.description,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: c.textSecondary,
+                    step.title,
+                    style: AppTypography.titleMedium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                  if (step.subtitle != null) ...[
+                    AppSpacing.vGapXxs,
+                    Text(
+                      step.subtitle!,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: c.textSecondary,
+                      ),
+                    ),
+                  ],
+                  if (step.warning != null) ...[
+                    AppSpacing.vGapXxs,
+                    Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded,
+                            size: 16, color: AppColors.error),
+                        const SizedBox(width: 4),
+                        Text(
+                          step.warning!,
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
-            AppSpacing.hGapMd,
-            if (step.completed)
-              Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.success,
-                ),
-                child: const Icon(Icons.check, size: 18, color: Colors.white),
-              )
-            else
-              Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFF292929),
-                ),
-                child: const Icon(Icons.arrow_forward,
-                    size: 18, color: Colors.white),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: c.surfaceVariant,
               ),
+              child: Icon(
+                Icons.arrow_forward,
+                size: 16,
+                color: c.textSecondary,
+              ),
+            ),
           ],
         ),
       ),

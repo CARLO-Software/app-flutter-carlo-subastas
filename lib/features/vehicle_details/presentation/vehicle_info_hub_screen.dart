@@ -58,6 +58,48 @@ class VehicleInfoHubScreen extends ConsumerWidget {
         completed: state.mechanicalIssuesConfirmed,
         route: AppRoutes.mechanicalIssues,
       ),
+      _SubStep(
+        title: 'Comprobante de compra',
+        subtitle: '¿Tienes factura o recibo?',
+        icon: Icons.receipt_long_outlined,
+        completed: state.proofOfPurchaseConfirmed,
+        route: AppRoutes.proofOfPurchase,
+      ),
+      _SubStep(
+        title: 'Fumador',
+        subtitle: '¿Se ha fumado en el vehículo?',
+        icon: Icons.smoke_free_outlined,
+        completed: state.smokingConfirmed,
+        route: AppRoutes.smoking,
+      ),
+      _SubStep(
+        title: 'Tipo de placa',
+        subtitle: '¿Placa particular o estándar?',
+        icon: Icons.badge_outlined,
+        completed: state.privatePlateConfirmed,
+        route: AppRoutes.privatePlate,
+      ),
+      _SubStep(
+        title: 'Material de asientos',
+        subtitle: 'Tela, cuero, gamuza, etc.',
+        icon: Icons.event_seat_outlined,
+        completed: state.seatMaterialConfirmed,
+        route: AppRoutes.seatMaterial,
+      ),
+      _SubStep(
+        title: 'Kit de herramientas',
+        subtitle: '¿Incluye gata, llave de rueda?',
+        icon: Icons.build_circle_outlined,
+        completed: state.toolPackConfirmed,
+        route: AppRoutes.toolPack,
+      ),
+      _SubStep(
+        title: 'Tuerca de seguridad',
+        subtitle: '¿Tiene llave de tuerca de seguridad?',
+        icon: Icons.settings_outlined,
+        completed: state.lockingWheelNutConfirmed,
+        route: AppRoutes.lockingWheelNut,
+      ),
     ];
 
     final completedCount = steps.where((s) => s.completed).length;
@@ -68,7 +110,7 @@ class VehicleInfoHubScreen extends ConsumerWidget {
         title: const Text('Información del vehículo'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.go(AppRoutes.dashboard),
         ),
       ),
       body: Column(

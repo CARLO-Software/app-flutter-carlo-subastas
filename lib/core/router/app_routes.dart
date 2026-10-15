@@ -19,8 +19,19 @@ class AppRoutes {
 static const String exteriorPhotos = '/exterior-photos';
   static const String guidedCapture = '/guided-capture';
   static const String interiorPhotos = '/interior-photos';
+  static const String wheelsPhotos = '/wheels-photos';
+  static const String tireCondition = '/tire-condition';
+  static const String seatMaterial = '/seat-material';
+  static const String paintworkProblems = '/paintwork-problems';
+  static const String brokenFittings = '/broken-fittings';
+  static const String wheelDamage = '/wheel-damage';
+  static const String toolPack = '/tool-pack';
+  static const String lockingWheelNut = '/locking-wheel-nut';
   static const String conditionDamage = '/condition-damage';
   static const String serviceHistory = '/service-history';
+  static const String proofOfPurchase = '/proof-of-purchase';
+  static const String smoking = '/smoking';
+  static const String privatePlate = '/private-plate';
   static const String review = '/review';
   static const String submissionStatus = '/submission-status';
 }

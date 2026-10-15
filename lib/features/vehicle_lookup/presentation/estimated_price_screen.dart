@@ -27,48 +27,31 @@ class EstimatedPriceScreen extends ConsumerWidget {
             children: [
               const Spacer(),
 
-              // Price result
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: c.surfaceVariant,
-                  borderRadius: AppSpacing.borderRadiusLg,
+              Text(
+                'Precio estimado',
+                style: AppTypography.bodyMedium.copyWith(
+                  color: c.textSecondary,
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Tu precio estimado de venta',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: c.textSecondary,
-                      ),
-                    ),
-                    AppSpacing.vGapSm,
-                    Text(
-                      'S/ ${formatter.format(price.round())}',
-                      style: AppTypography.headlineLarge.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    AppSpacing.vGapSm,
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        'Saber más',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ],
+              ),
+              AppSpacing.vGapSm,
+              Text(
+                'S/ ${formatter.format(price.round())}',
+                style: AppTypography.headlineLarge.copyWith(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 40,
                 ),
               ),
 
-              AppSpacing.vGapXl,
+              AppSpacing.vGapXxl,
 
-              // Benefits
+              Text(
+                'Tu venta incluye',
+                style: AppTypography.titleMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              AppSpacing.vGapLg,
+
               Row(
                 children: [
                   Expanded(

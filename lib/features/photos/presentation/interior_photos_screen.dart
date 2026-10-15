@@ -11,6 +11,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
+import '../widgets/photo_validation_sheet.dart';
 
 class InteriorPhotosScreen extends ConsumerStatefulWidget {
   const InteriorPhotosScreen({super.key});
@@ -18,6 +19,25 @@ class InteriorPhotosScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<InteriorPhotosScreen> createState() => _InteriorPhotosScreenState();
 }
+
+const _photoValidationHints = {
+  'front_seats': {
+    'title': 'Captura ambos asientos claramente',
+    'desc': 'Asegúrate de que ambos asientos delanteros se vean claramente antes de tomar la foto.',
+  },
+  'rear_seats': {
+    'title': 'Captura los asientos traseros',
+    'desc': 'Muestra el estado completo de los asientos traseros, incluyendo respaldos y cojines.',
+  },
+  'dashboard': {
+    'title': 'Captura el tablero completo',
+    'desc': 'Asegúrate de que el panel de instrumentos y la pantalla central se vean claramente.',
+  },
+  'trunk': {
+    'title': 'Captura la maletera abierta',
+    'desc': 'Muestra el interior completo de la maletera, incluyendo el piso y laterales.',
+  },
+};
 
 class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
   final _picker = ImagePicker();
@@ -27,14 +47,42 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
       source: ImageSource.camera,
       imageQuality: 85,
     );
-    if (xFile == null) return;
+    if (xFile == null || !mounted) return;
 
-    // Copy to app directory for persistence
     final appDir = await getApplicationDocumentsDirectory();
     final fileName = 'interior_${positionId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
     final savedFile = await File(xFile.path).copy('${appDir.path}/$fileName');
+    if (!mounted) return;
 
+    // Guardar la foto primero
     ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(positionId, savedFile.path);
+
+    // Luego mostrar validación si tiene hint
+    final hint = _photoValidationHints[positionId];
+    if (hint != null) {
+      _showValidationSheet(positionId, savedFile.path, hint);
+    }
+  }
+
+  void _showValidationSheet(String positionId, String photoPath, Map<String, String> hint) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => PhotoValidationSheet(
+        takenPhotoPath: photoPath,
+        title: hint['title']!,
+        description: hint['desc']!,
+        goodExampleAsset: AppConstants.templateForInteriorPosition(positionId),
+        onRetake: () {
+          ref.read(vehicleRegistrationProvider.notifier).removeInteriorPhoto(positionId);
+          _takePhoto(positionId);
+        },
+        onAccept: () {
+          // Foto ya guardada, no hacer nada más
+        },
+      ),
+    );
   }
 
   void _onPhotoTap(String positionId) {

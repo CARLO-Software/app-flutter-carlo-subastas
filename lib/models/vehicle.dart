@@ -4,7 +4,7 @@ part 'vehicle.freezed.dart';
 part 'vehicle.g.dart';
 
 @freezed
-class Vehicle with _$Vehicle {
+abstract class Vehicle with _$Vehicle {
   const factory Vehicle({
     required String plate,
     required String brand,
@@ -18,7 +18,7 @@ class Vehicle with _$Vehicle {
     @Default('') String engineSize,
     @Default('') String ownership,
     @Default('') String motExpiry,
-    @Default(0) int mileage,
+    @Default(0) double mileage,
     @Default(0) double estimatedPrice,
   }) = _Vehicle;
 

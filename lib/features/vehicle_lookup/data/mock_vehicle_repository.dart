@@ -1,11 +1,11 @@
 import '../../../models/models.dart';
 
 class MockVehicleRepository {
-  Future<Vehicle?> lookupVehicle(String plate, int mileage) async {
+  Future<Vehicle?> lookupVehicle(String plate, double mileage) async {
     await Future.delayed(const Duration(seconds: 1));
 
     return Vehicle(
-      plate: plate.toUpperCase(),
+      plate: _formatPlate(plate),
       brand: 'Toyota',
       model: 'Corolla',
       year: 2021,
@@ -22,10 +22,18 @@ class MockVehicleRepository {
     );
   }
 
-  double _estimatePrice(int mileage) {
+  double _estimatePrice(double mileage) {
     const basePrice = 55000.0;
     final deduction = (mileage / 1000) * 200;
     return (basePrice - deduction).clamp(8000.0, 55000.0);
+  }
+
+  String _formatPlate(String plate) {
+    final raw = plate.replaceAll('-', '').toUpperCase();
+    if (raw.length > 3) {
+      return '${raw.substring(0, 3)}-${raw.substring(3)}';
+    }
+    return raw;
   }
 }
 

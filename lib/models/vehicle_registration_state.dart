@@ -26,11 +26,11 @@ enum ServiceHistoryType {
 }
 
 @freezed
-class VehicleRegistrationState with _$VehicleRegistrationState {
+abstract class VehicleRegistrationState with _$VehicleRegistrationState {
   const factory VehicleRegistrationState({
     // Vehicle Information
     Vehicle? vehicle,
-    @Default(0) int mileage,
+    @Default(0) double mileage,
 
     // Extra Features
     @Default([]) List<String> extraFeatures,
@@ -54,12 +54,55 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default({}) Map<String, String> interiorPhotosMap,
     @Default([]) List<String> damagePhotos,
 
+    // Wheels Photos
+    @Default({}) Map<String, String> wheelsPhotosMap,
+
+    // Tire Condition
+    String? tireCondition,
+
+    // Seat Material
+    String? seatMaterial,
+    @Default(false) bool seatMaterialConfirmed,
+
+    // Paintwork Problems
+    @Default([]) List<PaintworkMark> paintworkMarks,
+    @Default(false) bool paintworkConfirmed,
+
+    // Broken or Missing Fittings
+    @Default([]) List<String> brokenFittingsPhotos,
+    @Default(false) bool hasBrokenFittings,
+    @Default(false) bool brokenFittingsConfirmed,
+
+    // Wheel Damage
+    @Default({}) Map<String, bool> wheelDamageMap,
+    @Default(false) bool wheelDamageConfirmed,
+
+    // Tool Pack
+    @Default(false) bool hasToolPack,
+    @Default(false) bool toolPackConfirmed,
+
+    // Locking Wheel Nut
+    @Default(false) bool hasLockingWheelNut,
+    @Default(false) bool lockingWheelNutConfirmed,
+
     // Condition & Damage
     @Default([]) List<DamageItem> damages,
 
     // Service History
     ServiceHistoryType? serviceHistoryType,
     @Default([]) List<String> serviceDocuments,
+
+    // Proof of Purchase
+    @Default(false) bool hasProofOfPurchase,
+    @Default(false) bool proofOfPurchaseConfirmed,
+
+    // Smoking
+    @Default(false) bool hasBeenSmokedIn,
+    @Default(false) bool smokingConfirmed,
+
+    // Private Plate
+    @Default(false) bool hasPrivatePlate,
+    @Default(false) bool privatePlateConfirmed,
 
     // Submission
     @Default(SubmissionStatus.draft) SubmissionStatus submissionStatus,
@@ -73,6 +116,8 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default(false) bool mechanicalIssuesConfirmed,
     @Default(false) bool photosConfirmed,
     @Default(false) bool interiorPhotosConfirmed,
+    @Default(false) bool wheelsPhotosConfirmed,
+    @Default(false) bool tireConditionConfirmed,
     @Default(false) bool conditionDamageConfirmed,
     @Default(false) bool serviceHistoryConfirmed,
   }) = _VehicleRegistrationState;
@@ -82,7 +127,7 @@ class VehicleRegistrationState with _$VehicleRegistrationState {
 }
 
 @freezed
-class DamageItem with _$DamageItem {
+abstract class DamageItem with _$DamageItem {
   const factory DamageItem({
     required String id,
     required String type,
@@ -92,4 +137,17 @@ class DamageItem with _$DamageItem {
   }) = _DamageItem;
 
   factory DamageItem.fromJson(Map<String, dynamic> json) => _$DamageItemFromJson(json);
+}
+
+@freezed
+abstract class PaintworkMark with _$PaintworkMark {
+  const factory PaintworkMark({
+    required String id,
+    required String view,
+    required double x,
+    required double y,
+    required String size,
+  }) = _PaintworkMark;
+
+  factory PaintworkMark.fromJson(Map<String, dynamic> json) => _$PaintworkMarkFromJson(json);
 }

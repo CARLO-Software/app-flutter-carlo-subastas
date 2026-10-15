@@ -44,8 +44,9 @@ class _PhotoIntroductionScreenState
     final state = ref.watch(vehicleRegistrationProvider);
     final exteriorCount = state.exteriorPhotosMap.length;
     final interiorCount = state.interiorPhotosMap.length;
-    const totalPhotos = 17;
-    final takenPhotos = exteriorCount + interiorCount;
+    final wheelsCount = state.wheelsPhotosMap.length;
+    const totalPhotos = 18;
+    final takenPhotos = exteriorCount + interiorCount + wheelsCount;
     final remaining = totalPhotos - takenPhotos;
 
     final categories = [
@@ -71,15 +72,21 @@ class _PhotoIntroductionScreenState
       ),
       _PhotoCategory(
         title: 'Ruedas',
-        status: 'No empezado',
-        completed: false,
-        onTap: () {},
+        status: state.wheelsPhotosConfirmed
+            ? 'Completado'
+            : state.wheelsPhotosMap.isNotEmpty
+                ? '${state.wheelsPhotosMap.length}/4 fotos'
+                : 'No empezado',
+        completed: state.wheelsPhotosConfirmed,
+        onTap: () => context.push(AppRoutes.wheelsPhotos),
       ),
       _PhotoCategory(
         title: 'Estado de los neumáticos',
-        status: 'No empezado',
-        completed: false,
-        onTap: () {},
+        status: state.tireConditionConfirmed
+            ? 'Completado'
+            : 'No empezado',
+        completed: state.tireConditionConfirmed,
+        onTap: () => context.push(AppRoutes.tireCondition),
       ),
     ];
 
