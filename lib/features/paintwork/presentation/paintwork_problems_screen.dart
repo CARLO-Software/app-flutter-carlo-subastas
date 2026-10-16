@@ -218,20 +218,36 @@ class _CarDiagramView extends StatelessWidget {
     required this.onRemoveMark,
   });
 
+  static const _silhouettes = {
+    'driver': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-izquierdo.png',
+    'passenger': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-derecho.png',
+    'front': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-frontal.png',
+    'back': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-trasera.png',
+  };
+
   @override
   Widget build(BuildContext context) {
+    final silhouette = _silhouettes[viewId];
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
           onTapUp: (details) => onTap(details.localPosition, constraints.biggest),
           child: Stack(
             children: [
-              // Car outline
+              // Car silhouette or fallback outline
               Center(
-                child: CustomPaint(
-                  size: constraints.biggest,
-                  painter: _CarOutlinePainter(viewId),
-                ),
+                child: silhouette != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Opacity(
+                          opacity: 0.45,
+                          child: Image.asset(silhouette, fit: BoxFit.contain),
+                        ),
+                      )
+                    : CustomPaint(
+                        size: constraints.biggest,
+                        painter: _CarOutlinePainter(viewId),
+                      ),
               ),
               // Marks
               ...marks.map((mark) {

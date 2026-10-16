@@ -2,14 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
+import 'overlay_capture_screen.dart';
 
 const _wheelPositions = [
   {'id': 'front_left', 'name': 'Delantera izquierda', 'icon': Icons.tire_repair},
@@ -26,20 +25,187 @@ class WheelsPhotosScreen extends ConsumerStatefulWidget {
 }
 
 class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
-  final _picker = ImagePicker();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
+  }
+
+  void _showIntroPopup() {
+    final c = context.colors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (ctx) => FractionallySizedBox(
+        heightFactor: 0.96,
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusXl),
+            ),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(ctx).pop(),
+                    child: Text(
+                      'Cerrar',
+                      style: AppTypography.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fotos de llantas',
+                        style: AppTypography.headlineSmall.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      AppSpacing.vGapLg,
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceVariant,
+                          borderRadius: AppSpacing.borderRadiusMd,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Toma fotos de cerca mostrando el neumático y el rin completo.',
+                                    style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            AppSpacing.vGapSm,
+                            Row(
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: c.textPrimary),
+                                AppSpacing.hGapSm,
+                                Expanded(
+                                  child: Text(
+                                    'Asegúrate de que se vea bien el estado del neumático.',
+                                    style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      AppSpacing.vGapXxl,
+                      // Llanta delantera
+                      Text(
+                        'Llanta delantera',
+                        style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      AppSpacing.vGapMd,
+                      ClipRRect(
+                        borderRadius: AppSpacing.borderRadiusMd,
+                        child: Image.asset(
+                          'assets/images/llantas/llantas-delantera.webp',
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      AppSpacing.vGapXxl,
+                      // Llanta trasera
+                      Text(
+                        'Llanta trasera',
+                        style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      AppSpacing.vGapMd,
+                      ClipRRect(
+                        borderRadius: AppSpacing.borderRadiusMd,
+                        child: Image.asset(
+                          'assets/images/llantas/llantas-trasera.webp',
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF292929),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppSpacing.borderRadiusXl,
+                      ),
+                    ),
+                    child: Text(
+                      'OK, entendido',
+                      style: AppTypography.button.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> _takePhoto(String wheelId) async {
-    final xFile = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 85,
+    final wheel = _wheelPositions.firstWhere((w) => w['id'] == wheelId);
+    final overlay = AppConstants.cameraOverlayForWheelPosition(wheelId);
+    if (overlay == null) return;
+
+    final exampleAsset = wheelId.startsWith('front')
+        ? 'assets/images/llantas/llantas-delantera.webp'
+        : 'assets/images/llantas/llantas-trasera.webp';
+
+    final path = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => OverlayCaptureScreen(
+          params: OverlayCaptureParams(
+            title: wheel['name'] as String,
+            overlayAsset: overlay,
+            filePrefix: 'wheel_$wheelId',
+            landscape: true,
+            exampleAsset: exampleAsset,
+          ),
+        ),
+      ),
     );
-    if (xFile == null) return;
+    if (path == null || !mounted) return;
 
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = 'wheel_${wheelId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final savedFile = await File(xFile.path).copy('${appDir.path}/$fileName');
-
-    ref.read(vehicleRegistrationProvider.notifier).addWheelPhoto(wheelId, savedFile.path);
+    ref.read(vehicleRegistrationProvider.notifier).addWheelPhoto(wheelId, path);
   }
 
   void _onTap(String wheelId) {
@@ -80,11 +246,17 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Fotos de Ruedas'),
+        title: const Text('Fotos de Llantas'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showIntroPopup,
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -122,8 +294,8 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Ruedas del vehículo',
-                    subtitle: 'Toma una foto de cerca de cada rueda mostrando el neumático y el rin',
+                    title: 'Llantas del vehículo',
+                    subtitle: 'Toma una foto de cerca de cada llanta mostrando el neumático y el rin',
                   ),
                   GridView.builder(
                     shrinkWrap: true,

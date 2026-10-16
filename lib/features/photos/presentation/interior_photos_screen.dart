@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -11,6 +9,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
+import 'overlay_capture_screen.dart';
 
 class InteriorPhotosScreen extends ConsumerStatefulWidget {
   const InteriorPhotosScreen({super.key});
@@ -20,7 +19,6 @@ class InteriorPhotosScreen extends ConsumerStatefulWidget {
 }
 
 class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
-  final _picker = ImagePicker();
   final Set<String> _disabledPositions = {};
 
   @override
@@ -205,18 +203,25 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
   }
 
   Future<void> _takePhoto(String positionId) async {
-    final xFile = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 85,
+    final position = AppConstants.interiorPhotoPositions.firstWhere((p) => p['id'] == positionId);
+    final overlay = AppConstants.cameraOverlayForInteriorPosition(positionId);
+    if (overlay == null) return;
+
+    final path = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => OverlayCaptureScreen(
+          params: OverlayCaptureParams(
+            title: position['name']!,
+            overlayAsset: overlay,
+            filePrefix: 'interior_$positionId',
+            landscape: true,
+          ),
+        ),
+      ),
     );
-    if (xFile == null || !mounted) return;
+    if (path == null || !mounted) return;
 
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = 'interior_${positionId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final savedFile = await File(xFile.path).copy('${appDir.path}/$fileName');
-    if (!mounted) return;
-
-    ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(positionId, savedFile.path);
+    ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(positionId, path);
   }
 
   void _onPhotoTap(String positionId) {
