@@ -152,24 +152,27 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF292929),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppSpacing.borderRadiusXl,
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF292929),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppSpacing.borderRadiusXl,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      'OK, entendido',
-                      style: AppTypography.button.copyWith(color: Colors.white),
+                      child: Text(
+                        'OK, entendido',
+                        style: AppTypography.button.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -181,31 +184,46 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
     );
   }
 
-  Future<void> _takePhoto(String wheelId) async {
-    final wheel = _wheelPositions.firstWhere((w) => w['id'] == wheelId);
-    final overlay = AppConstants.cameraOverlayForWheelPosition(wheelId);
-    if (overlay == null) return;
+  List<OverlayCaptureItem> _buildItems({String? startFromId}) {
+    final items = <OverlayCaptureItem>[];
+    final start = startFromId != null
+        ? _wheelPositions.indexWhere((w) => w['id'] == startFromId)
+        : 0;
+    for (var i = start; i < _wheelPositions.length; i++) {
+      final wheel = _wheelPositions[i];
+      final wheelId = wheel['id'] as String;
+      final overlay = AppConstants.cameraOverlayForWheelPosition(wheelId);
+      if (overlay == null) continue;
+      final exampleAsset = wheelId.startsWith('front')
+          ? 'assets/images/llantas/llantas-delantera.webp'
+          : 'assets/images/llantas/llantas-trasera.webp';
+      items.add(OverlayCaptureItem(
+        id: wheelId,
+        title: wheel['name'] as String,
+        overlayAsset: overlay,
+        filePrefix: 'wheel_$wheelId',
+        exampleAsset: exampleAsset,
+      ));
+    }
+    return items;
+  }
 
-    final exampleAsset = wheelId.startsWith('front')
-        ? 'assets/images/llantas/llantas-delantera.webp'
-        : 'assets/images/llantas/llantas-trasera.webp';
+  Future<void> _startCapture({String? startFromId}) async {
+    final items = _buildItems(startFromId: startFromId);
+    if (items.isEmpty) return;
 
-    final path = await Navigator.of(context).push<String>(
+    final results = await Navigator.of(context).push<Map<String, String>>(
       MaterialPageRoute(
         builder: (_) => OverlayCaptureScreen(
-          params: OverlayCaptureParams(
-            title: wheel['name'] as String,
-            overlayAsset: overlay,
-            filePrefix: 'wheel_$wheelId',
-            landscape: true,
-            exampleAsset: exampleAsset,
-          ),
+          params: OverlayCaptureParams(items: items, landscape: true),
         ),
       ),
     );
-    if (path == null || !mounted) return;
+    if (results == null || !mounted) return;
 
-    ref.read(vehicleRegistrationProvider.notifier).addWheelPhoto(wheelId, path);
+    for (final entry in results.entries) {
+      ref.read(vehicleRegistrationProvider.notifier).addWheelPhoto(entry.key, entry.value);
+    }
   }
 
   void _onTap(String wheelId) {
@@ -225,7 +243,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
               onPressed: () {
                 Navigator.pop(context);
                 ref.read(vehicleRegistrationProvider.notifier).removeWheelPhoto(wheelId);
-                _takePhoto(wheelId);
+                _startCapture(startFromId: wheelId);
               },
               child: const Text('Retomar'),
             ),
@@ -233,7 +251,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
         ),
       );
     } else {
-      _takePhoto(wheelId);
+      _startCapture(startFromId: wheelId);
     }
   }
 

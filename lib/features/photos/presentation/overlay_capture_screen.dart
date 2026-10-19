@@ -9,19 +9,29 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/widgets.dart';
 
-class OverlayCaptureParams {
+class OverlayCaptureItem {
+  final String id;
   final String title;
   final String overlayAsset;
   final String filePrefix;
-  final bool landscape;
   final String? exampleAsset;
 
-  const OverlayCaptureParams({
+  const OverlayCaptureItem({
+    required this.id,
     required this.title,
     required this.overlayAsset,
     required this.filePrefix,
-    this.landscape = false,
     this.exampleAsset,
+  });
+}
+
+class OverlayCaptureParams {
+  final List<OverlayCaptureItem> items;
+  final bool landscape;
+
+  const OverlayCaptureParams({
+    required this.items,
+    this.landscape = false,
   });
 }
 
@@ -45,6 +55,10 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
   double _maxZoom = 1.0;
   double _currentZoom = 1.0;
   double _baseZoom = 1.0;
+  int _currentIndex = 0;
+  final Map<String, String> _capturedPhotos = {};
+
+  OverlayCaptureItem get _currentItem => widget.params.items[_currentIndex];
 
   @override
   void initState() {
@@ -71,7 +85,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
       ]);
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
     }
     super.dispose();
   }
@@ -119,7 +133,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
     try {
       final photo = await _controller!.takePicture();
       final dir = await getApplicationDocumentsDirectory();
-      final name = '${widget.params.filePrefix}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final name = '${_currentItem.filePrefix}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final saved = '${dir.path}/$name';
       await File(photo.path).copy(saved);
       if (mounted) setState(() { _isCapturing = false; _previewPath = saved; });
@@ -129,7 +143,17 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
   }
 
   void _accept() {
-    if (_previewPath != null) Navigator.of(context).pop(_previewPath);
+    if (_previewPath == null) return;
+    _capturedPhotos[_currentItem.id] = _previewPath!;
+
+    if (_currentIndex < widget.params.items.length - 1) {
+      setState(() {
+        _currentIndex++;
+        _previewPath = null;
+      });
+    } else {
+      Navigator.of(context).pop(_capturedPhotos);
+    }
   }
 
   void _retake() {
@@ -138,7 +162,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
   }
 
   void _showExamplePanel() {
-    final asset = widget.params.exampleAsset;
+    final asset = _currentItem.exampleAsset;
     if (asset == null) return;
     showGeneralDialog(
       context: context,
@@ -160,7 +184,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
               color: const Color(0xFF1A1A1A),
               child: SafeArea(
                 child: SizedBox(
-                  width: MediaQuery.of(ctx).size.width * 0.75,
+                  width: MediaQuery.of(ctx).size.width * 0.65,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -196,7 +220,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
                       Padding(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         child: Text(
-                          'Ejemplo de foto de llanta',
+                          'Foto de referencia',
                           style: AppTypography.bodySmall.copyWith(color: Colors.white70),
                           textAlign: TextAlign.center,
                         ),
@@ -220,7 +244,12 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
     );
   }
 
+  static const double _panelWidth = 90.0;
+  static const Color _panelColor = Color(0xFF2A2A2A);
+
   Widget _buildCamera() {
+    final item = _currentItem;
+    final params = widget.params;
     return Stack(
       children: [
         if (_errorMessage != null)
@@ -252,107 +281,100 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
               child: CameraPreview(_controller!),
             ),
           ),
-          Positioned.fill(
+          Positioned(
+            top: 0, bottom: 0, left: _panelWidth, right: _panelWidth,
             child: IgnorePointer(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-                child: Opacity(
-                  opacity: 0.55,
-                  child: Image.asset(widget.params.overlayAsset, fit: BoxFit.contain),
-                ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Opacity(
+                        opacity: 0.55,
+                        child: Image.asset(item.overlayAsset, fit: BoxFit.contain),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(item.title, style: AppTypography.labelMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ],
               ),
             ),
           ),
         ],
-        // Top bar
+        // Left panel — Salir
         Positioned(
-          top: 0, left: 0, right: 0,
+          top: 0, bottom: 0, left: 0,
           child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        width: 40, height: 40,
-                        decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5), shape: BoxShape.circle),
-                        child: const Icon(Icons.close, color: Colors.white, size: 22),
-                      ),
-                    ),
-                    AppSpacing.hGapMd,
-                    Expanded(
-                      child: Text(widget.params.title, style: AppTypography.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                    if (widget.params.exampleAsset != null)
-                      GestureDetector(
-                        onTap: _showExamplePanel,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.photo_library_outlined, color: Colors.white, size: 16),
-                              const SizedBox(width: 4),
-                              Text('Ejemplo', style: AppTypography.labelMedium.copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
+            width: _panelWidth,
+            color: _panelColor,
+            child: Column(
+              children: [
+                const SizedBox(height: AppSpacing.lg),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                    child: Text('Salir', style: AppTypography.labelMedium.copyWith(color: Colors.white)),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
-        // Capture button + example
-        if (_isInitialized)
-          Positioned(
-            bottom: 0, left: 0, right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter, end: Alignment.topCenter,
-                  colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
-                ),
-              ),
-              child: SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md, left: AppSpacing.lg, right: AppSpacing.lg),
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: _isCapturing ? null : _takePhoto,
-                      child: Container(
-                        width: 68, height: 68,
-                        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 4)),
-                        child: Center(
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 100),
-                            width: _isCapturing ? 46 : 56,
-                            height: _isCapturing ? 46 : 56,
-                            decoration: BoxDecoration(color: _isCapturing ? AppColors.error : Colors.white, shape: BoxShape.circle),
-                          ),
+        // Right panel — Ejemplo + botón + contador
+        Positioned(
+          top: 0, bottom: 0, right: 0,
+          child: Container(
+            width: _panelWidth,
+            color: _panelColor,
+            child: Column(
+              children: [
+                const SizedBox(height: AppSpacing.lg),
+                if (item.exampleAsset != null)
+                  GestureDetector(
+                    onTap: _showExamplePanel,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                      child: Text('Ejemplo', style: AppTypography.labelMedium.copyWith(color: Colors.white)),
+                    ),
+                  ),
+                const Spacer(),
+                if (_isInitialized) ...[
+                  GestureDetector(
+                    onTap: _isCapturing ? null : _takePhoto,
+                    child: Container(
+                      width: 68, height: 68,
+                      decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 4)),
+                      child: Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 100),
+                          width: _isCapturing ? 46 : 56,
+                          height: _isCapturing ? 46 : 56,
+                          decoration: BoxDecoration(color: _isCapturing ? AppColors.error : Colors.white, shape: BoxShape.circle),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    '${_currentIndex + 1} de ${params.items.length}',
+                    style: AppTypography.labelSmall.copyWith(color: Colors.white70),
+                  ),
+                ],
+                const Spacer(),
+              ],
             ),
           ),
+        ),
       ],
     );
   }
@@ -377,7 +399,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
                   children: [
                     const Icon(Icons.photo_camera_outlined, color: Colors.white, size: 22),
                     AppSpacing.hGapSm,
-                    Text(widget.params.title, style: AppTypography.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+                    Text(_currentItem.title, style: AppTypography.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
                     const Spacer(),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),

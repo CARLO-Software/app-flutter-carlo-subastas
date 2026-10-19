@@ -138,29 +138,31 @@ void showEstimatedPricePopup(BuildContext context, WidgetRef ref) {
           AppSpacing.vGapMd,
 
           // CTA
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                GoRouter.of(context).go(AppRoutes.notificationPermission);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF292929),
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: AppSpacing.borderRadiusXl,
+          SafeArea(
+            top: false,
+            child: SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                  GoRouter.of(context).go(AppRoutes.notificationPermission);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF292929),
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: AppSpacing.borderRadiusXl,
+                  ),
                 ),
-              ),
-              child: Text(
-                'Empezar a vender',
-                style: AppTypography.button.copyWith(color: Colors.white),
+                child: Text(
+                  'Empezar a vender',
+                  style: AppTypography.button.copyWith(color: Colors.white),
+                ),
               ),
             ),
           ),
-          AppSpacing.vGapMd,
         ],
       ),
       ),

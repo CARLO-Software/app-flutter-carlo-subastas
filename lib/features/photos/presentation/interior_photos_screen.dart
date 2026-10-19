@@ -134,24 +134,27 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
               ),
 
               // Bottom button
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF292929),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppSpacing.borderRadiusXl,
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF292929),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: AppSpacing.borderRadiusXl,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      'OK, entendido',
-                      style: AppTypography.button.copyWith(color: Colors.white),
+                      child: Text(
+                        'OK, entendido',
+                        style: AppTypography.button.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
@@ -202,26 +205,44 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
     );
   }
 
-  Future<void> _takePhoto(String positionId) async {
-    final position = AppConstants.interiorPhotoPositions.firstWhere((p) => p['id'] == positionId);
-    final overlay = AppConstants.cameraOverlayForInteriorPosition(positionId);
-    if (overlay == null) return;
+  List<OverlayCaptureItem> _buildItems({String? startFromId}) {
+    final positions = AppConstants.interiorPhotoPositions;
+    final start = startFromId != null
+        ? positions.indexWhere((p) => p['id'] == startFromId)
+        : 0;
+    final items = <OverlayCaptureItem>[];
+    for (var i = start; i < positions.length; i++) {
+      final pos = positions[i];
+      final posId = pos['id']!;
+      final overlay = AppConstants.cameraOverlayForInteriorPosition(posId);
+      if (overlay == null) continue;
+      items.add(OverlayCaptureItem(
+        id: posId,
+        title: pos['name']!,
+        overlayAsset: overlay,
+        filePrefix: 'interior_$posId',
+        exampleAsset: pos['reference'],
+      ));
+    }
+    return items;
+  }
 
-    final path = await Navigator.of(context).push<String>(
+  Future<void> _startCapture({String? startFromId}) async {
+    final items = _buildItems(startFromId: startFromId);
+    if (items.isEmpty) return;
+
+    final results = await Navigator.of(context).push<Map<String, String>>(
       MaterialPageRoute(
         builder: (_) => OverlayCaptureScreen(
-          params: OverlayCaptureParams(
-            title: position['name']!,
-            overlayAsset: overlay,
-            filePrefix: 'interior_$positionId',
-            landscape: true,
-          ),
+          params: OverlayCaptureParams(items: items, landscape: true),
         ),
       ),
     );
-    if (path == null || !mounted) return;
+    if (results == null || !mounted) return;
 
-    ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(positionId, path);
+    for (final entry in results.entries) {
+      ref.read(vehicleRegistrationProvider.notifier).addInteriorPhoto(entry.key, entry.value);
+    }
   }
 
   void _onPhotoTap(String positionId) {
@@ -229,7 +250,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
     if (photos.containsKey(positionId)) {
       _showRetakeDialog(positionId);
     } else {
-      _takePhoto(positionId);
+      _startCapture(startFromId: positionId);
     }
   }
 
@@ -248,7 +269,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
             onPressed: () {
               Navigator.pop(context);
               ref.read(vehicleRegistrationProvider.notifier).removeInteriorPhoto(positionId);
-              _takePhoto(positionId);
+              _startCapture(startFromId: positionId);
             },
             child: const Text('Retomar'),
           ),

@@ -10,8 +10,14 @@ class BottomActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final bottomInset = MediaQuery.of(context).viewPadding.bottom;
     return Container(
-      padding: AppSpacing.screenPadding,
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md + bottomInset,
+      ),
       decoration: BoxDecoration(
         color: c.surface,
         border: Border(top: BorderSide(color: c.border)),

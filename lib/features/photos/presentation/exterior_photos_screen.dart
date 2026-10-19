@@ -152,22 +152,25 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF292929),
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
-                    ),
-                    child: Text(
-                      'OK, entendido',
-                      style: AppTypography.button.copyWith(color: Colors.white),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF292929),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
+                      ),
+                      child: Text(
+                        'OK, entendido',
+                        style: AppTypography.button.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
