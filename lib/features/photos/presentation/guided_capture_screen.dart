@@ -14,6 +14,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 import '../providers/guided_capture_provider.dart';
+import '../services/photo_validator_service.dart';
 import '../services/plate_blur_service.dart';
 import '../widgets/widgets.dart';
 
@@ -38,6 +39,9 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   double _currentZoom = 1.0;
   double _baseZoom = 1.0;
   String? _previewPath;
+  PhotoValidatorService? _photoValidator;
+  bool _isValidating = false;
+  PhotoValidationFeedback? _validationResult;
 
   @override
   void initState() {
@@ -132,11 +136,25 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       if (mounted) {
         ref.read(guidedCaptureProvider.notifier).setCapturing(false);
         setState(() => _previewPath = savedPath);
+        _validatePhoto(savedPath, captureState.currentPosition.name);
       }
     } catch (e) {
       ref.read(guidedCaptureProvider.notifier).setCapturing(false);
       ref.read(guidedCaptureProvider.notifier).setError('Error al tomar la foto');
     }
+  }
+
+  Future<void> _validatePhoto(String path, String subject) async {
+    if (AppConstants.geminiApiKey.isEmpty) return;
+    _photoValidator ??= PhotoValidatorService(apiKey: AppConstants.geminiApiKey);
+    setState(() { _isValidating = true; _validationResult = null; });
+
+    final bytes = await File(path).readAsBytes();
+    final result = await _photoValidator!.validate(
+      imageBytes: bytes,
+      expectedSubject: subject,
+    );
+    if (mounted) setState(() { _isValidating = false; _validationResult = result; });
   }
 
   bool _shouldBlurPlate(PhotoAngle angle) {
@@ -163,7 +181,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     ref.read(vehicleRegistrationProvider.notifier)
         .addExteriorPhotoWithPath(positionId, path);
 
-    setState(() => _previewPath = null);
+    setState(() { _previewPath = null; _validationResult = null; _isValidating = false; });
 
     if (captureState.isLastPosition) {
       if (captureState.completedCount + 1 >= captureState.totalPositions) {
@@ -178,7 +196,7 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
     if (_previewPath != null) {
       File(_previewPath!).deleteSync();
     }
-    setState(() => _previewPath = null);
+    setState(() { _previewPath = null; _validationResult = null; _isValidating = false; });
   }
 
   void _finishCapture() {
@@ -466,6 +484,17 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
             ),
           ),
         ),
+        // AI feedback banner
+        if (_isValidating || (_validationResult != null && !_validationResult!.isValid))
+          Positioned(
+            bottom: 120, left: 0, right: 0,
+            child: _isValidating
+                ? const AiFeedbackBanner(message: '', isLoading: true)
+                : AiFeedbackBanner(
+                    message: _validationResult!.shortMessage ?? 'Foto no válida',
+                    detail: _validationResult!.detail,
+                  ),
+          ),
         // Bottom actions
         Positioned(
           bottom: 0,

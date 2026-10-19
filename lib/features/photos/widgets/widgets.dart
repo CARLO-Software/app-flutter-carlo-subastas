@@ -1,3 +1,4 @@
+export 'ai_feedback_banner.dart';
 export 'camera_overlay_widget.dart';
 export 'capture_progress_indicator.dart';
 export 'car_silhouette_painter.dart';

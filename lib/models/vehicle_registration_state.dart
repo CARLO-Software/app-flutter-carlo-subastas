@@ -70,6 +70,7 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
 
     // Broken or Missing Fittings
     @Default([]) List<String> brokenFittingsPhotos,
+    @Default([]) List<BrokenFittingMark> brokenFittingMarks,
     @Default(false) bool hasBrokenFittings,
     @Default(false) bool brokenFittingsConfirmed,
 
@@ -150,4 +151,18 @@ abstract class PaintworkMark with _$PaintworkMark {
   }) = _PaintworkMark;
 
   factory PaintworkMark.fromJson(Map<String, dynamic> json) => _$PaintworkMarkFromJson(json);
+}
+
+@freezed
+abstract class BrokenFittingMark with _$BrokenFittingMark {
+  const factory BrokenFittingMark({
+    required String id,
+    required String view,
+    required double x,
+    required double y,
+    required String label,
+    String? photoPath,
+  }) = _BrokenFittingMark;
+
+  factory BrokenFittingMark.fromJson(Map<String, dynamic> json) => _$BrokenFittingMarkFromJson(json);
 }

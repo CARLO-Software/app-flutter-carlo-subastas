@@ -207,6 +207,25 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(brokenFittingsPhotos: photos);
   }
 
+  void addBrokenFittingMark(BrokenFittingMark mark) {
+    final marks = List<BrokenFittingMark>.from(state.brokenFittingMarks);
+    marks.add(mark);
+    state = state.copyWith(brokenFittingMarks: marks);
+  }
+
+  void removeBrokenFittingMark(String markId) {
+    final marks = List<BrokenFittingMark>.from(state.brokenFittingMarks);
+    marks.removeWhere((m) => m.id == markId);
+    state = state.copyWith(brokenFittingMarks: marks);
+  }
+
+  void updateBrokenFittingMarkPhoto(String markId, String photoPath) {
+    final marks = state.brokenFittingMarks.map((m) {
+      return m.id == markId ? m.copyWith(photoPath: photoPath) : m;
+    }).toList();
+    state = state.copyWith(brokenFittingMarks: marks);
+  }
+
   void confirmBrokenFittings() {
     state = state.copyWith(brokenFittingsConfirmed: true);
   }

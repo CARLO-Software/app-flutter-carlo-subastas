@@ -4,18 +4,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../models/models.dart';
 import '../../../shared/providers/providers.dart';
-import '../../../shared/widgets/widgets.dart';
 
-const _exampleItems = [
-  {'title': 'Manijas de puertas', 'icon': Icons.door_front_door_outlined},
-  {'title': 'Parachoques con hoyos', 'icon': Icons.car_crash_outlined},
-  {'title': 'Cuero dañado', 'icon': Icons.event_seat_outlined},
-  {'title': 'Luz trasera rota', 'icon': Icons.lightbulb_outline},
+const _views = ['Lado conductor', 'Lado pasajero', 'Trasera', 'Frente'];
+const _viewIds = ['driver', 'passenger', 'back', 'front'];
+
+const _fittingTypes = [
+  'Manija',
+  'Espejo',
+  'Luz',
+  'Moldura',
+  'Parachoques',
+  'Otro',
 ];
+
+const _silhouettes = {
+  'driver': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-izquierdo.png',
+  'passenger': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-lateral-derecho.png',
+  'front': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-frontal.png',
+  'back': 'assets/images/plantillas/siluetas_blanco/exterior/png/exterior-trasera.png',
+};
 
 class BrokenFittingsScreen extends ConsumerStatefulWidget {
   const BrokenFittingsScreen({super.key});
@@ -24,35 +37,86 @@ class BrokenFittingsScreen extends ConsumerStatefulWidget {
   ConsumerState<BrokenFittingsScreen> createState() => _BrokenFittingsScreenState();
 }
 
-class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen> {
+class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final _uuid = const Uuid();
   final _picker = ImagePicker();
-  late List<String> _photos;
+  String _selectedType = _fittingTypes.first;
+  late List<BrokenFittingMark> _marks;
 
   @override
   void initState() {
     super.initState();
-    _photos = List<String>.from(ref.read(vehicleRegistrationProvider).brokenFittingsPhotos);
-  }
-
-  Future<void> _takePhoto() async {
-    final xFile = await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
-    if (xFile == null) return;
-
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = 'broken_${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final saved = await File(xFile.path).copy('${appDir.path}/$fileName');
-
-    setState(() => _photos.add(saved.path));
-    ref.read(vehicleRegistrationProvider.notifier).addBrokenFittingPhoto(saved.path);
+    _tabController = TabController(length: _views.length, vsync: this);
+    _marks = List<BrokenFittingMark>.from(ref.read(vehicleRegistrationProvider).brokenFittingMarks);
   }
 
   @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
+  void _addMark(String viewId, Offset position, Size canvasSize) {
+    final mark = BrokenFittingMark(
+      id: _uuid.v4(),
+      view: viewId,
+      x: position.dx / canvasSize.width,
+      y: position.dy / canvasSize.height,
+      label: _selectedType,
+    );
+    setState(() => _marks.add(mark));
+    ref.read(vehicleRegistrationProvider.notifier).addBrokenFittingMark(mark);
+  }
+
+  void _removeMark(String markId) {
+    setState(() => _marks.removeWhere((m) => m.id == markId));
+    ref.read(vehicleRegistrationProvider.notifier).removeBrokenFittingMark(markId);
+  }
+
+  /// Toma fotos de cada punto marcado que aún no tenga foto
+  Future<void> _takePhotosForMarks() async {
+    final pending = _marks.where((m) => m.photoPath == null).toList();
+    if (pending.isEmpty) {
+      _confirm();
+      return;
+    }
+
+    for (int i = 0; i < pending.length; i++) {
+      final mark = pending[i];
+      final xFile = await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
+      if (xFile == null) return; // el usuario canceló
+
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = 'broken_${mark.label.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final saved = await File(xFile.path).copy('${appDir.path}/$fileName');
+
+      ref.read(vehicleRegistrationProvider.notifier).updateBrokenFittingMarkPhoto(mark.id, saved.path);
+      setState(() {
+        final idx = _marks.indexWhere((m) => m.id == mark.id);
+        if (idx >= 0) _marks[idx] = _marks[idx].copyWith(photoPath: saved.path);
+      });
+    }
+
+    if (mounted) _confirm();
+  }
+
+  void _confirm() {
+    ref.read(vehicleRegistrationProvider.notifier).setHasBrokenFittings(_marks.isNotEmpty);
+    ref.read(vehicleRegistrationProvider.notifier).confirmBrokenFittings();
+    context.pop();
+  }
+
+  int get _pendingPhotos => _marks.where((m) => m.photoPath == null).length;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: c.background,
+      backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF1A1A2E),
+        foregroundColor: Colors.white,
         title: const Text('Accesorios rotos o faltantes'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -61,142 +125,139 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen> {
       ),
       body: Column(
         children: [
-          Expanded(
+          // Selector de tipo de accesorio
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
             child: SingleChildScrollView(
-              padding: AppSpacing.screenPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SectionHeader(
-                    title: 'Accesorios rotos o faltantes',
-                    subtitle: '¿Hay partes rotas o faltantes en tu vehículo?',
-                  ),
-                  Text(
-                    'Ejemplos de accesorios rotos:',
-                    style: AppTypography.labelLarge.copyWith(color: c.textSecondary),
-                  ),
-                  AppSpacing.vGapMd,
-                  Wrap(
-                    spacing: AppSpacing.sm,
-                    runSpacing: AppSpacing.sm,
-                    children: _exampleItems.map((item) {
-                      return Container(
-                        width: (MediaQuery.of(context).size.width - 48) / 2,
-                        padding: const EdgeInsets.all(AppSpacing.md),
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _fittingTypes.map((type) {
+                  final isSelected = _selectedType == type;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedType = type),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          color: c.surfaceVariant,
-                          borderRadius: AppSpacing.borderRadiusMd,
-                          border: Border.all(color: c.border),
+                          color: isSelected ? AppColors.primary : Colors.white12,
+                          borderRadius: AppSpacing.borderRadiusSm,
                         ),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: AppColors.error.withValues(alpha: 0.1),
-                                borderRadius: AppSpacing.borderRadiusSm,
-                              ),
-                              child: Icon(item['icon'] as IconData, color: AppColors.error, size: 24),
-                            ),
-                            AppSpacing.vGapSm,
-                            Text(
-                              item['title'] as String,
-                              style: AppTypography.bodySmall.copyWith(fontWeight: FontWeight.w500),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                        child: Text(
+                          type,
+                          style: AppTypography.labelMedium.copyWith(
+                            color: Colors.white,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  AppSpacing.vGapLg,
-                  if (_photos.isNotEmpty) ...[
-                    Text(
-                      'Fotos tomadas (${_photos.length})',
-                      style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    AppSpacing.vGapSm,
-                    SizedBox(
-                      height: 100,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _photos.length,
-                        separatorBuilder: (_, __) => AppSpacing.hGapSm,
-                        itemBuilder: (_, i) {
-                          return Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: AppSpacing.borderRadiusMd,
-                                child: Image.file(
-                                  File(_photos[i]),
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    width: 100,
-                                    height: 100,
-                                    color: c.surfaceVariant,
-                                    child: const Icon(Icons.broken_image),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 4,
-                                right: 4,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    ref.read(vehicleRegistrationProvider.notifier).removeBrokenFittingPhoto(_photos[i]);
-                                    setState(() => _photos.removeAt(i));
-                                  },
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.error,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(Icons.close, size: 14, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
                       ),
                     ),
-                    AppSpacing.vGapMd,
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+
+          // Tabs de vista
+          TabBar(
+            controller: _tabController,
+            onTap: (_) => setState(() {}),
+            isScrollable: true,
+            indicatorColor: AppColors.primary,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white54,
+            tabAlignment: TabAlignment.start,
+            tabs: _views.map((v) => Tab(text: v)).toList(),
+          ),
+
+          // Diagrama con puntos
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: List.generate(_views.length, (index) {
+                final viewId = _viewIds[index];
+                final viewMarks = _marks.where((m) => m.view == viewId).toList();
+                return _FittingDiagramView(
+                  viewId: viewId,
+                  marks: viewMarks,
+                  onTap: (pos, size) => _addMark(viewId, pos, size),
+                  onRemoveMark: _removeMark,
+                );
+              }),
+            ),
+          ),
+
+          // Contador de marcas
+          if (_marks.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Icon(Icons.circle, size: 12, color: AppColors.error),
+                  AppSpacing.hGapSm,
+                  Text(
+                    '${_marks.length} accesorio${_marks.length == 1 ? '' : 's'} marcado${_marks.length == 1 ? '' : 's'}',
+                    style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                  ),
+                  if (_pendingPhotos > 0) ...[
+                    const Spacer(),
+                    Text(
+                      '$_pendingPhotos sin foto',
+                      style: AppTypography.bodySmall.copyWith(color: Colors.orange),
+                    ),
                   ],
+                ],
+              ),
+            ),
+
+          // Botones inferiores
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                children: [
+                  if (_marks.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton.icon(
+                          onPressed: _takePhotosForMarks,
+                          icon: const Icon(Icons.camera_alt_outlined),
+                          label: Text(
+                            _pendingPhotos > 0
+                                ? 'Tomar fotos ($_pendingPhotos pendientes)'
+                                : 'Listo',
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
+                          ),
+                        ),
+                      ),
+                    ),
                   SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: ElevatedButton.icon(
-                      onPressed: _takePhoto,
-                      icon: const Icon(Icons.camera_alt_outlined),
-                      label: const Text('Tomar fotos'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
-                      ),
-                    ),
-                  ),
-                  AppSpacing.vGapMd,
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
+                    child: ElevatedButton(
                       onPressed: () {
                         ref.read(vehicleRegistrationProvider.notifier).setHasBrokenFittings(false);
                         ref.read(vehicleRegistrationProvider.notifier).confirmBrokenFittings();
                         context.pop();
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _marks.isEmpty ? Colors.white : Colors.white12,
+                        foregroundColor: _marks.isEmpty ? Colors.black : Colors.white70,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
+                      ),
                       child: Text(
-                        'No tiene accesorios rotos o faltantes',
-                        style: AppTypography.titleSmall.copyWith(
-                          color: AppColors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
+                        _marks.isEmpty ? 'Sin accesorios rotos' : 'Omitir fotos y confirmar',
+                        style: AppTypography.button,
                       ),
                     ),
                   ),
@@ -204,19 +265,111 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen> {
               ),
             ),
           ),
-          if (_photos.isNotEmpty)
-            BottomActionBar(
-              child: PrimaryButton(
-                text: 'Confirmar',
-                onPressed: () {
-                  ref.read(vehicleRegistrationProvider.notifier).setHasBrokenFittings(true);
-                  ref.read(vehicleRegistrationProvider.notifier).confirmBrokenFittings();
-                  context.pop();
-                },
-              ),
-            ),
         ],
       ),
+    );
+  }
+}
+
+class _FittingDiagramView extends StatelessWidget {
+  final String viewId;
+  final List<BrokenFittingMark> marks;
+  final void Function(Offset position, Size canvasSize) onTap;
+  final void Function(String markId) onRemoveMark;
+
+  const _FittingDiagramView({
+    required this.viewId,
+    required this.marks,
+    required this.onTap,
+    required this.onRemoveMark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final silhouette = _silhouettes[viewId];
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return GestureDetector(
+          onTapUp: (details) => onTap(details.localPosition, constraints.biggest),
+          child: Stack(
+            children: [
+              Center(
+                child: silhouette != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Opacity(
+                          opacity: 0.45,
+                          child: Image.asset(silhouette, fit: BoxFit.contain),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              // Marcas con label
+              ...marks.map((mark) {
+                final x = mark.x * constraints.maxWidth;
+                final y = mark.y * constraints.maxHeight;
+                final hasPhoto = mark.photoPath != null;
+                return Positioned(
+                  left: x - 14,
+                  top: y - 14,
+                  child: GestureDetector(
+                    onTap: () => onRemoveMark(mark.id),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: hasPhoto ? AppColors.success : AppColors.error,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (hasPhoto ? AppColors.success : AppColors.error).withValues(alpha: 0.5),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            hasPhoto ? Icons.check : Icons.close,
+                            size: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            mark.label,
+                            style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              // Instrucción
+              Positioned(
+                bottom: 16,
+                left: 0,
+                right: 0,
+                child: Text(
+                  'Toca para marcar accesorios rotos o faltantes',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.bodySmall.copyWith(color: Colors.white38),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

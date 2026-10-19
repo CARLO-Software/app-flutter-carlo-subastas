@@ -73,6 +73,11 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  brokenFittingMarks:
+      (json['brokenFittingMarks'] as List<dynamic>?)
+          ?.map((e) => BrokenFittingMark.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   hasBrokenFittings: json['hasBrokenFittings'] as bool? ?? false,
   brokenFittingsConfirmed: json['brokenFittingsConfirmed'] as bool? ?? false,
   wheelDamageMap:
@@ -149,6 +154,7 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'paintworkMarks': instance.paintworkMarks,
   'paintworkConfirmed': instance.paintworkConfirmed,
   'brokenFittingsPhotos': instance.brokenFittingsPhotos,
+  'brokenFittingMarks': instance.brokenFittingMarks,
   'hasBrokenFittings': instance.hasBrokenFittings,
   'brokenFittingsConfirmed': instance.brokenFittingsConfirmed,
   'wheelDamageMap': instance.wheelDamageMap,
@@ -236,4 +242,24 @@ Map<String, dynamic> _$PaintworkMarkToJson(_PaintworkMark instance) =>
       'x': instance.x,
       'y': instance.y,
       'size': instance.size,
+    };
+
+_BrokenFittingMark _$BrokenFittingMarkFromJson(Map<String, dynamic> json) =>
+    _BrokenFittingMark(
+      id: json['id'] as String,
+      view: json['view'] as String,
+      x: (json['x'] as num).toDouble(),
+      y: (json['y'] as num).toDouble(),
+      label: json['label'] as String,
+      photoPath: json['photoPath'] as String?,
+    );
+
+Map<String, dynamic> _$BrokenFittingMarkToJson(_BrokenFittingMark instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'view': instance.view,
+      'x': instance.x,
+      'y': instance.y,
+      'label': instance.label,
+      'photoPath': instance.photoPath,
     };

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/widgets.dart';
+import '../services/photo_validator_service.dart';
+import '../widgets/widgets.dart';
 
 class OverlayCaptureItem {
   final String id;
@@ -57,6 +60,9 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
   double _baseZoom = 1.0;
   int _currentIndex = 0;
   final Map<String, String> _capturedPhotos = {};
+  PhotoValidatorService? _validator;
+  bool _isValidating = false;
+  PhotoValidationFeedback? _validationResult;
 
   OverlayCaptureItem get _currentItem => widget.params.items[_currentIndex];
 
@@ -136,10 +142,26 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
       final name = '${_currentItem.filePrefix}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final saved = '${dir.path}/$name';
       await File(photo.path).copy(saved);
-      if (mounted) setState(() { _isCapturing = false; _previewPath = saved; });
+      if (mounted) {
+        setState(() { _isCapturing = false; _previewPath = saved; });
+        _validatePhoto(saved);
+      }
     } catch (_) {
       if (mounted) setState(() => _isCapturing = false);
     }
+  }
+
+  Future<void> _validatePhoto(String path) async {
+    if (AppConstants.geminiApiKey.isEmpty) return;
+    _validator ??= PhotoValidatorService(apiKey: AppConstants.geminiApiKey);
+    setState(() { _isValidating = true; _validationResult = null; });
+
+    final bytes = await File(path).readAsBytes();
+    final result = await _validator!.validate(
+      imageBytes: bytes,
+      expectedSubject: _currentItem.title,
+    );
+    if (mounted) setState(() { _isValidating = false; _validationResult = result; });
   }
 
   void _accept() {
@@ -150,6 +172,8 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
       setState(() {
         _currentIndex++;
         _previewPath = null;
+        _validationResult = null;
+        _isValidating = false;
       });
     } else {
       Navigator.of(context).pop(_capturedPhotos);
@@ -158,7 +182,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
 
   void _retake() {
     if (_previewPath != null) File(_previewPath!).deleteSync();
-    setState(() => _previewPath = null);
+    setState(() { _previewPath = null; _validationResult = null; _isValidating = false; });
   }
 
   void _showExamplePanel() {
@@ -412,6 +436,17 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
             ),
           ),
         ),
+        // AI feedback banner
+        if (_isValidating || (_validationResult != null && !_validationResult!.isValid))
+          Positioned(
+            bottom: 120, left: 0, right: 0,
+            child: _isValidating
+                ? const AiFeedbackBanner(message: '', isLoading: true)
+                : AiFeedbackBanner(
+                    message: _validationResult!.shortMessage ?? 'Foto no válida',
+                    detail: _validationResult!.detail,
+                  ),
+          ),
         Positioned(
           bottom: 0, left: 0, right: 0,
           child: Container(

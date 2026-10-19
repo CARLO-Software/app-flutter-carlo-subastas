@@ -7,11 +7,15 @@ class AngleValidationResult {
   final bool isValid;
   final String? feedback;
   final double confidence;
+  /// true = la IA analizó la foto y encontró un problema
+  /// false = error técnico (red, API key, timeout) que no es culpa del usuario
+  final bool isAiFeedback;
 
   const AngleValidationResult({
     required this.isValid,
     this.feedback,
     this.confidence = 0.0,
+    this.isAiFeedback = false,
   });
 
   factory AngleValidationResult.valid() => const AngleValidationResult(
@@ -19,16 +23,18 @@ class AngleValidationResult {
     confidence: 1.0,
   );
 
+  /// Resultado de la IA: el ángulo o contenido de la foto no es correcto
   factory AngleValidationResult.invalid(String feedback) => AngleValidationResult(
     isValid: false,
     feedback: feedback,
-    confidence: 0.0,
+    isAiFeedback: true,
   );
 
-  factory AngleValidationResult.error() => const AngleValidationResult(
+  /// Error técnico: no se pudo contactar la IA (red, API, etc.)
+  factory AngleValidationResult.error(String feedback) => AngleValidationResult(
     isValid: false,
-    feedback: 'Error al validar. Intenta de nuevo.',
-    confidence: 0.0,
+    feedback: feedback,
+    isAiFeedback: false,
   );
 }
 
@@ -50,13 +56,10 @@ class AngleValidatorService {
     required Uint8List imageBytes,
     required PhotoAngle expectedAngle,
   }) async {
-    if (_isProcessing) return AngleValidationResult.error();
+    if (_isProcessing) return AngleValidationResult.error('Validación en proceso');
 
-    if (_apiKey.isEmpty) {
-      return AngleValidationResult.invalid(
-        'API key no configurada. Recompila con --dart-define-from-file=.env',
-      );
-    }
+    // Sin API key → saltar validación silenciosamente, no mostrar error técnico al usuario
+    if (_apiKey.isEmpty) return AngleValidationResult.valid();
 
     _isProcessing = true;
 
@@ -80,22 +83,16 @@ class AngleValidatorService {
     } catch (e, stack) {
       debugPrint('>>> Gemini exception: $e');
       debugPrint('>>> Stack: $stack');
-      // ponytail: surface real error so user knows what failed without USB
+      // Errores técnicos → badge [Error], no [AI]. Mensajes amigables para el usuario
       final msg = e.toString();
-      if (msg.contains('API key') || msg.contains('401') || msg.contains('403')) {
-        return AngleValidationResult.invalid('Error de API key. Verifica tu GEMINI_API_KEY.');
-      }
       if (msg.contains('SocketException') || msg.contains('ClientException') || msg.contains('TimeoutException')) {
-        return AngleValidationResult.invalid('Sin conexión a internet. Verifica tu red.');
+        return AngleValidationResult.error('Sin conexión a internet');
       }
-      return AngleValidationResult.invalid('Error al validar: ${_truncate(msg, 80)}');
+      return AngleValidationResult.error('No se pudo validar la foto');
     } finally {
       _isProcessing = false;
     }
   }
-
-  static String _truncate(String s, int max) =>
-      s.length <= max ? s : '${s.substring(0, max)}...';
 
   String _buildPrompt(PhotoAngle angle) {
     final angleDesc = _getAngleDescription(angle);

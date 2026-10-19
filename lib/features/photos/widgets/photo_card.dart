@@ -16,6 +16,9 @@ class PhotoCard extends StatelessWidget {
   final PhotoAngle? angle;
   final PhotoValidationStatus validationStatus;
   final String? validationFeedback;
+  /// true → badge [AI] rojo (la IA detectó un problema)
+  /// false → badge [Error] ámbar (fallo técnico: red, API, etc.)
+  final bool isAiFeedback;
   final VoidCallback? onRetake;
 
   const PhotoCard({
@@ -27,6 +30,7 @@ class PhotoCard extends StatelessWidget {
     this.angle,
     this.validationStatus = PhotoValidationStatus.none,
     this.validationFeedback,
+    this.isAiFeedback = true,
     this.onRetake,
   });
 
@@ -40,7 +44,7 @@ class PhotoCard extends StatelessWidget {
     final bool isValid = validationStatus == PhotoValidationStatus.valid;
 
     final borderColor = isInvalid
-        ? AppColors.error
+        ? (isAiFeedback ? AppColors.error : Colors.orange)
         : isValid
             ? AppColors.success
             : hasPhoto
@@ -125,7 +129,7 @@ class PhotoCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  // Bottom banner
+                  // Banner inferior: [AI] rojo para feedback de IA, [Error] ámbar para errores técnicos, título normal si es válido
                   Positioned(
                     bottom: 0,
                     left: 0,
@@ -133,11 +137,13 @@ class PhotoCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
+                        vertical: AppSpacing.xs + 2,
                       ),
                       decoration: BoxDecoration(
                         color: isInvalid
-                            ? AppColors.error.withValues(alpha: 0.9)
+                            ? (isAiFeedback
+                                ? AppColors.error.withValues(alpha: 0.9)
+                                : Colors.orange.withValues(alpha: 0.9))
                             : AppColors.primary.withValues(alpha: 0.85),
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(AppSpacing.radiusMd),
@@ -146,20 +152,29 @@ class PhotoCard extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          if (isInvalid)
-                            const Padding(
-                              padding: EdgeInsets.only(right: 4),
-                              child: Icon(Icons.warning, color: Colors.white, size: 14),
+                          if (isInvalid) ...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.25),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: Text(
+                                isAiFeedback ? 'AI' : 'Error',
+                                style: AppTypography.labelSmall.copyWith(
+                                  color: Colors.white, fontWeight: FontWeight.w800, fontSize: 9,
+                                ),
+                              ),
                             ),
+                            const SizedBox(width: 4),
+                          ],
                           Expanded(
                             child: Text(
                               isInvalid
                                   ? (validationFeedback ?? title)
                                   : title,
-                              style: AppTypography.labelSmall.copyWith(
-                                color: Colors.white,
-                              ),
-                              textAlign: TextAlign.center,
+                              style: AppTypography.labelSmall.copyWith(color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -176,8 +191,8 @@ class PhotoCard extends StatelessWidget {
                         child: Container(
                           width: 32,
                           height: 32,
-                          decoration: const BoxDecoration(
-                            color: AppColors.error,
+                          decoration: BoxDecoration(
+                            color: isAiFeedback ? AppColors.error : Colors.orange,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(

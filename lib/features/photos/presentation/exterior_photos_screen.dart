@@ -184,6 +184,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
 
   final Map<String, PhotoValidationStatus> _validationStatus = {};
   final Map<String, String> _validationFeedback = {};
+  final Map<String, bool> _isAiFeedback = {};
 
   AngleValidatorService get validator {
     _validator ??= AngleValidatorService(apiKey: AppConstants.geminiApiKey);
@@ -229,9 +230,11 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
           if (result.isValid) {
             _validationStatus[position.id] = PhotoValidationStatus.valid;
             _validationFeedback.remove(position.id);
+            _isAiFeedback.remove(position.id);
           } else {
             _validationStatus[position.id] = PhotoValidationStatus.invalid;
             _validationFeedback[position.id] = result.feedback ?? 'Ángulo incorrecto';
+            _isAiFeedback[position.id] = result.isAiFeedback;
           }
         });
       } catch (e) {
@@ -261,6 +264,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     setState(() {
       _validationStatus.remove(positionId);
       _validationFeedback.remove(positionId);
+      _isAiFeedback.remove(positionId);
     });
 
     final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
@@ -303,9 +307,11 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
         if (result.isValid) {
           _validationStatus[positionId] = PhotoValidationStatus.valid;
           _validationFeedback.remove(positionId);
+          _isAiFeedback.remove(positionId);
         } else {
           _validationStatus[positionId] = PhotoValidationStatus.invalid;
           _validationFeedback[positionId] = result.feedback ?? 'Ángulo incorrecto';
+          _isAiFeedback[positionId] = result.isAiFeedback;
         }
       });
     } catch (e) {
@@ -564,6 +570,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                         onTap: () => _onPhotoCardTap(position.id),
                         validationStatus: _validationStatus[position.id] ?? PhotoValidationStatus.none,
                         validationFeedback: _validationFeedback[position.id],
+                        isAiFeedback: _isAiFeedback[position.id] ?? true,
                         onRetake: () => _retakePhoto(position.id),
                       );
                     },
