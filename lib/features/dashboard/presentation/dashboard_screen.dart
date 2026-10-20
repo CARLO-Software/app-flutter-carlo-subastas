@@ -147,7 +147,7 @@ class DashboardScreen extends ConsumerWidget {
 
                   Center(
                     child: GestureDetector(
-                      onTap: () => _openWhatsApp(),
+                      onTap: () => _showContactPopup(context),
                       child: Text(
                         '¿Necesitas ayuda?',
                         style: AppTypography.titleSmall.copyWith(
@@ -278,6 +278,155 @@ class DashboardScreen extends ConsumerWidget {
     }
   }
 
+  void _showContactPopup(BuildContext context) {
+    final c = context.colors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => FractionallySizedBox(
+        heightFactor: 0.96,
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusXl),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(ctx).pop(),
+                    child: Text(
+                      'Cerrar',
+                      style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Nuestro horario\nde atención',
+                        style: AppTypography.headlineSmall.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      AppSpacing.vGapMd,
+                      Text(
+                        'Estamos disponibles para ayudarte con cualquier duda sobre el registro de tu vehículo.',
+                        style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
+                      ),
+                      AppSpacing.vGapXxl,
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceVariant,
+                          borderRadius: AppSpacing.borderRadiusMd,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF25D366).withValues(alpha: 0.15),
+                                borderRadius: AppSpacing.borderRadiusSm,
+                              ),
+                              child: const Icon(Icons.chat_outlined, color: Color(0xFF25D366), size: 22),
+                            ),
+                            AppSpacing.hGapMd,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('WhatsApp', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w700)),
+                                  AppSpacing.vGapXxs,
+                                  Text('+51 934 140 010', style: AppTypography.bodySmall.copyWith(color: c.textSecondary)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      AppSpacing.vGapLg,
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: c.surfaceVariant,
+                          borderRadius: AppSpacing.borderRadiusMd,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.schedule, size: 18, color: c.textSecondary),
+                                AppSpacing.hGapSm,
+                                Text('Horarios', style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w700)),
+                              ],
+                            ),
+                            AppSpacing.vGapMd,
+                            _ScheduleRow(label: 'Lunes a Viernes', hours: '9:00 am - 5:00 pm', colors: c),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                              child: Divider(height: 1, color: c.border),
+                            ),
+                            _ScheduleRow(label: 'Sábados', hours: '9:00 am - 12:00 pm', colors: c),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                              child: Divider(height: 1, color: c.border),
+                            ),
+                            _ScheduleRow(label: 'Domingos y feriados', hours: 'Cerrado', colors: c, closed: true),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        _openWhatsApp();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF292929),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
+                      ),
+                      child: Text(
+                        'Contactar por WhatsApp',
+                        style: AppTypography.button.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showUserMenu(BuildContext context) {
     final c = context.colors;
     showModalBottomSheet(
@@ -404,6 +553,37 @@ class _DashboardStep {
     required this.completed,
     required this.route,
   });
+}
+
+class _ScheduleRow extends StatelessWidget {
+  final String label;
+  final String hours;
+  final AdaptiveColors colors;
+  final bool closed;
+
+  const _ScheduleRow({
+    required this.label,
+    required this.hours,
+    required this.colors,
+    this.closed = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: AppTypography.bodySmall),
+        Text(
+          hours,
+          style: AppTypography.bodySmall.copyWith(
+            fontWeight: FontWeight.w600,
+            color: closed ? AppColors.error : colors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _StepCard extends StatelessWidget {

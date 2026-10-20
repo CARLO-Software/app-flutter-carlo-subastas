@@ -8,11 +8,184 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
 
-class ConditionDamageScreen extends ConsumerWidget {
+class ConditionDamageScreen extends ConsumerStatefulWidget {
   const ConditionDamageScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConditionDamageScreen> createState() => _ConditionDamageScreenState();
+}
+
+class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
+  }
+
+  static const _damageExamples = [
+    {
+      'image': 'assets/images/condicion-danos/condicion-abolladura.jpeg',
+      'title': 'Abolladura',
+      'description': 'Hundimiento en el panel lateral de la puerta causado por un impacto. Requiere trabajo de desabollado y posible repintado de la zona afectada.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-quine.jpeg',
+      'title': 'Quiñe',
+      'description': 'Desconche de pintura en el borde de la puerta por golpe menor. Se repara con retoque de pintura o repintado parcial del panel.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-rayadura.jpeg',
+      'title': 'Rayadura en parachoques',
+      'description': 'Rayas superficiales en el parachoques delantero por roce. Se corrige con pulido profesional o repintado si es profunda.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-rayadura-3.jpeg',
+      'title': 'Rayadura en carrocería',
+      'description': 'Rayas y marcas de roce en el parachoques trasero. Requiere pulido o repintado dependiendo de la profundidad del daño.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-rayadura-faro.jpeg',
+      'title': 'Rayadura en faro',
+      'description': 'Rayas y opacidad en la mica del faro delantero por desgaste. Se restaura con kit de pulido de faros o reemplazo de la mica.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-rajado-faro.jpeg',
+      'title': 'Faro rajado',
+      'description': 'Rajadura visible en la mica del faro trasero. Requiere reemplazo completo del faro ya que no se puede reparar.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-pintura.jpeg',
+      'title': 'Pintura desgastada',
+      'description': 'Decoloración y desgaste de la pintura en la puerta por exposición solar. Necesita lijado y repintado completo del panel.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-pintura-reventada.jpeg',
+      'title': 'Pintura reventada',
+      'description': 'Pintura levantada y descascarada en el parachoques, exponiendo la base. Requiere lijado, preparación y repintado de la zona.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-desgaste-llantas.jpeg',
+      'title': 'Desgaste de llantas',
+      'description': 'Llanta con banda de rodamiento severamente gastada y agrietada. Requiere reemplazo inmediato por seguridad.',
+    },
+    {
+      'image': 'assets/images/condicion-danos/condicion-descuadrado.jpeg',
+      'title': 'Panel descuadrado',
+      'description': 'Desalineación del parachoques trasero respecto a la carrocería. Indica un golpe previo; requiere alineación o reemplazo del panel.',
+    },
+  ];
+
+  void _showIntroPopup() {
+    final c = context.colors;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (ctx) => FractionallySizedBox(
+        heightFactor: 0.96,
+        child: Container(
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppSpacing.radiusXl),
+            ),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 0),
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(ctx).pop(),
+                    child: Text(
+                      'Cerrar',
+                      style: AppTypography.bodyMedium.copyWith(fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Tipos de daños',
+                        style: AppTypography.headlineSmall.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      AppSpacing.vGapSm,
+                      Text(
+                        'Estos son ejemplos de los daños más comunes que debes reportar en tu vehículo.',
+                        style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
+                      ),
+                      AppSpacing.vGapXxl,
+                      ..._damageExamples.map((example) => Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              example['title']!,
+                              style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            AppSpacing.vGapXs,
+                            Text(
+                              example['description']!,
+                              style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
+                            ),
+                            AppSpacing.vGapMd,
+                            ClipRRect(
+                              borderRadius: AppSpacing.borderRadiusMd,
+                              child: Image.asset(
+                                example['image']!,
+                                width: double.infinity,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF292929),
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
+                      ),
+                      child: Text(
+                        'OK, entendido',
+                        style: AppTypography.button.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final registrationState = ref.watch(vehicleRegistrationProvider);
 
     return Scaffold(
