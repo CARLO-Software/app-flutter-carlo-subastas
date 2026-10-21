@@ -41,14 +41,15 @@ flutter test test/widget_test.dart
 
 **Registration Wizard Flow**: Splash → Vehicle Lookup → Dashboard (hub) → 10 steps (vehicle details, extra features, keys, finance, running condition, mechanical issues, exterior photos, interior photos, condition/damage, service history) → Review → Submission. The dashboard shows completion progress; each step navigates back to dashboard after confirming.
 
-**Photo Capture Flow** (`lib/features/photos/`):
-- `GuidedCaptureScreen` — camera preview with car silhouette overlay
-- `VehicleDetectorService` — ML Kit object detection for real-time vehicle alignment
-- `AngleValidatorService` — Gemini API (`gemini-2.5-flash`) validation of photo angle correctness
-- 8 exterior photos at specific angles defined by `PhotoAngle` enum (`lib/models/photo_position.dart`)
-- Interior photos and damage photos stored as `Map<String, String>` (positionId → filePath)
+**Photo Capture** (`lib/features/photos/`): Two camera screen types:
+- `GuidedCaptureScreen` — exterior photos with car silhouette overlay, ML Kit vehicle detection, and Gemini AI angle validation. 8 angles defined by `PhotoAngle` enum (`lib/models/photo_position.dart`). Uses landscape orientation.
+- `OverlayCaptureScreen` — generic camera for interior, wheels, and damage photos. `overlayAsset` is optional (damage photos skip the overlay). Returns `Map<String, String>` (positionId → filePath).
 
-**Theme**: Custom design system in `lib/core/theme/`. Use `AppColors`, `AppSpacing`, `AppTypography` instead of raw values.
+Both screens wrap photo review in `InteractiveViewer` for pinch-to-zoom.
+
+**Damage Locator** (`lib/features/condition_damage/presentation/damage_locator_screen.dart`): Interactive vehicle silhouette for marking damage locations. Flow: take damage photo → navigate to locator → tap zone on SVG silhouette → pick damage size → review. Uses `CustomPainter` with polygon hit-testing (`Path.contains()`) on SVG viewBox coordinates (2880×1620). Four views (frontal, rear, left side, right side) with per-view zoom via `Transform.scale` and inverse coordinate compensation for hit detection. Zone polygons are defined relative to real SVG path landmarks.
+
+**Theme**: Custom design system in `lib/core/theme/`. Use `AppColors` for static colors, `AppSpacing` for layout constants, `AppTypography` for text styles. For theme-aware colors use `context.colors` extension (e.g., `context.colors.surface`, `context.colors.textPrimary`) — defined via `AdaptiveColors` in `app_colors.dart`.
 
 ## Environment
 

@@ -212,9 +212,16 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _previewPath != null
-          ? _buildPhotoReview(captureState)
-          : _buildCameraCapture(captureState),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            return const RotateDeviceOverlay();
+          }
+          return _previewPath != null
+              ? _buildPhotoReview(captureState)
+              : _buildCameraCapture(captureState);
+        },
+      ),
     );
   }
 
@@ -426,9 +433,13 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
       children: [
         Container(color: Colors.black),
         Center(
-          child: Image.file(
-            File(_previewPath!),
-            fit: BoxFit.contain,
+          child: InteractiveViewer(
+            minScale: 1.0,
+            maxScale: 5.0,
+            child: Image.file(
+              File(_previewPath!),
+              fit: BoxFit.contain,
+            ),
           ),
         ),
         // Top bar

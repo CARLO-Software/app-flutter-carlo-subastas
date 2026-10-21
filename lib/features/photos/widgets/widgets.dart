@@ -5,3 +5,4 @@ export 'car_silhouette_painter.dart';
 export 'photo_card.dart';
 export 'photo_guide.dart';
 export 'photo_preview_dialog.dart';
+export 'rotate_device_overlay.dart';

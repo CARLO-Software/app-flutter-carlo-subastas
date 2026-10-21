@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
-import '../../../shared/widgets/widgets.dart';
+import '../../photos/presentation/overlay_capture_screen.dart';
+import 'damage_locator_screen.dart';
 
 class ConditionDamageScreen extends ConsumerStatefulWidget {
   const ConditionDamageScreen({super.key});
@@ -16,11 +18,40 @@ class ConditionDamageScreen extends ConsumerStatefulWidget {
 }
 
 class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
-  }
+  final Map<String, String> _capturedPhotos = {};
+
+  static const _damageTypes = [
+    {
+      'id': 'rayones',
+      'title': 'Rayones o rozaduras',
+      'image': 'assets/images/condicion-danos/condicion-rayadura.jpeg',
+      'icon': Icons.gesture,
+    },
+    {
+      'id': 'oxido_pintura',
+      'title': 'Óxido o defectos en la pintura',
+      'image': 'assets/images/condicion-danos/condicion-pintura.jpeg',
+      'icon': Icons.format_paint_outlined,
+    },
+    {
+      'id': 'parabrisas',
+      'title': 'Picaduras o grietas en el parabrisas',
+      'image': 'assets/images/condicion-danos/condicion-rajado-faro.jpeg',
+      'icon': Icons.window_outlined,
+    },
+    {
+      'id': 'abolladuras',
+      'title': 'Abolladuras',
+      'image': 'assets/images/condicion-danos/condicion-abolladura.jpeg',
+      'icon': Icons.car_crash_outlined,
+    },
+    {
+      'id': 'molduras',
+      'title': 'Molduras rotas o faltantes',
+      'image': 'assets/images/condicion-danos/condicion-quine.jpeg',
+      'icon': Icons.build_outlined,
+    },
+  ];
 
   static const _damageExamples = [
     {
@@ -74,6 +105,12 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
       'description': 'Desalineación del parachoques trasero respecto a la carrocería. Indica un golpe previo; requiere alineación o reemplazo del panel.',
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
+  }
 
   void _showIntroPopup() {
     final c = context.colors;
@@ -184,146 +221,254 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
     );
   }
 
+  Future<void> _openCamera(Map<String, Object> type) async {
+    final id = type['id'] as String;
+    final title = type['title'] as String;
+    final image = type['image'] as String;
+
+    final results = await Navigator.of(context).push<Map<String, String>>(
+      MaterialPageRoute(
+        builder: (_) => OverlayCaptureScreen(
+          params: OverlayCaptureParams(
+            items: [
+              OverlayCaptureItem(
+                id: id,
+                title: title,
+                filePrefix: 'damage_$id',
+                exampleAsset: image,
+              ),
+            ],
+            landscape: true,
+          ),
+        ),
+      ),
+    );
+
+    if (results != null && results.containsKey(id) && mounted) {
+      final photoPath = results[id]!;
+      final locatorResult = await Navigator.of(context).push<Map<String, dynamic>>(
+        MaterialPageRoute(
+          builder: (_) => DamageLocatorScreen(
+            photoPath: photoPath,
+            damageType: title,
+          ),
+        ),
+      );
+      if (locatorResult != null && mounted) {
+        setState(() => _capturedPhotos[id] = photoPath);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-
     return Scaffold(
+      backgroundColor: const Color(0xFF1E1E1E),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF1E1E1E),
+        foregroundColor: Colors.white,
         title: const Text('Condición y Daños'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: _showIntroPopup,
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: AppSpacing.screenPadding,
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionHeader(
-                    title: 'Inspección del vehículo',
-                    subtitle: 'Completa cada sección para reportar el estado del vehículo',
+                  Text(
+                    '¿Qué tipo de daño o desgaste presenta?',
+                    style: AppTypography.titleLarge.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  _ConditionSubItem(
-                    title: 'Problemas de pintura',
-                    subtitle: 'Marca rayones, descascarados, etc.',
-                    icon: Icons.format_paint_outlined,
-                    completed: registrationState.paintworkConfirmed,
-                    onTap: () => context.push(AppRoutes.paintworkProblems),
+                  AppSpacing.vGapXs,
+                  Text(
+                    'Toca para tomar una foto del daño',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: Colors.white54,
+                    ),
                   ),
-                  AppSpacing.vGapSm,
-                  _ConditionSubItem(
-                    title: 'Accesorios rotos o faltantes',
-                    subtitle: 'Manijas, luces, molduras',
-                    icon: Icons.broken_image_outlined,
-                    completed: registrationState.brokenFittingsConfirmed,
-                    onTap: () => context.push(AppRoutes.brokenFittings),
-                  ),
-                  AppSpacing.vGapSm,
-                  _ConditionSubItem(
-                    title: 'Daño en ruedas',
-                    subtitle: 'Revisa el estado de cada rueda',
-                    icon: Icons.tire_repair_outlined,
-                    completed: registrationState.wheelDamageConfirmed,
-                    onTap: () => context.push(AppRoutes.wheelDamage),
-                  ),
-                  AppSpacing.vGapLg,
+                  AppSpacing.vGapXxl,
+                  ..._damageTypes.map((type) => _buildDamageCard(type)),
                 ],
               ),
             ),
           ),
-          BottomActionBar(
-            child: PrimaryButton(
-              text: 'Continuar',
-              onPressed: () {
-                ref.read(vehicleRegistrationProvider.notifier).confirmConditionDamage();
-                context.go(AppRoutes.dashboard);
-              },
+          Container(
+            color: const Color(0xFF1E1E1E),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      ref.read(vehicleRegistrationProvider.notifier).confirmConditionDamage();
+                      context.push(AppRoutes.wheelsPhotos);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppSpacing.borderRadiusXl,
+                      ),
+                    ),
+                    child: Text(
+                      'Siguiente',
+                      style: AppTypography.button.copyWith(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
   }
+
+  void _viewPhoto(String photoPath, String title, Map<String, Object> type) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _DamagePhotoViewer(
+          photoPath: photoPath,
+          title: title,
+          onRetake: () {
+            Navigator.of(context).pop();
+            _openCamera(type);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDamageCard(Map<String, Object> type) {
+    final id = type['id'] as String;
+    final title = type['title'] as String;
+    final image = type['image'] as String;
+    final icon = type['icon'] as IconData;
+    final capturedPath = _capturedPhotos[id];
+    final hasPhoto = capturedPath != null;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: GestureDetector(
+        onTap: () => hasPhoto ? _viewPhoto(capturedPath, title, type) : _openCamera(type),
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF2A2A2A),
+            borderRadius: AppSpacing.borderRadiusLg,
+            border: Border.all(
+              color: hasPhoto ? AppColors.success : Colors.transparent,
+              width: 2,
+            ),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(AppSpacing.radiusLg),
+                ),
+                child: hasPhoto
+                    ? Image.file(
+                        File(capturedPath),
+                        width: 100,
+                        height: 90,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        image,
+                        width: 100,
+                        height: 90,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              AppSpacing.hGapMd,
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(icon, color: hasPhoto ? AppColors.success : Colors.white70, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: AppTypography.titleSmall.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpacing.md),
+                child: hasPhoto
+                    ? const Icon(Icons.check_circle, color: AppColors.success, size: 26)
+                    : const Icon(Icons.camera_alt_outlined, color: Colors.white38, size: 24),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _ConditionSubItem extends StatelessWidget {
+class _DamagePhotoViewer extends StatelessWidget {
+  final String photoPath;
   final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool completed;
-  final VoidCallback onTap;
+  final VoidCallback onRetake;
 
-  const _ConditionSubItem({
+  const _DamagePhotoViewer({
+    required this.photoPath,
     required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.completed,
-    required this.onTap,
+    required this.onRetake,
   });
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: c.card,
-          borderRadius: AppSpacing.borderRadiusMd,
-          border: Border.all(
-            color: completed ? AppColors.success : c.cardBorder,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        title: Text(title),
+        actions: [
+          TextButton.icon(
+            onPressed: onRetake,
+            icon: const Icon(Icons.camera_alt_outlined, color: Colors.white, size: 20),
+            label: Text(
+              'Retomar',
+              style: AppTypography.bodyMedium.copyWith(color: Colors.white),
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: completed
-                    ? AppColors.success.withValues(alpha: 0.1)
-                    : c.surfaceVariant,
-                borderRadius: AppSpacing.borderRadiusSm,
-              ),
-              child: Icon(
-                icon,
-                color: completed ? AppColors.success : c.textSecondary,
-                size: 22,
-              ),
-            ),
-            AppSpacing.hGapMd,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: AppTypography.titleSmall),
-                  AppSpacing.vGapXxs,
-                  Text(
-                    subtitle,
-                    style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
-                  ),
-                ],
-              ),
-            ),
-            if (completed)
-              Container(
-                width: 28,
-                height: 28,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.success,
-                ),
-                child: const Icon(Icons.check, size: 16, color: Colors.white),
-              )
-            else
-              Icon(Icons.chevron_right, color: c.textTertiary),
-          ],
+        ],
+      ),
+      body: InteractiveViewer(
+        minScale: 1.0,
+        maxScale: 5.0,
+        child: Center(
+          child: Image.file(
+            File(photoPath),
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

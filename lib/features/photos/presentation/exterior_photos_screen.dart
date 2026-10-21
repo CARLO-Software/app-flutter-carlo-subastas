@@ -255,7 +255,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     final hasInvalid = _validationStatus.values.contains(PhotoValidationStatus.invalid);
     if (!hasInvalid) {
       ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
-      context.go(AppRoutes.dashboard);
+      context.push(AppRoutes.conditionDamage);
     }
   }
 
@@ -332,7 +332,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
 
     if (allValidated && photos.isNotEmpty) {
       ref.read(vehicleRegistrationProvider.notifier).confirmPhotos();
-      context.go(AppRoutes.dashboard);
+      context.push(AppRoutes.conditionDamage);
     }
   }
 

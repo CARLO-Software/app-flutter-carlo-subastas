@@ -15,14 +15,14 @@ import '../widgets/widgets.dart';
 class OverlayCaptureItem {
   final String id;
   final String title;
-  final String overlayAsset;
+  final String? overlayAsset;
   final String filePrefix;
   final String? exampleAsset;
 
   const OverlayCaptureItem({
     required this.id,
     required this.title,
-    required this.overlayAsset,
+    this.overlayAsset,
     required this.filePrefix,
     this.exampleAsset,
   });
@@ -264,7 +264,14 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: _previewPath != null ? _buildReview() : _buildCamera(),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          if (orientation == Orientation.portrait) {
+            return const RotateDeviceOverlay();
+          }
+          return _previewPath != null ? _buildReview() : _buildCamera();
+        },
+      ),
     );
   }
 
@@ -314,10 +321,12 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Opacity(
-                        opacity: 0.55,
-                        child: Image.asset(item.overlayAsset, fit: BoxFit.contain),
-                      ),
+                      child: item.overlayAsset != null
+                          ? Opacity(
+                              opacity: 0.55,
+                              child: Image.asset(item.overlayAsset!, fit: BoxFit.contain),
+                            )
+                          : const SizedBox.shrink(),
                     ),
                   ),
                   Container(
@@ -408,7 +417,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
       fit: StackFit.expand,
       children: [
         Container(color: Colors.black),
-        Center(child: Image.file(File(_previewPath!), fit: BoxFit.contain)),
+        Center(child: InteractiveViewer(minScale: 1.0, maxScale: 5.0, child: Image.file(File(_previewPath!), fit: BoxFit.contain))),
         Positioned(
           top: 0, left: 0, right: 0,
           child: Container(

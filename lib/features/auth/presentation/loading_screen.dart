@@ -39,15 +39,15 @@ class _LoadingScreenState extends State<LoadingScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.surface,
+      backgroundColor: Colors.black,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Stack(
           fit: StackFit.expand,
           children: [
             Image.asset(
-              'assets/images/imagen_carga.jpeg',
-              fit: BoxFit.contain,
+              'assets/images/arte-carga.png',
+              fit: BoxFit.cover,
             ),
             const Positioned(
               bottom: 60,
