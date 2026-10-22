@@ -11,8 +11,7 @@ class RunningConditionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final selectedCondition = registrationState.runningCondition;
+    final selectedCondition = ref.watch(vehicleRegistrationProvider.select((s) => s.runningCondition));
 
     return Scaffold(
       appBar: AppBar(

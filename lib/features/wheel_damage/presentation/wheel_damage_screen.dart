@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
-import '../../../shared/widgets/widgets.dart';
 
 const _wheelPositions = [
   {'id': 'front_left', 'label': 'Delantera izquierda'},
@@ -23,26 +23,19 @@ class WheelDamageScreen extends ConsumerStatefulWidget {
 }
 
 class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
-  late Map<String, bool> _damageMap;
-
-  @override
-  void initState() {
-    super.initState();
-    final existing = ref.read(vehicleRegistrationProvider).wheelDamageMap;
-    _damageMap = Map<String, bool>.from(existing);
-    for (final pos in _wheelPositions) {
-      _damageMap.putIfAbsent(pos['id']!, () => false);
-    }
-  }
+  final Set<String> _damaged = {};
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final wheelsPhotos = ref.watch(vehicleRegistrationProvider).wheelsPhotosMap;
+    final wheelsPhotos = ref.watch(vehicleRegistrationProvider.select((s) => s.wheelsPhotosMap));
 
     return Scaffold(
-      backgroundColor: c.background,
+      backgroundColor: const Color(0xFF1E1E1E),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF1E1E1E),
+        foregroundColor: Colors.white,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Daño en ruedas'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -53,110 +46,152 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: AppSpacing.screenPadding,
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionHeader(
-                    title: 'Revisión de ruedas',
-                    subtitle: 'Revisa las fotos de cada rueda e indica si tiene daño visible.',
+                  Text(
+                    '¿Hay alguna rueda de aleación rayada, rozada o dañada?',
+                    style: AppTypography.titleLarge.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  ..._wheelPositions.map((pos) {
-                    final id = pos['id']!;
-                    final label = pos['label']!;
-                    final photoPath = wheelsPhotos[id];
-                    final hasDamage = _damageMap[id] ?? false;
+                  AppSpacing.vGapXs,
+                  Text(
+                    'Selecciona las ruedas con daño visible',
+                    style: AppTypography.bodyMedium.copyWith(color: Colors.white54),
+                  ),
+                  AppSpacing.vGapXxl,
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.85,
+                      crossAxisSpacing: AppSpacing.md,
+                      mainAxisSpacing: AppSpacing.md,
+                    ),
+                    itemCount: _wheelPositions.length,
+                    itemBuilder: (context, index) {
+                      final pos = _wheelPositions[index];
+                      final id = pos['id']!;
+                      final label = pos['label']!;
+                      final photoPath = wheelsPhotos[id];
+                      final isSelected = _damaged.contains(id);
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: c.card,
-                          borderRadius: AppSpacing.borderRadiusLg,
-                          border: Border.all(
-                            color: hasDamage ? AppColors.warning : c.cardBorder,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(AppSpacing.radiusLg),
-                                topRight: Radius.circular(AppSpacing.radiusLg),
-                              ),
-                              child: photoPath != null
-                                  ? Image.file(
-                                      File(photoPath),
-                                      height: 180,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (_, __, ___) => _placeholder(c),
-                                    )
-                                  : _placeholder(c),
+                      return GestureDetector(
+                        onTap: () => setState(() {
+                          if (isSelected) {
+                            _damaged.remove(id);
+                          } else {
+                            _damaged.add(id);
+                          }
+                        }),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2A2A2A),
+                            borderRadius: AppSpacing.borderRadiusLg,
+                            border: Border.all(
+                              color: isSelected ? AppColors.warning : Colors.transparent,
+                              width: 2,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(AppSpacing.md),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(label, style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.w600)),
-                                        if (hasDamage)
-                                          Text(
-                                            'Daño reportado',
-                                            style: AppTypography.bodySmall.copyWith(color: AppColors.warning),
-                                          ),
-                                      ],
-                                    ),
+                          ),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(AppSpacing.radiusLg),
                                   ),
-                                  GestureDetector(
-                                    onTap: () => setState(() => _damageMap[id] = !hasDamage),
-                                    child: Container(
-                                      width: 28,
-                                      height: 28,
+                                  child: photoPath != null
+                                      ? Image.file(
+                                          File(photoPath),
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                          cacheWidth: 300,
+                                          errorBuilder: (_, __, ___) => _placeholder(),
+                                        )
+                                      : _placeholder(),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.sm,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        label,
+                                        style: AppTypography.labelSmall.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 24,
+                                      height: 24,
                                       decoration: BoxDecoration(
-                                        borderRadius: AppSpacing.borderRadiusSm,
+                                        borderRadius: BorderRadius.circular(6),
                                         border: Border.all(
-                                          color: hasDamage ? AppColors.warning : c.border,
+                                          color: isSelected ? AppColors.warning : Colors.white38,
                                           width: 2,
                                         ),
-                                        color: hasDamage ? AppColors.warning : Colors.transparent,
+                                        color: isSelected ? AppColors.warning : Colors.transparent,
                                       ),
-                                      child: hasDamage
-                                          ? const Icon(Icons.check, size: 18, color: Colors.white)
+                                      child: isSelected
+                                          ? const Icon(Icons.check, size: 16, color: Colors.white)
                                           : null,
                                     ),
-                                  ),
-                                  AppSpacing.hGapSm,
-                                  Text(
-                                    'Tiene daño',
-                                    style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
           ),
-          BottomActionBar(
-            child: PrimaryButton(
-              text: 'Confirmar',
-              onPressed: () {
-                for (final entry in _damageMap.entries) {
-                  ref.read(vehicleRegistrationProvider.notifier).setWheelDamage(entry.key, entry.value);
-                }
-                ref.read(vehicleRegistrationProvider.notifier).confirmWheelDamage();
-                context.pop();
-              },
+          Container(
+            color: const Color(0xFF1E1E1E),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      for (final pos in _wheelPositions) {
+                        final id = pos['id']!;
+                        ref.read(vehicleRegistrationProvider.notifier).setWheelDamage(id, _damaged.contains(id));
+                      }
+                      ref.read(vehicleRegistrationProvider.notifier).confirmWheelDamage();
+                      context.push(AppRoutes.tirePhotos);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: AppSpacing.borderRadiusXl,
+                      ),
+                    ),
+                    child: Text(
+                      _damaged.isEmpty ? 'Ninguna tiene daño' : 'Continuar',
+                      style: AppTypography.button.copyWith(color: Colors.black),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -164,18 +199,11 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
     );
   }
 
-  Widget _placeholder(AdaptiveColors c) {
+  Widget _placeholder() {
     return Container(
-      height: 180,
-      width: double.infinity,
-      color: c.surfaceVariant,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.image_outlined, size: 48, color: c.textTertiary),
-          AppSpacing.vGapSm,
-          Text('Sin foto', style: AppTypography.bodySmall.copyWith(color: c.textTertiary)),
-        ],
+      color: const Color(0xFF3A3A3A),
+      child: const Center(
+        child: Icon(Icons.image_outlined, size: 40, color: Colors.white24),
       ),
     );
   }

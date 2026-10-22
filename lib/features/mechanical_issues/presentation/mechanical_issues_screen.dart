@@ -11,8 +11,7 @@ class MechanicalIssuesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final selectedIssues = registrationState.mechanicalIssues;
+    final selectedIssues = ref.watch(vehicleRegistrationProvider.select((s) => s.mechanicalIssues));
 
     return Scaffold(
       appBar: AppBar(

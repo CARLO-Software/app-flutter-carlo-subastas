@@ -20,6 +20,7 @@ class PhotoCard extends StatelessWidget {
   /// false → badge [Error] ámbar (fallo técnico: red, API, etc.)
   final bool isAiFeedback;
   final VoidCallback? onRetake;
+  final VoidCallback? onAccept;
 
   const PhotoCard({
     super.key,
@@ -32,6 +33,7 @@ class PhotoCard extends StatelessWidget {
     this.validationFeedback,
     this.isAiFeedback = true,
     this.onRetake,
+    this.onAccept,
   });
 
   @override
@@ -73,6 +75,7 @@ class PhotoCard extends StatelessWidget {
                         ? Image.file(
                             File(imagePath!),
                             fit: BoxFit.cover,
+                            cacheWidth: 300,
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 color: c.surfaceVariant,
@@ -181,28 +184,60 @@ class PhotoCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Retake button (X) for invalid photos
-                  if (isInvalid && onRetake != null)
-                    Positioned(
-                      top: 4,
-                      right: 4,
-                      child: GestureDetector(
-                        onTap: onRetake,
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: isAiFeedback ? AppColors.error : Colors.orange,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.white,
-                            size: 18,
+                  if (isInvalid) ...[
+                    // "Está bien" button — override AI verdict
+                    if (onAccept != null)
+                      Positioned(
+                        top: 4,
+                        left: 4,
+                        child: GestureDetector(
+                          onTap: onAccept,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.success,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.check, color: Colors.white, size: 14),
+                                const SizedBox(width: 3),
+                                Text(
+                                  'Está bien',
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    // Retake button (X)
+                    if (onRetake != null)
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: onRetake,
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: isAiFeedback ? AppColors.error : Colors.orange,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ],
               )
             : Stack(

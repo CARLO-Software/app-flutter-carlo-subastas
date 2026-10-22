@@ -269,9 +269,8 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
 
     final index = AppConstants.photoPositions.indexWhere((p) => p.id == positionId);
     if (index >= 0) {
-      final registrationState = ref.read(vehicleRegistrationProvider);
       ref.read(guidedCaptureProvider.notifier).initializeWithExistingPhotos(
-        registrationState.exteriorPhotosMap,
+        ref.read(vehicleRegistrationProvider).exteriorPhotosMap,
       );
       ref.read(guidedCaptureProvider.notifier).goToPosition(index);
       await context.push(AppRoutes.guidedCapture);
@@ -324,6 +323,15 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
     _navigateIfAllValid();
   }
 
+  void _acceptPhoto(String positionId) {
+    setState(() {
+      _validationStatus[positionId] = PhotoValidationStatus.valid;
+      _validationFeedback.remove(positionId);
+      _isAiFeedback.remove(positionId);
+    });
+    _navigateIfAllValid();
+  }
+
   void _navigateIfAllValid() {
     final photos = ref.read(vehicleRegistrationProvider).exteriorPhotosMap;
     final allValidated = AppConstants.photoPositions
@@ -337,16 +345,14 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
   }
 
   void _startGuidedCapture() {
-    final registrationState = ref.read(vehicleRegistrationProvider);
     ref.read(guidedCaptureProvider.notifier).initializeWithExistingPhotos(
-      registrationState.exteriorPhotosMap,
+      ref.read(vehicleRegistrationProvider).exteriorPhotosMap,
     );
     context.push(AppRoutes.guidedCapture);
   }
 
   void _onPhotoCardTap(String positionId) {
-    final registrationState = ref.read(vehicleRegistrationProvider);
-    final hasPhoto = registrationState.exteriorPhotosMap.containsKey(positionId);
+    final hasPhoto = ref.read(vehicleRegistrationProvider).exteriorPhotosMap.containsKey(positionId);
 
     if (hasPhoto) {
       _showPhotoOptions(positionId);
@@ -431,13 +437,12 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
       _validationStatus.values.contains(PhotoValidationStatus.invalid);
 
   int get _photosTakenCount {
-    final state = ref.watch(vehicleRegistrationProvider);
-    return state.exteriorPhotosMap.length;
+    return ref.watch(vehicleRegistrationProvider.select((s) => s.exteriorPhotosMap)).length;
   }
 
   @override
   Widget build(BuildContext context) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
+    final exteriorPhotosMap = ref.watch(vehicleRegistrationProvider.select((s) => s.exteriorPhotosMap));
     final totalPhotos = AppConstants.photoPositions.length;
 
     final c = context.colors;
@@ -447,7 +452,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
         title: const Text('Fotos Exteriores'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => context.go(AppRoutes.dashboard),
         ),
         actions: [
           IconButton(
@@ -562,7 +567,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                     itemCount: AppConstants.photoPositions.length,
                     itemBuilder: (context, index) {
                       final position = AppConstants.photoPositions[index];
-                      final photoPath = registrationState.exteriorPhotosMap[position.id];
+                      final photoPath = exteriorPhotosMap[position.id];
                       return PhotoCard(
                         title: position.name,
                         imagePath: photoPath,
@@ -572,6 +577,7 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                         validationFeedback: _validationFeedback[position.id],
                         isAiFeedback: _isAiFeedback[position.id] ?? true,
                         onRetake: () => _retakePhoto(position.id),
+                        onAccept: () => _acceptPhoto(position.id),
                       );
                     },
                   ),

@@ -57,6 +57,10 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
     // Wheels Photos
     @Default({}) Map<String, String> wheelsPhotosMap,
 
+    // Tire Photos
+    @Default({}) Map<String, String> tirePhotosMap,
+    @Default(false) bool tirePhotosConfirmed,
+
     // Tire Condition
     String? tireCondition,
 
@@ -85,6 +89,10 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
     // Locking Wheel Nut
     @Default(false) bool hasLockingWheelNut,
     @Default(false) bool lockingWheelNutConfirmed,
+
+    // Warning Lights
+    @Default([]) List<String> warningLights,
+    @Default(false) bool warningLightsConfirmed,
 
     // Condition & Damage
     @Default([]) List<DamageItem> damages,

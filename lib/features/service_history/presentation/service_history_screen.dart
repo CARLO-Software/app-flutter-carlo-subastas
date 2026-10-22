@@ -90,9 +90,8 @@ class _ServiceHistoryScreenState extends ConsumerState<ServiceHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final selectedType = registrationState.serviceHistoryType;
-    final documents = registrationState.serviceDocuments;
+    final selectedType = ref.watch(vehicleRegistrationProvider.select((s) => s.serviceHistoryType));
+    final documents = ref.watch(vehicleRegistrationProvider.select((s) => s.serviceDocuments));
 
     return Scaffold(
       appBar: AppBar(

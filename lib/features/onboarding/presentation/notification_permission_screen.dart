@@ -11,7 +11,7 @@ class NotificationPermissionScreen extends StatelessWidget {
 
   Future<void> _requestPermission(BuildContext context) async {
     await Permission.notification.request();
-    if (context.mounted) context.go(AppRoutes.dashboard);
+    if (context.mounted) context.go(AppRoutes.photoIntroduction);
   }
 
   @override
@@ -113,7 +113,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 56,
                 child: OutlinedButton(
-                  onPressed: () => context.go(AppRoutes.dashboard),
+                  onPressed: () => context.go(AppRoutes.photoIntroduction),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: c.textPrimary,
                     side: BorderSide(color: c.border),

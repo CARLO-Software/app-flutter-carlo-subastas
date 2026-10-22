@@ -15,9 +15,8 @@ class SubmissionStatusScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final vehicle = registrationState.vehicle;
-    final status = registrationState.submissionStatus;
+    final vehicle = ref.watch(vehicleRegistrationProvider.select((s) => s.vehicle));
+    final status = ref.watch(vehicleRegistrationProvider.select((s) => s.submissionStatus));
 
     return Scaffold(
       appBar: AppBar(

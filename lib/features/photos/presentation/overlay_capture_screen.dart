@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/widgets/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../services/photo_validator_service.dart';
 import '../widgets/widgets.dart';
 
@@ -324,7 +325,9 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
                       child: item.overlayAsset != null
                           ? Opacity(
                               opacity: 0.55,
-                              child: Image.asset(item.overlayAsset!, fit: BoxFit.contain),
+                              child: item.overlayAsset!.endsWith('.svg')
+                                  ? SvgPicture.asset(item.overlayAsset!, fit: BoxFit.contain)
+                                  : Image.asset(item.overlayAsset!, fit: BoxFit.contain),
                             )
                           : const SizedBox.shrink(),
                     ),

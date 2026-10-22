@@ -13,8 +13,8 @@ class VehicleDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final vehicle = registrationState.vehicle;
+    final vehicle = ref.watch(vehicleRegistrationProvider.select((s) => s.vehicle));
+    final mileage = ref.watch(vehicleRegistrationProvider.select((s) => s.mileage));
 
     if (vehicle == null) {
       return const Scaffold(
@@ -110,7 +110,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
                   _buildDetailRow('Marca', vehicle.brand, c),
                   _buildDetailRow('Modelo', vehicle.model, c),
                   _buildDetailRow('Año', vehicle.year.toString(), c),
-                  _buildDetailRow('Kilometraje', '${registrationState.mileage % 1 == 0 ? registrationState.mileage.toInt() : registrationState.mileage} km', c),
+                  _buildDetailRow('Kilometraje', '${mileage % 1 == 0 ? mileage.toInt() : mileage} km', c),
                   _buildDetailRow('Color', vehicle.color, c),
                   _buildDetailRow('Carrocería', vehicle.bodyType, c),
                   _buildDetailRow('Puertas', vehicle.doors.toString(), c),

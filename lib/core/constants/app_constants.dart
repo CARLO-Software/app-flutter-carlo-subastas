@@ -190,12 +190,12 @@ class AppConstants {
     _ => null,
   };
 
-  // Wheel silhouettes (card = negro, camera = blanco)
+  // Wheel (rim) silhouettes (card = negro, camera = blanco)
   static String? templateForWheelPosition(String wheelId) =>
-    'assets/images/plantillas/siluetas_negro/llantas/png/llantas-neumatico.png';
+    'assets/images/plantillas/siluetas_negro/llantas/svg/rueda-1.svg';
 
   static String? cameraOverlayForWheelPosition(String wheelId) =>
-    'assets/images/plantillas/siluetas_blanco/llantas/png/llantas-neumatico.png';
+    'assets/images/plantillas/siluetas_blanco/rueda/svg/rueda-1.svg';
 
   // Wheel silhouettes
   static const String wheelRimTemplate = 'assets/images/plantillas/siluetas_negro/llantas/png/llantas-aro-delantero.png';

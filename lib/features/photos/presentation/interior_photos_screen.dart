@@ -280,9 +280,9 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(vehicleRegistrationProvider);
+    final interiorPhotosMap = ref.watch(vehicleRegistrationProvider.select((s) => s.interiorPhotosMap));
     final positions = AppConstants.interiorPhotoPositions;
-    final photoCount = state.interiorPhotosMap.length;
+    final photoCount = interiorPhotosMap.length;
     final totalPhotos = positions.length;
 
     final c = context.colors;
@@ -338,7 +338,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
               itemBuilder: (context, index) {
                 final position = positions[index];
                 final positionId = position['id']!;
-                final photoPath = state.interiorPhotosMap[positionId];
+                final photoPath = interiorPhotosMap[positionId];
                 final hasPhoto = photoPath != null;
                 final plantilla = AppConstants.templateForInteriorPosition(positionId);
                 final isOptional = position['optional'] == 'true';
@@ -373,6 +373,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
                                       ? Image.file(
                                           File(photoPath),
                                           fit: BoxFit.cover,
+                                          cacheWidth: 400,
                                           errorBuilder: (_, __, ___) => Center(
                                             child: Icon(Icons.broken_image, size: 48, color: c.textTertiary),
                                           ),
@@ -459,7 +460,7 @@ class _InteriorPhotosScreenState extends ConsumerState<InteriorPhotosScreen> {
               onPressed: photoCount >= 3
                   ? () {
                       ref.read(vehicleRegistrationProvider.notifier).confirmInteriorPhotos();
-                      context.go(AppRoutes.dashboard);
+                      context.push(AppRoutes.warningLights);
                     }
                   : null,
             ),

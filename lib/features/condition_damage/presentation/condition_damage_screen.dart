@@ -267,6 +267,8 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E1E1E),
         foregroundColor: Colors.white,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Condición y Daños'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -318,7 +320,11 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: () {
-                      ref.read(vehicleRegistrationProvider.notifier).confirmConditionDamage();
+                      final notifier = ref.read(vehicleRegistrationProvider.notifier);
+                      notifier.confirmConditionDamage();
+                      notifier.confirmPaintwork();
+                      notifier.confirmBrokenFittings();
+                      notifier.confirmWheelDamage();
                       context.push(AppRoutes.wheelsPhotos);
                     },
                     style: ElevatedButton.styleFrom(
@@ -330,7 +336,9 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                       ),
                     ),
                     child: Text(
-                      'Siguiente',
+                      _capturedPhotos.isEmpty
+                          ? 'Mi auto no tiene daños'
+                          : 'Continuar',
                       style: AppTypography.button.copyWith(color: Colors.black),
                     ),
                   ),
@@ -361,7 +369,6 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
   Widget _buildDamageCard(Map<String, Object> type) {
     final id = type['id'] as String;
     final title = type['title'] as String;
-    final image = type['image'] as String;
     final icon = type['icon'] as IconData;
     final capturedPath = _capturedPhotos[id];
     final hasPhoto = capturedPath != null;
@@ -381,40 +388,31 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
           ),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(AppSpacing.radiusLg),
+              Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: hasPhoto
+                      ? AppColors.success.withValues(alpha: 0.15)
+                      : Colors.white.withValues(alpha: 0.07),
+                  borderRadius: const BorderRadius.horizontal(
+                    left: Radius.circular(AppSpacing.radiusLg),
+                  ),
                 ),
-                child: hasPhoto
-                    ? Image.file(
-                        File(capturedPath),
-                        width: 100,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset(
-                        image,
-                        width: 100,
-                        height: 90,
-                        fit: BoxFit.cover,
-                      ),
+                child: Icon(
+                  icon,
+                  color: hasPhoto ? AppColors.success : Colors.white70,
+                  size: 40,
+                ),
               ),
               AppSpacing.hGapMd,
               Expanded(
-                child: Row(
-                  children: [
-                    Icon(icon, color: hasPhoto ? AppColors.success : Colors.white70, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: AppTypography.titleSmall.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  title,
+                  style: AppTypography.titleSmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Padding(

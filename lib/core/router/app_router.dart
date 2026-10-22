@@ -30,7 +30,10 @@ import '../../features/locking_wheel_nut/presentation/locking_wheel_nut_screen.d
 import '../../features/paintwork/presentation/paintwork_problems_screen.dart';
 import '../../features/broken_fittings/presentation/broken_fittings_screen.dart';
 import '../../features/wheel_damage/presentation/wheel_damage_screen.dart';
+import '../../features/photos/presentation/tire_photos_screen.dart';
+import '../../features/tire_condition/presentation/tire_damage_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
+import '../../features/condition_damage/presentation/warning_lights_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
 import '../../features/submission_status/presentation/submission_status_screen.dart';
@@ -187,6 +190,21 @@ GoRoute(
       path: AppRoutes.wheelDamage,
       name: 'wheelDamage',
       builder: (context, state) => const WheelDamageScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.tirePhotos,
+      name: 'tirePhotos',
+      builder: (context, state) => const TirePhotosScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.tireDamage,
+      name: 'tireDamage',
+      builder: (context, state) => const TireDamageScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.warningLights,
+      name: 'warningLights',
+      builder: (context, state) => const WarningLightsScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,

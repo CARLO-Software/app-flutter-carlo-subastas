@@ -11,8 +11,7 @@ class ExtraFeaturesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final selectedFeatures = registrationState.extraFeatures;
+    final selectedFeatures = ref.watch(vehicleRegistrationProvider.select((s) => s.extraFeatures));
 
     return Scaffold(
       appBar: AppBar(

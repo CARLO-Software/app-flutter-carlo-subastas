@@ -10,8 +10,7 @@ class FinanceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final hasFinance = registrationState.hasFinance;
+    final hasFinance = ref.watch(vehicleRegistrationProvider.select((s) => s.hasFinance));
 
     return Scaffold(
       appBar: AppBar(

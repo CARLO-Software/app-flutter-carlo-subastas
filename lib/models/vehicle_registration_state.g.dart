@@ -59,6 +59,12 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
         (k, e) => MapEntry(k, e as String),
       ) ??
       const {},
+  tirePhotosMap:
+      (json['tirePhotosMap'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
+  tirePhotosConfirmed: json['tirePhotosConfirmed'] as bool? ?? false,
   tireCondition: json['tireCondition'] as String?,
   seatMaterial: json['seatMaterial'] as String?,
   seatMaterialConfirmed: json['seatMaterialConfirmed'] as bool? ?? false,
@@ -90,6 +96,12 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
   toolPackConfirmed: json['toolPackConfirmed'] as bool? ?? false,
   hasLockingWheelNut: json['hasLockingWheelNut'] as bool? ?? false,
   lockingWheelNutConfirmed: json['lockingWheelNutConfirmed'] as bool? ?? false,
+  warningLights:
+      (json['warningLights'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  warningLightsConfirmed: json['warningLightsConfirmed'] as bool? ?? false,
   damages:
       (json['damages'] as List<dynamic>?)
           ?.map((e) => DamageItem.fromJson(e as Map<String, dynamic>))
@@ -148,6 +160,8 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'interiorPhotosMap': instance.interiorPhotosMap,
   'damagePhotos': instance.damagePhotos,
   'wheelsPhotosMap': instance.wheelsPhotosMap,
+  'tirePhotosMap': instance.tirePhotosMap,
+  'tirePhotosConfirmed': instance.tirePhotosConfirmed,
   'tireCondition': instance.tireCondition,
   'seatMaterial': instance.seatMaterial,
   'seatMaterialConfirmed': instance.seatMaterialConfirmed,
@@ -163,6 +177,8 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'toolPackConfirmed': instance.toolPackConfirmed,
   'hasLockingWheelNut': instance.hasLockingWheelNut,
   'lockingWheelNutConfirmed': instance.lockingWheelNutConfirmed,
+  'warningLights': instance.warningLights,
+  'warningLightsConfirmed': instance.warningLightsConfirmed,
   'damages': instance.damages,
   'serviceHistoryType':
       _$ServiceHistoryTypeEnumMap[instance.serviceHistoryType],

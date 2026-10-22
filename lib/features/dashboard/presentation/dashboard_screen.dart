@@ -476,6 +476,25 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   List<_DashboardStep> _buildSteps(VehicleRegistrationState state) {
+    final exteriorCompleted = state.photosConfirmed &&
+        state.conditionDamageConfirmed &&
+        state.paintworkConfirmed;
+
+    final exteriorStarted = state.exteriorPhotos.isNotEmpty ||
+        state.exteriorPhotosMap.isNotEmpty;
+
+    final interiorCompleted =
+        state.interiorPhotosConfirmed && state.brokenFittingsConfirmed;
+
+    final interiorStarted = state.interiorPhotos.isNotEmpty ||
+        state.interiorPhotosMap.isNotEmpty;
+
+    final llantasCompleted = state.wheelsPhotosConfirmed &&
+        state.tireConditionConfirmed &&
+        state.wheelDamageConfirmed;
+
+    final llantasStarted = state.wheelsPhotosMap.isNotEmpty;
+
     final infoCompleted = state.vehicleDetailsConfirmed &&
         state.extraFeaturesConfirmed &&
         state.keysConfirmed &&
@@ -487,53 +506,42 @@ class DashboardScreen extends ConsumerWidget {
         state.privatePlateConfirmed &&
         state.seatMaterialConfirmed &&
         state.toolPackConfirmed &&
-        state.lockingWheelNutConfirmed;
-
-    final photosCompleted =
-        state.photosConfirmed && state.interiorPhotosConfirmed &&
-        state.wheelsPhotosConfirmed && state.tireConditionConfirmed;
-
-    final photosStarted = state.exteriorPhotos.isNotEmpty ||
-        state.interiorPhotos.isNotEmpty ||
-        state.exteriorPhotosMap.isNotEmpty ||
-        state.interiorPhotosMap.isNotEmpty ||
-        state.wheelsPhotosMap.isNotEmpty;
-
-    String? photosWarning;
-    if (photosStarted && !photosCompleted) {
-      photosWarning = 'Fotos pendientes por completar';
-    }
-
-    final conditionCompleted = state.conditionDamageConfirmed &&
-        state.paintworkConfirmed &&
-        state.brokenFittingsConfirmed &&
-        state.wheelDamageConfirmed;
+        state.lockingWheelNutConfirmed &&
+        state.serviceHistoryConfirmed;
 
     return [
       _DashboardStep(
-        title: 'Información del vehículo',
-        subtitle: 'Déjanos conocer las características de tu auto.',
-        completed: infoCompleted,
-        route: AppRoutes.vehicleInfoHub,
-      ),
-      _DashboardStep(
-        title: 'Fotos',
-        subtitle: null,
-        completed: photosCompleted,
-        warning: photosWarning,
+        title: 'Exterior',
+        subtitle: 'Fotos exteriores y daños',
+        completed: exteriorCompleted,
+        warning: exteriorStarted && !exteriorCompleted
+            ? 'Pendiente por completar'
+            : null,
         route: AppRoutes.photoIntroduction,
       ),
       _DashboardStep(
-        title: 'Daño y condición',
-        subtitle: null,
-        completed: conditionCompleted,
-        route: AppRoutes.conditionDamage,
+        title: 'Interior',
+        subtitle: 'Fotos interiores y daños',
+        completed: interiorCompleted,
+        warning: interiorStarted && !interiorCompleted
+            ? 'Pendiente por completar'
+            : null,
+        route: AppRoutes.interiorPhotos,
       ),
       _DashboardStep(
-        title: 'Historial de mantenimiento',
-        subtitle: null,
-        completed: state.serviceHistoryConfirmed,
-        route: AppRoutes.serviceHistory,
+        title: 'Llantas',
+        subtitle: 'Fotos de llantas y daños',
+        completed: llantasCompleted,
+        warning: llantasStarted && !llantasCompleted
+            ? 'Pendiente por completar'
+            : null,
+        route: AppRoutes.wheelsPhotos,
+      ),
+      _DashboardStep(
+        title: 'Información adicional',
+        subtitle: 'Detalles, llaves, financiamiento y más',
+        completed: infoCompleted,
+        route: AppRoutes.vehicleInfoHub,
       ),
     ];
   }

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 import '../../../shared/widgets/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'overlay_capture_screen.dart';
 
 const _wheelPositions = [
@@ -72,7 +74,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fotos de llantas',
+                        'Fotos de ruedas',
                         style: AppTypography.headlineSmall.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -258,13 +260,13 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final state = ref.watch(vehicleRegistrationProvider);
-    final photoCount = state.wheelsPhotosMap.length;
+    final wheelsPhotosMap = ref.watch(vehicleRegistrationProvider.select((s) => s.wheelsPhotosMap));
+    final photoCount = wheelsPhotosMap.length;
 
     return Scaffold(
       backgroundColor: c.background,
       appBar: AppBar(
-        title: const Text('Fotos de Llantas'),
+        title: const Text('Fotos de Ruedas'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -312,7 +314,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionHeader(
-                    title: 'Llantas del vehículo',
+                    title: 'Ruedas del vehículo',
                     subtitle: 'Toma una foto de cerca de cada llanta mostrando el neumático y el rin',
                   ),
                   GridView.builder(
@@ -329,7 +331,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                       final wheel = _wheelPositions[index];
                       final wheelId = wheel['id'] as String;
                       final wheelName = wheel['name'] as String;
-                      final photoPath = state.wheelsPhotosMap[wheelId];
+                      final photoPath = wheelsPhotosMap[wheelId];
                       final hasPhoto = photoPath != null;
 
                       return GestureDetector(
@@ -352,6 +354,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                                       child: Image.file(
                                         File(photoPath),
                                         fit: BoxFit.cover,
+                                        cacheWidth: 300,
                                         errorBuilder: (_, __, ___) => Center(
                                           child: Icon(Icons.broken_image, size: 48, color: c.textTertiary),
                                         ),
@@ -394,8 +397,8 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.all(AppSpacing.sm),
-                                        child: Image.asset(
-                                          AppConstants.wheelTireTemplate,
+                                        child: SvgPicture.asset(
+                                          'assets/images/plantillas/siluetas_negro/llantas/svg/rueda-1.svg',
                                           fit: BoxFit.contain,
                                         ),
                                       ),
@@ -448,7 +451,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
               onPressed: photoCount >= 4
                   ? () {
                       ref.read(vehicleRegistrationProvider.notifier).confirmWheelsPhotos();
-                      context.pop();
+                      context.push(AppRoutes.wheelDamage);
                     }
                   : null,
             ),

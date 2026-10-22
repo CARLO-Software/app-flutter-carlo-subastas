@@ -156,6 +156,23 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(wheelsPhotosConfirmed: true);
   }
 
+  // Tire Photos
+  void addTirePhoto(String tireId, String filePath) {
+    final photos = Map<String, String>.from(state.tirePhotosMap);
+    photos[tireId] = filePath;
+    state = state.copyWith(tirePhotosMap: photos);
+  }
+
+  void removeTirePhoto(String tireId) {
+    final photos = Map<String, String>.from(state.tirePhotosMap);
+    photos.remove(tireId);
+    state = state.copyWith(tirePhotosMap: photos);
+  }
+
+  void confirmTirePhotos() {
+    state = state.copyWith(tirePhotosConfirmed: true);
+  }
+
   // Tire Condition
   void setTireCondition(String condition) {
     state = state.copyWith(tireCondition: condition);
@@ -257,6 +274,21 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
 
   void confirmLockingWheelNut() {
     state = state.copyWith(lockingWheelNutConfirmed: true);
+  }
+
+  // Warning Lights
+  void toggleWarningLight(String light) {
+    final lights = List<String>.from(state.warningLights);
+    if (lights.contains(light)) {
+      lights.remove(light);
+    } else {
+      lights.add(light);
+    }
+    state = state.copyWith(warningLights: lights);
+  }
+
+  void confirmWarningLights() {
+    state = state.copyWith(warningLightsConfirmed: true);
   }
 
   // Condition & Damage
@@ -399,6 +431,10 @@ final dashboardProgressProvider = Provider<int>((ref) {
   int completed = 0;
   const total = 4;
 
+  if (state.photosConfirmed && state.conditionDamageConfirmed && state.paintworkConfirmed) completed++;
+  if (state.interiorPhotosConfirmed && state.brokenFittingsConfirmed) completed++;
+  if (state.wheelsPhotosConfirmed && state.tireConditionConfirmed && state.wheelDamageConfirmed) completed++;
+
   final infoCompleted = state.vehicleDetailsConfirmed &&
       state.extraFeaturesConfirmed &&
       state.keysConfirmed &&
@@ -410,12 +446,9 @@ final dashboardProgressProvider = Provider<int>((ref) {
       state.privatePlateConfirmed &&
       state.seatMaterialConfirmed &&
       state.toolPackConfirmed &&
-      state.lockingWheelNutConfirmed;
+      state.lockingWheelNutConfirmed &&
+      state.serviceHistoryConfirmed;
   if (infoCompleted) completed++;
-
-  if (state.photosConfirmed && state.interiorPhotosConfirmed && state.wheelsPhotosConfirmed && state.tireConditionConfirmed) completed++;
-  if (state.conditionDamageConfirmed && state.paintworkConfirmed && state.brokenFittingsConfirmed && state.wheelDamageConfirmed) completed++;
-  if (state.serviceHistoryConfirmed) completed++;
 
   return ((completed / total) * 100).round();
 });

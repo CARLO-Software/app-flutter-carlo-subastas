@@ -10,8 +10,7 @@ class KeysScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registrationState = ref.watch(vehicleRegistrationProvider);
-    final selectedKeys = registrationState.numberOfKeys;
+    final selectedKeys = ref.watch(vehicleRegistrationProvider.select((s) => s.numberOfKeys));
 
     return Scaffold(
       appBar: AppBar(
