@@ -35,6 +35,7 @@ import '../../features/tire_condition/presentation/tire_damage_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
 import '../../features/condition_damage/presentation/warning_lights_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
+import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
 import '../../features/submission_status/presentation/submission_status_screen.dart';
 import 'app_routes.dart';
@@ -215,6 +216,11 @@ GoRoute(
       path: AppRoutes.serviceHistory,
       name: 'serviceHistory',
       builder: (context, state) => const ServiceHistoryScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.profile,
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
     GoRoute(
       path: AppRoutes.review,

@@ -65,6 +65,11 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
       ) ??
       const {},
   tirePhotosConfirmed: json['tirePhotosConfirmed'] as bool? ?? false,
+  tireDamageMap:
+      (json['tireDamageMap'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as bool),
+      ) ??
+      const {},
   tireCondition: json['tireCondition'] as String?,
   seatMaterial: json['seatMaterial'] as String?,
   seatMaterialConfirmed: json['seatMaterialConfirmed'] as bool? ?? false,
@@ -162,6 +167,7 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'wheelsPhotosMap': instance.wheelsPhotosMap,
   'tirePhotosMap': instance.tirePhotosMap,
   'tirePhotosConfirmed': instance.tirePhotosConfirmed,
+  'tireDamageMap': instance.tireDamageMap,
   'tireCondition': instance.tireCondition,
   'seatMaterial': instance.seatMaterial,
   'seatMaterialConfirmed': instance.seatMaterialConfirmed,

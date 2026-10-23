@@ -12,10 +12,11 @@ class PhotoIntroductionScreen extends ConsumerWidget {
       backgroundColor: Colors.black,
       body: GestureDetector(
         onTap: () => context.push(AppRoutes.exteriorPhotos),
-        child: SizedBox.expand(
+        child: Center(
           child: Image.asset(
             'assets/images/arte-2.png',
-            fit: BoxFit.cover,
+            width: double.infinity,
+            fit: BoxFit.fitWidth,
           ),
         ),
       ),

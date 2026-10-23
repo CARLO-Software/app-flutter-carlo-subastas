@@ -13,10 +13,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'overlay_capture_screen.dart';
 
 const _wheelPositions = [
-  {'id': 'front_left', 'name': 'Delantera izquierda', 'icon': Icons.tire_repair},
-  {'id': 'front_right', 'name': 'Delantera derecha', 'icon': Icons.tire_repair},
-  {'id': 'rear_left', 'name': 'Trasera izquierda', 'icon': Icons.tire_repair},
-  {'id': 'rear_right', 'name': 'Trasera derecha', 'icon': Icons.tire_repair},
+  {'id': 'front_left', 'name': 'Conductor delantera', 'icon': Icons.tire_repair},
+  {'id': 'front_right', 'name': 'Copiloto delantera', 'icon': Icons.tire_repair},
+  {'id': 'rear_left', 'name': 'Conductor trasera', 'icon': Icons.tire_repair},
+  {'id': 'rear_right', 'name': 'Copiloto trasera', 'icon': Icons.tire_repair},
 ];
 
 class WheelsPhotosScreen extends ConsumerStatefulWidget {
@@ -398,7 +398,7 @@ class _WheelsPhotosScreenState extends ConsumerState<WheelsPhotosScreen> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(AppSpacing.sm),
                                         child: SvgPicture.asset(
-                                          'assets/images/plantillas/siluetas_negro/llantas/svg/rueda-1.svg',
+                                          AppConstants.templateForWheelPosition(wheelId)!,
                                           fit: BoxFit.contain,
                                         ),
                                       ),

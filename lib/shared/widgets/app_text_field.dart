@@ -23,6 +23,7 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final VoidCallback? onEditingComplete;
   final bool autofocus;
+  final String? Function(String?)? validator;
 
   const AppTextField({
     super.key,
@@ -44,6 +45,7 @@ class AppTextField extends StatelessWidget {
     this.textInputAction,
     this.onEditingComplete,
     this.autofocus = false,
+    this.validator,
   });
 
   @override
@@ -75,6 +77,7 @@ class AppTextField extends StatelessWidget {
           textInputAction: textInputAction,
           onEditingComplete: onEditingComplete,
           autofocus: autofocus,
+          validator: validator,
           style: AppTypography.bodyLarge,
           decoration: InputDecoration(
             hintText: hint,

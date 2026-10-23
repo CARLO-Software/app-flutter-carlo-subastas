@@ -192,10 +192,27 @@ class AppConstants {
 
   // Wheel (rim) silhouettes (card = negro, camera = blanco)
   static String? templateForWheelPosition(String wheelId) =>
-    'assets/images/plantillas/siluetas_negro/llantas/svg/rueda-1.svg';
+    'assets/images/plantillas/siluetas_negro/rueda/svg/rueda-1.svg';
 
   static String? cameraOverlayForWheelPosition(String wheelId) =>
     'assets/images/plantillas/siluetas_blanco/rueda/svg/rueda-1.svg';
+
+  // Tire (neumático) silhouettes (card = negro, camera = blanco)
+  static String? templateForTirePosition(String tireId) => switch (tireId) {
+    'front_left' => 'assets/images/plantillas/siluetas_negro/neumatico/neumatico-delantera-conductor.svg',
+    'front_right' => 'assets/images/plantillas/siluetas_negro/neumatico/neumatico-delantera-copiloto.svg',
+    'rear_left' => 'assets/images/plantillas/siluetas_negro/neumatico/neumatico-trasera-conductor.svg',
+    'rear_right' => 'assets/images/plantillas/siluetas_negro/neumatico/neumatico-trasera-copiloto.svg',
+    _ => null,
+  };
+
+  static String? cameraOverlayForTirePosition(String tireId) => switch (tireId) {
+    'front_left' => 'assets/images/plantillas/siluetas_blanco/neumatico/neumatico-delantera-conductor.svg',
+    'front_right' => 'assets/images/plantillas/siluetas_blanco/neumatico/neumatico-delantera-copiloto.svg',
+    'rear_left' => 'assets/images/plantillas/siluetas_blanco/neumatico/neumatico-trasera-conductor.svg',
+    'rear_right' => 'assets/images/plantillas/siluetas_blanco/neumatico/neumatico-trasera-copiloto.svg',
+    _ => null,
+  };
 
   // Wheel silhouettes
   static const String wheelRimTemplate = 'assets/images/plantillas/siluetas_negro/llantas/png/llantas-aro-delantero.png';

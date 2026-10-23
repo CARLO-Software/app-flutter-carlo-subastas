@@ -356,7 +356,7 @@ class _OverlayCaptureScreenState extends State<OverlayCaptureScreen>
               children: [
                 const SizedBox(height: AppSpacing.lg),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: () => Navigator.of(context).pop(_capturedPhotos.isNotEmpty ? _capturedPhotos : null),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                     child: Text('Salir', style: AppTypography.labelMedium.copyWith(color: Colors.white)),

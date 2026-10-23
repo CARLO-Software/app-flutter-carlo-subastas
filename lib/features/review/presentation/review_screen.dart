@@ -27,7 +27,8 @@ class ReviewScreen extends ConsumerWidget {
         : null;
     final totalPhotos = state.exteriorPhotosMap.length +
         state.interiorPhotosMap.length +
-        state.wheelsPhotosMap.length;
+        state.wheelsPhotosMap.length +
+        state.tirePhotosMap.length;
 
     return Scaffold(
       backgroundColor: c.background,
@@ -154,39 +155,6 @@ class ReviewScreen extends ConsumerWidget {
                           ),
                         ],
 
-                        // Personal information
-                        AppSpacing.vGapLg,
-                        Text('Información personal', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
-                        AppSpacing.vGapSm,
-                        _GroupedCard(
-                          c: c,
-                          children: [
-                            _DetailRow(label: 'Nombre', value: 'Propietario', c: c, hasChevron: true),
-                            _DetailRow(label: 'Email', value: 'contacto@carlo.pe', c: c, hasChevron: true),
-                            _DetailRow(label: 'Teléfono', value: '---', c: c, hasChevron: true),
-                          ],
-                        ),
-                        AppSpacing.vGapSm,
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          decoration: BoxDecoration(
-                            color: _headerColor.withValues(alpha: 0.05),
-                            borderRadius: AppSpacing.borderRadiusMd,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.info_outline, color: _headerColor, size: 20),
-                              AppSpacing.hGapSm,
-                              Expanded(
-                                child: Text(
-                                  'Asegúrate de que tus datos son correctos, los necesitaremos para contactarte.',
-                                  style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
                         // Vehicle details
                         AppSpacing.vGapLg,
                         Text('Detalles del vehículo', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
@@ -250,6 +218,39 @@ class ReviewScreen extends ConsumerWidget {
                           ],
                         ),
 
+                        // Personal information
+                        AppSpacing.vGapLg,
+                        Text('Información personal', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+                        AppSpacing.vGapSm,
+                        _GroupedCard(
+                          c: c,
+                          children: [
+                            _DetailRow(label: 'Nombre', value: 'Propietario', c: c, hasChevron: true),
+                            _DetailRow(label: 'Email', value: 'contacto@carlo.pe', c: c, hasChevron: true),
+                            _DetailRow(label: 'Teléfono', value: '---', c: c, hasChevron: true),
+                          ],
+                        ),
+                        AppSpacing.vGapSm,
+                        Container(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          decoration: BoxDecoration(
+                            color: _headerColor.withValues(alpha: 0.05),
+                            borderRadius: AppSpacing.borderRadiusMd,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline, color: _headerColor, size: 20),
+                              AppSpacing.hGapSm,
+                              Expanded(
+                                child: Text(
+                                  'Asegúrate de que tus datos son correctos, los necesitaremos para contactarte.',
+                                  style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         // Ownership
                         AppSpacing.vGapLg,
                         Text('Propiedad', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
@@ -289,35 +290,20 @@ class ReviewScreen extends ConsumerWidget {
                               valueColor: _headerColor,
                             ),
                             _DetailRow(
+                              label: 'Daño en neumáticos',
+                              value: _getTireDamageText(state.tireDamageMap),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
                               label: 'Estado de neumáticos',
                               value: _getTireConditionText(state.tireCondition),
                               c: c,
                               hasChevron: true,
                               valueColor: _headerColor,
                             ),
-                            _DetailRow(
-                              label: 'Rayones o marcas',
-                              value: state.damages.where((d) => d.type == 'Rayón').isEmpty ? 'Ninguno' : '${state.damages.where((d) => d.type == 'Rayón').length}',
-                              c: c,
-                              hasChevron: true,
-                              valueColor: _headerColor,
-                            ),
-                            _DetailRow(
-                              label: 'Abolladuras',
-                              value: state.damages.where((d) => d.type == 'Abolladura').isEmpty ? 'Ninguno' : '${state.damages.where((d) => d.type == 'Abolladura').length}',
-                              c: c,
-                              hasChevron: true,
-                              valueColor: _headerColor,
-                            ),
-                            _DetailRow(
-                              label: 'Problemas de pintura',
-                              value: state.paintworkMarks.isEmpty
-                                  ? 'Ninguno'
-                                  : '${state.paintworkMarks.length} foto${state.paintworkMarks.length == 1 ? '' : 's'}',
-                              c: c,
-                              hasChevron: true,
-                              valueColor: _headerColor,
-                            ),
+                            ..._buildDamageRows(state.damages, c),
                             _DetailRow(
                               label: 'Accesorios rotos',
                               value: state.hasBrokenFittings
@@ -328,8 +314,17 @@ class ReviewScreen extends ConsumerWidget {
                               valueColor: _headerColor,
                             ),
                             _DetailRow(
+                              label: 'Luces de advertencia',
+                              value: _getWarningLightsText(state.warningLights),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
                               label: 'Mecánico o eléctrico',
-                              value: state.mechanicalIssues.isEmpty ? 'No' : 'Sí',
+                              value: state.mechanicalIssues.isEmpty
+                                  ? 'Ninguno'
+                                  : state.mechanicalIssues.join(', '),
                               c: c,
                               hasChevron: true,
                               valueColor: _headerColor,
@@ -339,6 +334,40 @@ class ReviewScreen extends ConsumerWidget {
                               value: _getRunningConditionShort(state.runningCondition),
                               c: c,
                               hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                          ],
+                        ),
+
+                        // Fotos
+                        AppSpacing.vGapLg,
+                        Text('Fotos', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+                        AppSpacing.vGapSm,
+                        _GroupedCard(
+                          c: c,
+                          children: [
+                            _DetailRow(
+                              label: 'Exterior',
+                              value: '${state.exteriorPhotosMap.length} foto${state.exteriorPhotosMap.length == 1 ? '' : 's'}',
+                              c: c,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
+                              label: 'Interior',
+                              value: '${state.interiorPhotosMap.length} foto${state.interiorPhotosMap.length == 1 ? '' : 's'}',
+                              c: c,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
+                              label: 'Ruedas',
+                              value: '${state.wheelsPhotosMap.length} foto${state.wheelsPhotosMap.length == 1 ? '' : 's'}',
+                              c: c,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
+                              label: 'Neumáticos',
+                              value: '${state.tirePhotosMap.length} foto${state.tirePhotosMap.length == 1 ? '' : 's'}',
+                              c: c,
                               valueColor: _headerColor,
                             ),
                           ],
@@ -427,10 +456,46 @@ class ReviewScreen extends ConsumerWidget {
     };
   }
 
+  String _getTireDamageText(Map<String, bool> map) {
+    final damaged = map.entries.where((e) => e.value).length;
+    if (damaged == 0) return 'Ninguno';
+    return '$damaged neumático${damaged == 1 ? '' : 's'}';
+  }
+
   String _getWheelDamageText(Map<String, bool> map) {
     final damaged = map.entries.where((e) => e.value).length;
     if (damaged == 0) return 'Ninguno';
     return '$damaged rueda${damaged == 1 ? '' : 's'}';
+  }
+
+  static const _damageTypeNames = {
+    'rayones': 'Rayones o rozaduras',
+    'oxido_pintura': 'Óxido / pintura',
+    'parabrisas': 'Parabrisas',
+    'abolladuras': 'Abolladuras',
+    'molduras': 'Molduras rotas',
+  };
+
+  List<_DetailRow> _buildDamageRows(List<DamageItem> damages, AdaptiveColors c) {
+    if (damages.isEmpty) {
+      return [
+        _DetailRow(label: 'Daños reportados', value: 'Ninguno', c: c, hasChevron: true, valueColor: _headerColor),
+      ];
+    }
+    final grouped = <String, int>{};
+    for (final d in damages) {
+      grouped[d.type] = (grouped[d.type] ?? 0) + 1;
+    }
+    return grouped.entries.map((e) {
+      final name = _damageTypeNames[e.key] ?? e.key;
+      return _DetailRow(
+        label: name,
+        value: '${e.value} foto${e.value == 1 ? '' : 's'}',
+        c: c,
+        hasChevron: true,
+        valueColor: _headerColor,
+      );
+    }).toList();
   }
 
   String _getRunningConditionShort(RunningCondition? condition) {
@@ -440,6 +505,22 @@ class ReviewScreen extends ConsumerWidget {
       RunningCondition.doesNotStart => 'No enciende',
       null => 'No especificado',
     };
+  }
+
+  String _getWarningLightsText(List<String> lights) {
+    if (lights.isEmpty) return 'No especificado';
+    if (lights.contains('ninguna')) return 'Ninguna';
+    const names = {
+      'check_engine': 'Check Engine',
+      'aceite': 'Aceite',
+      'bateria': 'Batería',
+      'temperatura': 'Temperatura',
+      'frenos': 'Frenos',
+      'abs': 'ABS',
+      'airbag': 'Airbag',
+      'presion_llantas': 'Presión llantas',
+    };
+    return lights.map((l) => names[l] ?? l).join(', ');
   }
 
   String _getServiceHistoryShort(ServiceHistoryType? type) {
@@ -506,11 +587,14 @@ class _DetailRow extends StatelessWidget {
               style: AppTypography.bodyMedium.copyWith(color: c.textPrimary),
             ),
           ),
-          Text(
-            value,
-            style: AppTypography.bodyMedium.copyWith(
-              color: valueColor ?? c.textPrimary,
-              fontWeight: hasChevron ? FontWeight.w500 : FontWeight.normal,
+          Flexible(
+            child: Text(
+              value,
+              style: AppTypography.bodyMedium.copyWith(
+                color: valueColor ?? c.textPrimary,
+                fontWeight: hasChevron ? FontWeight.w500 : FontWeight.normal,
+              ),
+              textAlign: TextAlign.end,
             ),
           ),
           if (hasChevron) ...[

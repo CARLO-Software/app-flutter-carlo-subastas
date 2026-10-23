@@ -71,9 +71,7 @@ class _VehicleResultScreenState extends ConsumerState<VehicleResultScreen> {
       'Hola, busqué la placa $plate pero el vehículo mostrado no es el mío. ¿Pueden ayudarme?',
     );
     final url = Uri.parse('https://wa.me/51934140010?text=$message');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
   @override

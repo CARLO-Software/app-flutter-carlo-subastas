@@ -145,7 +145,8 @@ class _GuidedCaptureScreenState extends ConsumerState<GuidedCaptureScreen>
   }
 
   Future<void> _validatePhoto(String path, String subject) async {
-    if (AppConstants.geminiApiKey.isEmpty) return;
+    // ponytail: AI validation disabled temporarily, remove early return to re-enable
+    return;
     _photoValidator ??= PhotoValidatorService(apiKey: AppConstants.geminiApiKey);
     setState(() { _isValidating = true; _validationResult = null; });
 

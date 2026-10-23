@@ -9,10 +9,10 @@ import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
 
 const _tirePositions = [
-  {'id': 'front_left', 'label': 'Delantera izquierda'},
-  {'id': 'front_right', 'label': 'Delantera derecha'},
-  {'id': 'rear_left', 'label': 'Trasera izquierda'},
-  {'id': 'rear_right', 'label': 'Trasera derecha'},
+  {'id': 'front_left', 'label': 'Conductor delantera'},
+  {'id': 'front_right', 'label': 'Copiloto delantera'},
+  {'id': 'rear_left', 'label': 'Conductor trasera'},
+  {'id': 'rear_right', 'label': 'Copiloto trasera'},
 ];
 
 class TireDamageScreen extends ConsumerStatefulWidget {
@@ -23,7 +23,14 @@ class TireDamageScreen extends ConsumerStatefulWidget {
 }
 
 class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
-  final Set<String> _damaged = {};
+  late final Set<String> _damaged;
+
+  @override
+  void initState() {
+    super.initState();
+    final map = ref.read(vehicleRegistrationProvider).tireDamageMap;
+    _damaged = map.entries.where((e) => e.value).map((e) => e.key).toSet();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +177,12 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: () {
-                      ref.read(vehicleRegistrationProvider.notifier).confirmTireCondition();
+                      final notifier = ref.read(vehicleRegistrationProvider.notifier);
+                      for (final pos in _tirePositions) {
+                        final id = pos['id']!;
+                        notifier.setTireDamage(id, _damaged.contains(id));
+                      }
+                      notifier.confirmTireCondition();
                       context.push(AppRoutes.interiorPhotos);
                     },
                     style: ElevatedButton.styleFrom(

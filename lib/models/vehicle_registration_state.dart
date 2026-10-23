@@ -61,6 +61,9 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default({}) Map<String, String> tirePhotosMap,
     @Default(false) bool tirePhotosConfirmed,
 
+    // Tire Damage (which tires are damaged)
+    @Default({}) Map<String, bool> tireDamageMap,
+
     // Tire Condition
     String? tireCondition,
 

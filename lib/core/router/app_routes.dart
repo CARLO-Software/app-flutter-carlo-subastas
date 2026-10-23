@@ -36,6 +36,7 @@ static const String exteriorPhotos = '/exterior-photos';
   static const String proofOfPurchase = '/proof-of-purchase';
   static const String smoking = '/smoking';
   static const String privatePlate = '/private-plate';
+  static const String profile = '/profile';
   static const String review = '/review';
   static const String submissionStatus = '/submission-status';
 }

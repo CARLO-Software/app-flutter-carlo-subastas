@@ -47,7 +47,8 @@ class _LoadingScreenState extends State<LoadingScreen>
           children: [
             Image.asset(
               'assets/images/arte-carga.png',
-              fit: BoxFit.cover,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
             const Positioned(
               bottom: 60,

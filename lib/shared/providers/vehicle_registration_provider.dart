@@ -173,6 +173,13 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(tirePhotosConfirmed: true);
   }
 
+  // Tire Damage
+  void setTireDamage(String tireId, bool isDamaged) {
+    final map = Map<String, bool>.from(state.tireDamageMap);
+    map[tireId] = isDamaged;
+    state = state.copyWith(tireDamageMap: map);
+  }
+
   // Tire Condition
   void setTireCondition(String condition) {
     state = state.copyWith(tireCondition: condition);

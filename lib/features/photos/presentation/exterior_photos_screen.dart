@@ -416,6 +416,8 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
           appBar: AppBar(
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
+            titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+            iconTheme: const IconThemeData(color: Colors.white),
             title: Text(positionName),
           ),
           body: Center(

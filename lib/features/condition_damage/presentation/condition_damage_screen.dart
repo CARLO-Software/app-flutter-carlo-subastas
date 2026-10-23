@@ -6,6 +6,7 @@ import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../models/models.dart';
 import '../../../shared/providers/providers.dart';
 import '../../photos/presentation/overlay_capture_screen.dart';
 import 'damage_locator_screen.dart';
@@ -18,7 +19,7 @@ class ConditionDamageScreen extends ConsumerStatefulWidget {
 }
 
 class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
-  final Map<String, String> _capturedPhotos = {};
+  late final Map<String, String> _capturedPhotos;
 
   static const _damageTypes = [
     {
@@ -109,6 +110,11 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
   @override
   void initState() {
     super.initState();
+    final damages = ref.read(vehicleRegistrationProvider).damages;
+    _capturedPhotos = {
+      for (final d in damages)
+        if (d.photoPath != null) d.type: d.photoPath!,
+    };
     WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroPopup());
   }
 
@@ -256,6 +262,13 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
       );
       if (locatorResult != null && mounted) {
         setState(() => _capturedPhotos[id] = photoPath);
+        ref.read(vehicleRegistrationProvider.notifier).addDamage(DamageItem(
+          id: '${id}_${DateTime.now().millisecondsSinceEpoch}',
+          type: id,
+          location: (locatorResult['zoneName'] as String?) ?? '',
+          description: locatorResult['size'] as String?,
+          photoPath: photoPath,
+        ));
       }
     }
   }
@@ -447,6 +460,8 @@ class _DamagePhotoViewer extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Text(title),
         actions: [
           TextButton.icon(

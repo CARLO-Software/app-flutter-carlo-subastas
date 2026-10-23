@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -11,10 +13,10 @@ import '../../../shared/widgets/widgets.dart';
 import 'overlay_capture_screen.dart';
 
 const _tirePositions = [
-  {'id': 'front_left', 'name': 'Delantera izquierda'},
-  {'id': 'front_right', 'name': 'Delantera derecha'},
-  {'id': 'rear_left', 'name': 'Trasera izquierda'},
-  {'id': 'rear_right', 'name': 'Trasera derecha'},
+  {'id': 'front_left', 'name': 'Conductor delantera'},
+  {'id': 'front_right', 'name': 'Copiloto delantera'},
+  {'id': 'rear_left', 'name': 'Conductor trasera'},
+  {'id': 'rear_right', 'name': 'Copiloto trasera'},
 ];
 
 class TirePhotosScreen extends ConsumerStatefulWidget {
@@ -157,6 +159,7 @@ class _TirePhotosScreenState extends ConsumerState<TirePhotosScreen> {
       items.add(OverlayCaptureItem(
         id: tireId,
         title: tire['name'] as String,
+        overlayAsset: AppConstants.cameraOverlayForTirePosition(tireId),
         filePrefix: 'tire_$tireId',
       ));
     }
@@ -348,12 +351,18 @@ class _TirePhotosScreenState extends ConsumerState<TirePhotosScreen> {
                               : Column(
                                   children: [
                                     Expanded(
-                                      child: Center(
-                                        child: Icon(
-                                          Icons.tire_repair,
-                                          size: 64,
-                                          color: c.textTertiary,
-                                        ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(AppSpacing.sm),
+                                        child: AppConstants.templateForTirePosition(tireId) != null
+                                            ? SvgPicture.asset(
+                                                AppConstants.templateForTirePosition(tireId)!,
+                                                fit: BoxFit.contain,
+                                              )
+                                            : Icon(
+                                                Icons.tire_repair,
+                                                size: 64,
+                                                color: c.textTertiary,
+                                              ),
                                       ),
                                     ),
                                     Padding(

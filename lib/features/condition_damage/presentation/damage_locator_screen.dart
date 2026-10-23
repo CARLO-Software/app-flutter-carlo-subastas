@@ -57,6 +57,13 @@ class _DamageLocatorScreenState extends State<DamageLocatorScreen> {
       zones: _rightSideZones,
       defaultZoom: 1.15,
     ),
+    _VehicleView(
+      id: 'superior',
+      name: 'Superior',
+      svgAsset: 'assets/images/plantillas/siluetas_blanco/exterior/svg/exterior-superior.svg',
+      zones: _topZones,
+      defaultZoom: 1.1,
+    ),
   ];
 
   // --- FRONTAL VIEW ZONES (viewBox 2880x1620) ---
@@ -114,6 +121,18 @@ class _DamageLocatorScreenState extends State<DamageLocatorScreen> {
     _Zone('faldon_r', 'Faldón lateral', [920,870, 2380,870, 2380,1000, 920,1000]),
     _Zone('rueda_del_r', 'Rueda delantera', [2044,860, 2402,860, 2402,1220, 2044,1220]),
     _Zone('rueda_tra_r', 'Rueda trasera', [558,860, 916,860, 916,1220, 558,1220]),
+  ];
+
+  // --- TOP VIEW ZONES (viewBox 2880x1620, front=left x≈222, rear=right x≈2660) ---
+  // Glass zones first (smaller, higher priority in hit-test)
+  static const _topZones = [
+    _Zone('parabrisas_s', 'Parabrisas', [1045,415, 1300,500, 1300,1120, 1045,1205]),
+    _Zone('techo_s', 'Techo', [1300,495, 1850,495, 1850,1125, 1300,1125]),
+    _Zone('luneta_s', 'Luneta trasera', [1850,500, 2110,415, 2110,1205, 1850,1120]),
+    _Zone('lateral_izq_s', 'Lateral izquierdo', [500,351, 2500,351, 2500,500, 500,500]),
+    _Zone('lateral_der_s', 'Lateral derecho', [500,1120, 2500,1120, 2500,1269, 500,1269]),
+    _Zone('capo_s', 'Capó', [222,810, 330,580, 550,390, 1045,356, 1045,1264, 550,1230, 330,1040, 222,844]),
+    _Zone('maletero_s', 'Maletero', [2110,356, 2500,390, 2640,580, 2660,810, 2660,840, 2640,1040, 2500,1230, 2110,1264]),
   ];
 
   static const _sizes = [

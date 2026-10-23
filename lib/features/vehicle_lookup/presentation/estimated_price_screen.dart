@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -96,7 +97,10 @@ void showEstimatedPricePopup(BuildContext context, WidgetRef ref) {
           ),
           AppSpacing.vGapSm,
           GestureDetector(
-            onTap: () {},
+            onTap: () => launchUrl(
+              Uri.parse('https://wa.me/51934140010?text=${Uri.encodeComponent('Hola, quiero saber más sobre cómo funciona la valorización de Carlo.')}'),
+              mode: LaunchMode.externalApplication,
+            ),
             child: Text(
               'Aprender más',
               style: AppTypography.bodyMedium.copyWith(

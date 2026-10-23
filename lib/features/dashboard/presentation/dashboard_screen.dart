@@ -273,9 +273,7 @@ class DashboardScreen extends ConsumerWidget {
 
   Future<void> _openWhatsApp() async {
     final url = Uri.parse('https://wa.me/51934140010?text=${Uri.encodeComponent('Hola, necesito ayuda con el registro de mi vehículo en Carlo.')}');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
+    await launchUrl(url, mode: LaunchMode.externalApplication);
   }
 
   void _showContactPopup(BuildContext context) {
@@ -453,7 +451,10 @@ class DashboardScreen extends ConsumerWidget {
               ListTile(
                 leading: Icon(Icons.person_outline, color: c.textPrimary),
                 title: Text('Mi perfil', style: AppTypography.titleSmall),
-                onTap: () => Navigator.of(ctx).pop(),
+                onTap: () {
+                  Navigator.of(ctx).pop();
+                  context.push(AppRoutes.profile);
+                },
               ),
               ListTile(
                 leading: Icon(Icons.help_outline, color: c.textPrimary),
