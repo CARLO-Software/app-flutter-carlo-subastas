@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
@@ -20,15 +21,16 @@ class InteriorConditionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final selected = ref.watch(vehicleRegistrationProvider.select((s) => s.interiorConditionIssues));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: c.background,
+        foregroundColor: c.textPrimary,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: c.textPrimary),
+        iconTheme: IconThemeData(color: c.textPrimary),
         title: const Text('Condición interior'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -46,7 +48,7 @@ class InteriorConditionScreen extends ConsumerWidget {
                   Text(
                     'Cuéntanos sobre la condición del interior',
                     style: AppTypography.titleLarge.copyWith(
-                      color: Colors.white,
+                      color: c.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -54,7 +56,7 @@ class InteriorConditionScreen extends ConsumerWidget {
                   Text(
                     'Selecciona todas las que apliquen, incluso si es desgaste normal para la edad del coche.',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: Colors.white54,
+                      color: c.textSecondary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -75,10 +77,10 @@ class InteriorConditionScreen extends ConsumerWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(AppSpacing.md),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
+                            color: c.surfaceVariant,
                             borderRadius: AppSpacing.borderRadiusLg,
                             border: Border.all(
-                              color: isSelected ? Colors.white : Colors.transparent,
+                              color: isSelected ? AppColors.primary : Colors.transparent,
                               width: 2,
                             ),
                           ),
@@ -88,15 +90,15 @@ class InteriorConditionScreen extends ConsumerWidget {
                                 width: 24,
                                 height: 24,
                                 decoration: BoxDecoration(
-                                  color: isSelected ? Colors.white : Colors.transparent,
+                                  color: isSelected ? AppColors.primary : Colors.transparent,
                                   borderRadius: BorderRadius.circular(6),
                                   border: Border.all(
-                                    color: isSelected ? Colors.white : Colors.white38,
+                                    color: isSelected ? AppColors.primary : c.border,
                                     width: 2,
                                   ),
                                 ),
                                 child: isSelected
-                                    ? const Icon(Icons.check, size: 16, color: Colors.black)
+                                    ? const Icon(Icons.check, size: 16, color: Colors.white)
                                     : null,
                               ),
                               const SizedBox(width: AppSpacing.md),
@@ -107,7 +109,7 @@ class InteriorConditionScreen extends ConsumerWidget {
                                     Text(
                                       label,
                                       style: AppTypography.bodyMedium.copyWith(
-                                        color: Colors.white,
+                                        color: c.textPrimary,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -116,7 +118,7 @@ class InteriorConditionScreen extends ConsumerWidget {
                                       Text(
                                         sub,
                                         style: AppTypography.bodySmall.copyWith(
-                                          color: Colors.white38,
+                                          color: c.textTertiary,
                                         ),
                                       ),
                                     ],
@@ -134,7 +136,7 @@ class InteriorConditionScreen extends ConsumerWidget {
             ),
           ),
           Container(
-            color: const Color(0xFF1E1E1E),
+            color: c.background,
             child: SafeArea(
               top: false,
               child: Padding(
@@ -146,14 +148,14 @@ class InteriorConditionScreen extends ConsumerWidget {
                     onPressed: selected.isNotEmpty
                         ? () {
                             ref.read(vehicleRegistrationProvider.notifier).confirmInteriorCondition();
-                            context.push(AppRoutes.vehicleInfoHub);
+                            context.push(AppRoutes.lockingWheelNut);
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      disabledBackgroundColor: Colors.white24,
-                      disabledForegroundColor: Colors.white38,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
+                      disabledForegroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppSpacing.borderRadiusXl,
@@ -161,9 +163,7 @@ class InteriorConditionScreen extends ConsumerWidget {
                     ),
                     child: Text(
                       'Continuar',
-                      style: AppTypography.button.copyWith(
-                        color: selected.isNotEmpty ? Colors.black : Colors.white38,
-                      ),
+                      style: AppTypography.button.copyWith(color: Colors.white),
                     ),
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/app_routes.dart';
@@ -215,13 +216,14 @@ class _VehicleResultScreenState extends ConsumerState<VehicleResultScreen> {
               // Mileage input
               AppTextField(
                 label: 'Ingresa kilometraje',
-                hint: 'Ej: 45000',
+                hint: 'Ej: 45,000',
                 controller: _mileageController,
                 errorText: _mileageError,
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[\d.]')),
+                  _ThousandsSeparatorFormatter(),
                 ],
                 prefixIcon: const Icon(Icons.speed_outlined),
               ),
@@ -236,6 +238,29 @@ class _VehicleResultScreenState extends ConsumerState<VehicleResultScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ThousandsSeparatorFormatter extends TextInputFormatter {
+  static final _fmt = NumberFormat('#,###', 'en_US');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(',', '');
+    if (digits.isEmpty) return newValue.copyWith(text: '');
+    final parts = digits.split('.');
+    final intPart = int.tryParse(parts[0]);
+    if (intPart == null || intPart > 999999) return oldValue;
+    final formatted = parts.length > 1
+        ? '${_fmt.format(intPart)}.${parts[1]}'
+        : _fmt.format(intPart);
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

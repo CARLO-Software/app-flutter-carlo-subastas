@@ -35,6 +35,16 @@ import '../../features/tire_condition/presentation/tire_damage_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
 import '../../features/condition_damage/presentation/warning_lights_screen.dart';
 import '../../features/charging_cables/presentation/charging_cables_screen.dart';
+import '../../features/parcel_shelf/presentation/parcel_shelf_screen.dart';
+import '../../features/bonus_photos/presentation/bonus_photos_screen.dart';
+import '../../features/service_history_info/presentation/service_history_info_screen.dart';
+import '../../features/service_history_upload/presentation/service_history_upload_screen.dart';
+import '../../features/v5c_log_book/presentation/v5c_log_book_screen.dart';
+import '../../features/registered_keeper/presentation/registered_keeper_screen.dart';
+import '../../features/owner_name/presentation/owner_name_screen.dart';
+import '../../features/collection_address/presentation/collection_address_screen.dart';
+import '../../features/collection_address/presentation/confirm_address_screen.dart';
+import '../../features/confirm_phone/presentation/confirm_phone_screen.dart';
 import '../../features/interior_condition/presentation/interior_condition_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -218,6 +228,56 @@ GoRoute(
       path: AppRoutes.interiorCondition,
       name: 'interiorCondition',
       builder: (context, state) => const InteriorConditionScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.parcelShelf,
+      name: 'parcelShelf',
+      builder: (context, state) => const ParcelShelfScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.bonusPhotos,
+      name: 'bonusPhotos',
+      builder: (context, state) => const BonusPhotosScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.serviceHistoryInfo,
+      name: 'serviceHistoryInfo',
+      builder: (context, state) => const ServiceHistoryInfoScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.serviceHistoryUpload,
+      name: 'serviceHistoryUpload',
+      builder: (context, state) => const ServiceHistoryUploadScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.v5cLogBook,
+      name: 'v5cLogBook',
+      builder: (context, state) => const V5cLogBookScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.registeredKeeper,
+      name: 'registeredKeeper',
+      builder: (context, state) => const RegisteredKeeperScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.ownerName,
+      name: 'ownerName',
+      builder: (context, state) => const OwnerNameScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.collectionAddress,
+      name: 'collectionAddress',
+      builder: (context, state) => const CollectionAddressScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.confirmAddress,
+      name: 'confirmAddress',
+      builder: (context, state) => const ConfirmAddressScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.confirmPhone,
+      name: 'confirmPhone',
+      builder: (context, state) => const ConfirmPhoneScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,

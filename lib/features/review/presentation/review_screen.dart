@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -147,7 +148,7 @@ class ReviewScreen extends ConsumerWidget {
                           Text(
                             [
                               vehicle.year.toString(),
-                              '${state.mileage % 1 == 0 ? state.mileage.toInt() : state.mileage} km',
+                              '${NumberFormat('#,###').format(state.mileage % 1 == 0 ? state.mileage.toInt() : state.mileage)} km',
                               if (vehicle.fuelType.isNotEmpty) vehicle.fuelType,
                               if (vehicle.transmission.isNotEmpty) vehicle.transmission,
                             ].join(' · '),
@@ -196,14 +197,24 @@ class ReviewScreen extends ConsumerWidget {
                             ),
                             _DetailRow(
                               label: 'Kit de herramientas',
-                              value: state.hasToolPack ? 'Sí' : 'No',
+                              value: switch (state.toolPackOption) {
+                                'tiene_kit' => 'Tiene el kit',
+                                'kit_faltante' => 'Kit faltante',
+                                'no_incluye' => 'No incluye',
+                                _ => state.hasToolPack ? 'Sí' : 'No',
+                              },
                               c: c,
                               hasChevron: true,
                               valueColor: _headerColor,
                             ),
                             _DetailRow(
                               label: 'Tuerca de seguridad',
-                              value: state.hasLockingWheelNut ? 'Sí' : 'No',
+                              value: switch (state.lockingWheelNutOption) {
+                                'tiene_llave' => 'Tiene la llave',
+                                'llave_faltante' => 'Llave faltante',
+                                'tuercas_estandar' => 'Tuercas estándar',
+                                _ => state.hasLockingWheelNut ? 'Sí' : 'No',
+                              },
                               c: c,
                               hasChevron: true,
                               valueColor: _headerColor,

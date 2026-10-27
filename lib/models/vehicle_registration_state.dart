@@ -87,10 +87,53 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
 
     // Tool Pack
     @Default(false) bool hasToolPack,
+    String? toolPackOption,
     @Default(false) bool toolPackConfirmed,
+
+    // Parcel Shelf
+    String? parcelShelfOption,
+    @Default(false) bool parcelShelfConfirmed,
+
+    // Extra Photos
+    @Default([]) List<String> bonusPhotos,
+    @Default(false) bool bonusPhotosConfirmed,
+
+    // Service History Info (intro screen)
+    @Default(false) bool serviceHistoryInfoSeen,
+
+    // Service History Upload
+    @Default([]) List<String> serviceHistoryPhotos,
+    @Default(false) bool noServiceHistory,
+    @Default(false) bool serviceHistoryUploadConfirmed,
+
+    // V5C Log Book
+    String? v5cLogBookOption,
+    @Default(false) bool v5cLogBookConfirmed,
+
+    // Registered Keeper
+    String? registeredKeeperOption,
+    @Default(false) bool registeredKeeperConfirmed,
+
+    // Owner Name
+    @Default('') String ownerFullName,
+    @Default(false) bool ownerNameConfirmed,
+
+    // Phone Verification
+    @Default('') String phoneNumber,
+    @Default(false) bool phoneConfirmed,
+
+    // Collection Address
+    @Default('') String collectionAddress,
+    @Default('') String collectionAddressLine1,
+    @Default('') String collectionAddressLine2,
+    @Default('') String collectionAddressLine3,
+    @Default('') String collectionCity,
+    @Default('') String collectionPostcode,
+    @Default(false) bool collectionAddressConfirmed,
 
     // Locking Wheel Nut
     @Default(false) bool hasLockingWheelNut,
+    String? lockingWheelNutOption,
     @Default(false) bool lockingWheelNutConfirmed,
 
     // Warning Lights

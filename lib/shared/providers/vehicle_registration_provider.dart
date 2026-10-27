@@ -270,13 +270,143 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(hasToolPack: value);
   }
 
+  void setToolPackOption(String option) {
+    state = state.copyWith(
+      toolPackOption: option,
+      hasToolPack: option == 'tiene_kit',
+    );
+  }
+
   void confirmToolPack() {
     state = state.copyWith(toolPackConfirmed: true);
+  }
+
+  // Phone Verification
+  void setPhoneNumber(String phone) {
+    state = state.copyWith(phoneNumber: phone);
+  }
+
+  void confirmPhone() {
+    state = state.copyWith(phoneConfirmed: true);
+  }
+
+  // Collection Address
+  void setCollectionAddress(String address) {
+    state = state.copyWith(collectionAddress: address);
+  }
+
+  void setCollectionAddressDetails({
+    required String line1,
+    required String line2,
+    String line3 = '',
+    required String city,
+    required String postcode,
+  }) {
+    state = state.copyWith(
+      collectionAddressLine1: line1,
+      collectionAddressLine2: line2,
+      collectionAddressLine3: line3,
+      collectionCity: city,
+      collectionPostcode: postcode,
+    );
+  }
+
+  void confirmCollectionAddress() {
+    state = state.copyWith(collectionAddressConfirmed: true);
+  }
+
+  // Owner Name
+  void setOwnerFullName(String name) {
+    state = state.copyWith(ownerFullName: name);
+  }
+
+  void confirmOwnerName() {
+    state = state.copyWith(ownerNameConfirmed: true);
+  }
+
+  // Registered Keeper
+  void setRegisteredKeeperOption(String option) {
+    state = state.copyWith(registeredKeeperOption: option);
+  }
+
+  void confirmRegisteredKeeper() {
+    state = state.copyWith(registeredKeeperConfirmed: true);
+  }
+
+  // V5C Log Book
+  void setV5cLogBookOption(String option) {
+    state = state.copyWith(v5cLogBookOption: option);
+  }
+
+  void confirmV5cLogBook() {
+    state = state.copyWith(v5cLogBookConfirmed: true);
+  }
+
+  // Service History Upload
+  void addServiceHistoryPhoto(String path) {
+    final photos = List<String>.from(state.serviceHistoryPhotos);
+    photos.add(path);
+    state = state.copyWith(serviceHistoryPhotos: photos, noServiceHistory: false);
+  }
+
+  void removeServiceHistoryPhoto(String path) {
+    final photos = List<String>.from(state.serviceHistoryPhotos);
+    photos.remove(path);
+    state = state.copyWith(serviceHistoryPhotos: photos);
+  }
+
+  void setNoServiceHistory(bool value) {
+    state = state.copyWith(
+      noServiceHistory: value,
+      serviceHistoryPhotos: value ? [] : state.serviceHistoryPhotos,
+    );
+  }
+
+  void confirmServiceHistoryUpload() {
+    state = state.copyWith(serviceHistoryUploadConfirmed: true);
+  }
+
+  // Service History Info
+  void markServiceHistoryInfoSeen() {
+    state = state.copyWith(serviceHistoryInfoSeen: true);
+  }
+
+  // Bonus Photos
+  void addBonusPhoto(String path) {
+    final photos = List<String>.from(state.bonusPhotos);
+    photos.add(path);
+    state = state.copyWith(bonusPhotos: photos);
+  }
+
+  void removeBonusPhoto(String path) {
+    final photos = List<String>.from(state.bonusPhotos);
+    photos.remove(path);
+    state = state.copyWith(bonusPhotos: photos);
+  }
+
+  void confirmBonusPhotos() {
+    state = state.copyWith(bonusPhotosConfirmed: true);
+  }
+
+  // Parcel Shelf
+  void setParcelShelfOption(String option) {
+    state = state.copyWith(parcelShelfOption: option);
+  }
+
+  void confirmParcelShelf() {
+    state = state.copyWith(parcelShelfConfirmed: true);
   }
 
   // Locking Wheel Nut
   void setHasLockingWheelNut(bool value) {
     state = state.copyWith(hasLockingWheelNut: value);
+  }
+
+  void setLockingWheelNutOption(String option) {
+    state = state.copyWith(
+      lockingWheelNutOption: option,
+      hasLockingWheelNut: option == 'tiene_llave',
+    );
   }
 
   void confirmLockingWheelNut() {
@@ -410,7 +540,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
   // Progress Calculation
   double calculateProgress() {
     int completedSteps = 0;
-    const int totalSteps = 23;
+    const int totalSteps = 31;
 
     if (state.vehicleDetailsConfirmed) completedSteps++;
     if (state.extraFeaturesConfirmed) completedSteps++;
@@ -435,6 +565,14 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     if (state.serviceHistoryConfirmed) completedSteps++;
     if (state.chargingCablesConfirmed) completedSteps++;
     if (state.interiorConditionConfirmed) completedSteps++;
+    if (state.parcelShelfConfirmed) completedSteps++;
+    if (state.bonusPhotosConfirmed) completedSteps++;
+    if (state.serviceHistoryUploadConfirmed) completedSteps++;
+    if (state.v5cLogBookConfirmed) completedSteps++;
+    if (state.registeredKeeperConfirmed) completedSteps++;
+    if (state.ownerNameConfirmed) completedSteps++;
+    if (state.collectionAddressConfirmed) completedSteps++;
+    if (state.phoneConfirmed) completedSteps++;
 
     return completedSteps / totalSteps;
   }

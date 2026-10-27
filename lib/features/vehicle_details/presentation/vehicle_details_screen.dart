@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -110,7 +111,7 @@ class VehicleDetailsScreen extends ConsumerWidget {
                   _buildDetailRow('Marca', vehicle.brand, c),
                   _buildDetailRow('Modelo', vehicle.model, c),
                   _buildDetailRow('Año', vehicle.year.toString(), c),
-                  _buildDetailRow('Kilometraje', '${mileage % 1 == 0 ? mileage.toInt() : mileage} km', c),
+                  _buildDetailRow('Kilometraje', '${NumberFormat('#,###').format(mileage % 1 == 0 ? mileage.toInt() : mileage)} km', c),
                   _buildDetailRow('Color', vehicle.color, c),
                   _buildDetailRow('Carrocería', vehicle.bodyType, c),
                   _buildDetailRow('Puertas', vehicle.doors.toString(), c),

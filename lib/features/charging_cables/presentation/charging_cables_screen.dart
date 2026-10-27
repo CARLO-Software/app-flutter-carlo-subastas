@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
@@ -16,15 +17,16 @@ class ChargingCablesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
     final selected = ref.watch(vehicleRegistrationProvider.select((s) => s.chargingCables));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: c.background,
+        foregroundColor: c.textPrimary,
+        titleTextStyle: AppTypography.titleLarge.copyWith(color: c.textPrimary),
+        iconTheme: IconThemeData(color: c.textPrimary),
         title: const Text('Cables de carga'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -42,7 +44,7 @@ class ChargingCablesScreen extends ConsumerWidget {
                   Text(
                     '¿Incluyes cables de carga?',
                     style: AppTypography.titleLarge.copyWith(
-                      color: Colors.white,
+                      color: c.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -50,7 +52,7 @@ class ChargingCablesScreen extends ConsumerWidget {
                   Text(
                     'Selecciona los cables que vendrán con tu coche. ¿Tienes un híbrido? Solo presiona siguiente.',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: Colors.white54,
+                      color: c.textSecondary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -69,17 +71,17 @@ class ChargingCablesScreen extends ConsumerWidget {
                         onSelected: (_) {
                           ref.read(vehicleRegistrationProvider.notifier).toggleChargingCable(id);
                         },
-                        selectedColor: Colors.white,
-                        backgroundColor: const Color(0xFF2A2A2A),
-                        checkmarkColor: Colors.black,
+                        selectedColor: AppColors.primary,
+                        backgroundColor: c.surfaceVariant,
+                        checkmarkColor: Colors.white,
                         labelStyle: AppTypography.bodyMedium.copyWith(
-                          color: isSelected ? Colors.black : Colors.white70,
+                          color: isSelected ? Colors.white : c.textSecondary,
                           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: AppSpacing.borderRadiusXl,
                           side: BorderSide(
-                            color: isSelected ? Colors.white : Colors.white24,
+                            color: isSelected ? AppColors.primary : c.border,
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
@@ -91,7 +93,7 @@ class ChargingCablesScreen extends ConsumerWidget {
             ),
           ),
           Container(
-            color: const Color(0xFF1E1E1E),
+            color: c.background,
             child: SafeArea(
               top: false,
               child: Padding(
@@ -105,8 +107,8 @@ class ChargingCablesScreen extends ConsumerWidget {
                       context.push(AppRoutes.interiorCondition);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppSpacing.borderRadiusXl,
@@ -114,7 +116,7 @@ class ChargingCablesScreen extends ConsumerWidget {
                     ),
                     child: Text(
                       'Continuar',
-                      style: AppTypography.button.copyWith(color: Colors.black),
+                      style: AppTypography.button.copyWith(color: Colors.white),
                     ),
                   ),
                 ),

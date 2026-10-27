@@ -98,8 +98,44 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
       const {},
   wheelDamageConfirmed: json['wheelDamageConfirmed'] as bool? ?? false,
   hasToolPack: json['hasToolPack'] as bool? ?? false,
+  toolPackOption: json['toolPackOption'] as String?,
   toolPackConfirmed: json['toolPackConfirmed'] as bool? ?? false,
+  parcelShelfOption: json['parcelShelfOption'] as String?,
+  parcelShelfConfirmed: json['parcelShelfConfirmed'] as bool? ?? false,
+  bonusPhotos:
+      (json['bonusPhotos'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  bonusPhotosConfirmed: json['bonusPhotosConfirmed'] as bool? ?? false,
+  serviceHistoryInfoSeen: json['serviceHistoryInfoSeen'] as bool? ?? false,
+  serviceHistoryPhotos:
+      (json['serviceHistoryPhotos'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  noServiceHistory: json['noServiceHistory'] as bool? ?? false,
+  serviceHistoryUploadConfirmed:
+      json['serviceHistoryUploadConfirmed'] as bool? ?? false,
+  v5cLogBookOption: json['v5cLogBookOption'] as String?,
+  v5cLogBookConfirmed: json['v5cLogBookConfirmed'] as bool? ?? false,
+  registeredKeeperOption: json['registeredKeeperOption'] as String?,
+  registeredKeeperConfirmed:
+      json['registeredKeeperConfirmed'] as bool? ?? false,
+  ownerFullName: json['ownerFullName'] as String? ?? '',
+  ownerNameConfirmed: json['ownerNameConfirmed'] as bool? ?? false,
+  phoneNumber: json['phoneNumber'] as String? ?? '',
+  phoneConfirmed: json['phoneConfirmed'] as bool? ?? false,
+  collectionAddress: json['collectionAddress'] as String? ?? '',
+  collectionAddressLine1: json['collectionAddressLine1'] as String? ?? '',
+  collectionAddressLine2: json['collectionAddressLine2'] as String? ?? '',
+  collectionAddressLine3: json['collectionAddressLine3'] as String? ?? '',
+  collectionCity: json['collectionCity'] as String? ?? '',
+  collectionPostcode: json['collectionPostcode'] as String? ?? '',
+  collectionAddressConfirmed:
+      json['collectionAddressConfirmed'] as bool? ?? false,
   hasLockingWheelNut: json['hasLockingWheelNut'] as bool? ?? false,
+  lockingWheelNutOption: json['lockingWheelNutOption'] as String?,
   lockingWheelNutConfirmed: json['lockingWheelNutConfirmed'] as bool? ?? false,
   warningLights:
       (json['warningLights'] as List<dynamic>?)
@@ -193,8 +229,33 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'wheelDamageMap': instance.wheelDamageMap,
   'wheelDamageConfirmed': instance.wheelDamageConfirmed,
   'hasToolPack': instance.hasToolPack,
+  'toolPackOption': instance.toolPackOption,
   'toolPackConfirmed': instance.toolPackConfirmed,
+  'parcelShelfOption': instance.parcelShelfOption,
+  'parcelShelfConfirmed': instance.parcelShelfConfirmed,
+  'bonusPhotos': instance.bonusPhotos,
+  'bonusPhotosConfirmed': instance.bonusPhotosConfirmed,
+  'serviceHistoryInfoSeen': instance.serviceHistoryInfoSeen,
+  'serviceHistoryPhotos': instance.serviceHistoryPhotos,
+  'noServiceHistory': instance.noServiceHistory,
+  'serviceHistoryUploadConfirmed': instance.serviceHistoryUploadConfirmed,
+  'v5cLogBookOption': instance.v5cLogBookOption,
+  'v5cLogBookConfirmed': instance.v5cLogBookConfirmed,
+  'registeredKeeperOption': instance.registeredKeeperOption,
+  'registeredKeeperConfirmed': instance.registeredKeeperConfirmed,
+  'ownerFullName': instance.ownerFullName,
+  'ownerNameConfirmed': instance.ownerNameConfirmed,
+  'phoneNumber': instance.phoneNumber,
+  'phoneConfirmed': instance.phoneConfirmed,
+  'collectionAddress': instance.collectionAddress,
+  'collectionAddressLine1': instance.collectionAddressLine1,
+  'collectionAddressLine2': instance.collectionAddressLine2,
+  'collectionAddressLine3': instance.collectionAddressLine3,
+  'collectionCity': instance.collectionCity,
+  'collectionPostcode': instance.collectionPostcode,
+  'collectionAddressConfirmed': instance.collectionAddressConfirmed,
   'hasLockingWheelNut': instance.hasLockingWheelNut,
+  'lockingWheelNutOption': instance.lockingWheelNutOption,
   'lockingWheelNutConfirmed': instance.lockingWheelNutConfirmed,
   'warningLights': instance.warningLights,
   'warningLightsConfirmed': instance.warningLightsConfirmed,
