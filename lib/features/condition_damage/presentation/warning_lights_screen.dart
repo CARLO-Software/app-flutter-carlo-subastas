@@ -33,7 +33,7 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
     ref.read(vehicleRegistrationProvider.notifier).confirmWarningLights();
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
-    context.push(AppRoutes.vehicleInfoHub);
+    context.push(AppRoutes.chargingCables);
     setState(() => _isAnalyzing = false);
   }
 

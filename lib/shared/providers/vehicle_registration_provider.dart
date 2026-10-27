@@ -298,6 +298,42 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(warningLightsConfirmed: true);
   }
 
+  // Charging Cables
+  void toggleChargingCable(String cable) {
+    final cables = List<String>.from(state.chargingCables);
+    if (cables.contains(cable)) {
+      cables.remove(cable);
+    } else {
+      cables.add(cable);
+    }
+    state = state.copyWith(chargingCables: cables);
+  }
+
+  void confirmChargingCables() {
+    state = state.copyWith(chargingCablesConfirmed: true);
+  }
+
+  // Interior Condition
+  void toggleInteriorConditionIssue(String issue) {
+    final issues = List<String>.from(state.interiorConditionIssues);
+    if (issue == 'sin_problemas') {
+      issues.clear();
+      issues.add('sin_problemas');
+    } else {
+      issues.remove('sin_problemas');
+      if (issues.contains(issue)) {
+        issues.remove(issue);
+      } else {
+        issues.add(issue);
+      }
+    }
+    state = state.copyWith(interiorConditionIssues: issues);
+  }
+
+  void confirmInteriorCondition() {
+    state = state.copyWith(interiorConditionConfirmed: true);
+  }
+
   // Condition & Damage
   void addDamage(DamageItem damage) {
     final damages = List<DamageItem>.from(state.damages);
@@ -374,7 +410,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
   // Progress Calculation
   double calculateProgress() {
     int completedSteps = 0;
-    const int totalSteps = 21;
+    const int totalSteps = 23;
 
     if (state.vehicleDetailsConfirmed) completedSteps++;
     if (state.extraFeaturesConfirmed) completedSteps++;
@@ -397,6 +433,8 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     if (state.brokenFittingsConfirmed) completedSteps++;
     if (state.wheelDamageConfirmed) completedSteps++;
     if (state.serviceHistoryConfirmed) completedSteps++;
+    if (state.chargingCablesConfirmed) completedSteps++;
+    if (state.interiorConditionConfirmed) completedSteps++;
 
     return completedSteps / totalSteps;
   }

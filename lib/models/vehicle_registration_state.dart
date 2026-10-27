@@ -97,6 +97,14 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
     @Default([]) List<String> warningLights,
     @Default(false) bool warningLightsConfirmed,
 
+    // Charging Cables
+    @Default([]) List<String> chargingCables,
+    @Default(false) bool chargingCablesConfirmed,
+
+    // Interior Condition
+    @Default([]) List<String> interiorConditionIssues,
+    @Default(false) bool interiorConditionConfirmed,
+
     // Condition & Damage
     @Default([]) List<DamageItem> damages,
 

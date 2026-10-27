@@ -107,6 +107,19 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
           .toList() ??
       const [],
   warningLightsConfirmed: json['warningLightsConfirmed'] as bool? ?? false,
+  chargingCables:
+      (json['chargingCables'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  chargingCablesConfirmed: json['chargingCablesConfirmed'] as bool? ?? false,
+  interiorConditionIssues:
+      (json['interiorConditionIssues'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  interiorConditionConfirmed:
+      json['interiorConditionConfirmed'] as bool? ?? false,
   damages:
       (json['damages'] as List<dynamic>?)
           ?.map((e) => DamageItem.fromJson(e as Map<String, dynamic>))
@@ -185,6 +198,10 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'lockingWheelNutConfirmed': instance.lockingWheelNutConfirmed,
   'warningLights': instance.warningLights,
   'warningLightsConfirmed': instance.warningLightsConfirmed,
+  'chargingCables': instance.chargingCables,
+  'chargingCablesConfirmed': instance.chargingCablesConfirmed,
+  'interiorConditionIssues': instance.interiorConditionIssues,
+  'interiorConditionConfirmed': instance.interiorConditionConfirmed,
   'damages': instance.damages,
   'serviceHistoryType':
       _$ServiceHistoryTypeEnumMap[instance.serviceHistoryType],

@@ -34,6 +34,8 @@ import '../../features/photos/presentation/tire_photos_screen.dart';
 import '../../features/tire_condition/presentation/tire_damage_screen.dart';
 import '../../features/condition_damage/presentation/condition_damage_screen.dart';
 import '../../features/condition_damage/presentation/warning_lights_screen.dart';
+import '../../features/charging_cables/presentation/charging_cables_screen.dart';
+import '../../features/interior_condition/presentation/interior_condition_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
@@ -206,6 +208,16 @@ GoRoute(
       path: AppRoutes.warningLights,
       name: 'warningLights',
       builder: (context, state) => const WarningLightsScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.chargingCables,
+      name: 'chargingCables',
+      builder: (context, state) => const ChargingCablesScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.interiorCondition,
+      name: 'interiorCondition',
+      builder: (context, state) => const InteriorConditionScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,
