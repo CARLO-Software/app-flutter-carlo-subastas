@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/auth_screen.dart';
 import '../../features/auth/presentation/loading_screen.dart';
+import '../../features/home/presentation/home_screen.dart';
 import '../../features/splash/presentation/splash_screen.dart';
 import '../../features/vehicle_lookup/presentation/vehicle_lookup_screen.dart';
 import '../../features/vehicle_lookup/presentation/vehicle_result_screen.dart';
@@ -49,6 +50,7 @@ import '../../features/interior_condition/presentation/interior_condition_screen
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/review/presentation/review_screen.dart';
+import '../../features/sale_type/presentation/sale_type_screen.dart';
 import '../../features/submission_status/presentation/submission_status_screen.dart';
 import 'app_routes.dart';
 
@@ -73,6 +75,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.loading,
       name: 'loading',
       builder: (context, state) => const LoadingScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.home,
+      name: 'home',
+      builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
       path: AppRoutes.vehicleLookup,
@@ -298,6 +305,11 @@ GoRoute(
       path: AppRoutes.review,
       name: 'review',
       builder: (context, state) => const ReviewScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.saleType,
+      name: 'saleType',
+      builder: (context, state) => const SaleTypeScreen(),
     ),
     GoRoute(
       path: AppRoutes.submissionStatus,

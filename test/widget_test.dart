@@ -10,10 +10,11 @@ void main() {
       ),
     );
 
-    // Wait for the splash screen to render
     await tester.pump();
 
-    // Verify the app has launched
-    expect(find.text('Carlo'), findsOneWidget);
+    expect(find.text('Carlo Subastas'), findsOneWidget);
+
+    // Drain the splash screen's navigation timer
+    await tester.pumpAndSettle(const Duration(seconds: 2));
   });
 }

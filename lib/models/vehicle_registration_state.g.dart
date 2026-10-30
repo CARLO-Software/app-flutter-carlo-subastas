@@ -176,6 +176,7 @@ _VehicleRegistrationState _$VehicleRegistrationStateFromJson(
   smokingConfirmed: json['smokingConfirmed'] as bool? ?? false,
   hasPrivatePlate: json['hasPrivatePlate'] as bool? ?? false,
   privatePlateConfirmed: json['privatePlateConfirmed'] as bool? ?? false,
+  saleType: $enumDecodeNullable(_$SaleTypeEnumMap, json['saleType']),
   submissionStatus:
       $enumDecodeNullable(
         _$SubmissionStatusEnumMap,
@@ -273,6 +274,7 @@ Map<String, dynamic> _$VehicleRegistrationStateToJson(
   'smokingConfirmed': instance.smokingConfirmed,
   'hasPrivatePlate': instance.hasPrivatePlate,
   'privatePlateConfirmed': instance.privatePlateConfirmed,
+  'saleType': _$SaleTypeEnumMap[instance.saleType],
   'submissionStatus': _$SubmissionStatusEnumMap[instance.submissionStatus]!,
   'vehicleDetailsConfirmed': instance.vehicleDetailsConfirmed,
   'extraFeaturesConfirmed': instance.extraFeaturesConfirmed,
@@ -298,6 +300,12 @@ const _$ServiceHistoryTypeEnumMap = {
   ServiceHistoryType.full: 'full',
   ServiceHistoryType.partial: 'partial',
   ServiceHistoryType.none: 'none',
+};
+
+const _$SaleTypeEnumMap = {
+  SaleType.ecommerce: 'ecommerce',
+  SaleType.auction: 'auction',
+  SaleType.consignment: 'consignment',
 };
 
 const _$SubmissionStatusEnumMap = {

@@ -88,13 +88,22 @@ class _VehicleLookupScreenState extends ConsumerState<VehicleLookupScreen> {
     final c = context.colors;
     return Scaffold(
       backgroundColor: c.background,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: c.textPrimary),
+          onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.home),
+        ),
+      ),
       body: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           padding: AppSpacing.screenPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppSpacing.vGapXxl,
+              AppSpacing.vGapLg,
               Center(
                 child: Container(
                   width: 80,

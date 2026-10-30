@@ -153,6 +153,7 @@ class SubmissionNotifier extends Notifier<SubmissionProgress> {
           'runningCondition': registration.runningCondition?.name,
           'mechanicalIssues': registration.mechanicalIssues,
           'serviceHistoryType': registration.serviceHistoryType?.name,
+          'saleType': registration.saleType?.name,
         },
         'photos': {
           'exterior': exteriorIds,

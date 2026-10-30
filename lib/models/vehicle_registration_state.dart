@@ -13,6 +13,12 @@ enum SubmissionStatus {
   published,
 }
 
+enum SaleType {
+  ecommerce,
+  auction,
+  consignment,
+}
+
 enum RunningCondition {
   startsAndDrivesSmoothly,
   startsAndDrivesWithIssues,
@@ -166,6 +172,9 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
     // Private Plate
     @Default(false) bool hasPrivatePlate,
     @Default(false) bool privatePlateConfirmed,
+
+    // Sale Type
+    SaleType? saleType,
 
     // Submission
     @Default(SubmissionStatus.draft) SubmissionStatus submissionStatus,

@@ -26,7 +26,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     _controller.forward();
 
     Future.delayed(const Duration(milliseconds: 1500), () {
-      if (mounted) context.go(AppRoutes.vehicleLookup);
+      if (mounted) context.go(AppRoutes.home);
     });
   }
 

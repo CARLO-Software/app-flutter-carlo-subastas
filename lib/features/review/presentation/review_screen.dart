@@ -236,9 +236,28 @@ class ReviewScreen extends ConsumerWidget {
                         _GroupedCard(
                           c: c,
                           children: [
-                            _DetailRow(label: 'Nombre', value: 'Propietario', c: c, hasChevron: true),
-                            _DetailRow(label: 'Email', value: 'contacto@carlo.pe', c: c, hasChevron: true),
-                            _DetailRow(label: 'Teléfono', value: '---', c: c, hasChevron: true),
+                            _DetailRow(
+                              label: 'Nombre',
+                              value: state.ownerFullName.isNotEmpty ? state.ownerFullName : 'No especificado',
+                              c: c,
+                              hasChevron: true,
+                            ),
+                            _DetailRow(
+                              label: 'Teléfono',
+                              value: state.phoneNumber.isNotEmpty ? state.phoneNumber : 'No especificado',
+                              c: c,
+                              hasChevron: true,
+                            ),
+                            if (state.collectionAddress.isNotEmpty ||
+                                state.collectionAddressLine1.isNotEmpty)
+                              _DetailRow(
+                                label: 'Dirección de recojo',
+                                value: state.collectionAddressLine1.isNotEmpty
+                                    ? '${state.collectionAddressLine1}, ${state.collectionCity}'
+                                    : state.collectionAddress,
+                                c: c,
+                                hasChevron: true,
+                              ),
                           ],
                         ),
                         AppSpacing.vGapSm,
@@ -347,6 +366,36 @@ class ReviewScreen extends ConsumerWidget {
                               hasChevron: true,
                               valueColor: _headerColor,
                             ),
+                            _DetailRow(
+                              label: 'Condición interior',
+                              value: _getInteriorConditionText(state.interiorConditionIssues),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            if (state.chargingCables.isNotEmpty)
+                              _DetailRow(
+                                label: 'Cables de carga',
+                                value: state.chargingCables.join(', '),
+                                c: c,
+                                hasChevron: true,
+                                valueColor: _headerColor,
+                              ),
+                            _DetailRow(
+                              label: 'Bandeja trasera',
+                              value: _getParcelShelfText(state.parcelShelfOption),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            if (state.paintworkMarks.isNotEmpty)
+                              _DetailRow(
+                                label: 'Marcas de pintura',
+                                value: '${state.paintworkMarks.length} marca${state.paintworkMarks.length == 1 ? '' : 's'}',
+                                c: c,
+                                hasChevron: true,
+                                valueColor: _headerColor,
+                              ),
                           ],
                         ),
 
@@ -381,10 +430,17 @@ class ReviewScreen extends ConsumerWidget {
                               c: c,
                               valueColor: _headerColor,
                             ),
+                            if (state.bonusPhotos.isNotEmpty)
+                              _DetailRow(
+                                label: 'Fotos adicionales',
+                                value: '${state.bonusPhotos.length} foto${state.bonusPhotos.length == 1 ? '' : 's'}',
+                                c: c,
+                                valueColor: _headerColor,
+                              ),
                           ],
                         ),
 
-                        // Service history
+                        // Service history & documents
                         AppSpacing.vGapLg,
                         Text('Historial de servicio', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
                         AppSpacing.vGapSm,
@@ -394,6 +450,38 @@ class ReviewScreen extends ConsumerWidget {
                             _DetailRow(
                               label: 'Tiene historial',
                               value: _getServiceHistoryShort(state.serviceHistoryType),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            if (state.serviceHistoryPhotos.isNotEmpty ||
+                                state.serviceDocuments.isNotEmpty)
+                              _DetailRow(
+                                label: 'Documentos adjuntos',
+                                value: '${state.serviceHistoryPhotos.length + state.serviceDocuments.length}',
+                                c: c,
+                                valueColor: _headerColor,
+                              ),
+                          ],
+                        ),
+
+                        // Documentación
+                        AppSpacing.vGapLg,
+                        Text('Documentación', style: AppTypography.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+                        AppSpacing.vGapSm,
+                        _GroupedCard(
+                          c: c,
+                          children: [
+                            _DetailRow(
+                              label: 'Tarjeta de propiedad',
+                              value: _getV5cText(state.v5cLogBookOption),
+                              c: c,
+                              hasChevron: true,
+                              valueColor: _headerColor,
+                            ),
+                            _DetailRow(
+                              label: 'Titular registrado',
+                              value: _getRegisteredKeeperText(state.registeredKeeperOption),
                               c: c,
                               hasChevron: true,
                               valueColor: _headerColor,
@@ -412,8 +500,14 @@ class ReviewScreen extends ConsumerWidget {
           // Bottom button
           BottomActionBar(
             child: PrimaryButton(
-              text: progress == 100 ? 'Enviar para revisión' : 'Continuar ($progress% completado)',
-              onPressed: () => _showSubmissionDialog(context, ref),
+              text: progress == 100 ? 'Elegir tipo de venta' : 'Continuar ($progress% completado)',
+              onPressed: () {
+                if (progress == 100) {
+                  context.push(AppRoutes.saleType);
+                } else {
+                  _showSubmissionDialog(context, ref);
+                }
+              },
             ),
           ),
         ],
@@ -540,6 +634,38 @@ class ReviewScreen extends ConsumerWidget {
       ServiceHistoryType.partial => 'Parcial',
       ServiceHistoryType.none => 'No',
       null => 'No',
+    };
+  }
+
+  String _getInteriorConditionText(List<String> issues) {
+    if (issues.isEmpty) return 'No especificado';
+    if (issues.contains('sin_problemas')) return 'Sin problemas';
+    return '${issues.length} problema${issues.length == 1 ? '' : 's'}';
+  }
+
+  String _getParcelShelfText(String? option) {
+    return switch (option) {
+      'tiene' => 'Tiene',
+      'no_tiene' => 'No tiene',
+      'no_aplica' => 'No aplica',
+      _ => 'No especificado',
+    };
+  }
+
+  String _getV5cText(String? option) {
+    return switch (option) {
+      'tiene' => 'Tiene',
+      'no_tiene' => 'No tiene',
+      'en_tramite' => 'En trámite',
+      _ => 'No especificado',
+    };
+  }
+
+  String _getRegisteredKeeperText(String? option) {
+    return switch (option) {
+      'si' => 'Sí, a mi nombre',
+      'no' => 'No, a nombre de otro',
+      _ => 'No especificado',
     };
   }
 }

@@ -528,6 +528,11 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(privatePlateConfirmed: true);
   }
 
+  // Sale Type
+  void setSaleType(SaleType type) {
+    state = state.copyWith(saleType: type);
+  }
+
   // Submission
   void setSubmissionStatus(SubmissionStatus status) {
     state = state.copyWith(submissionStatus: status);

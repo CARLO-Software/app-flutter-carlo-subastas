@@ -4,6 +4,7 @@ class AppRoutes {
   static const String splash = '/splash';
   static const String auth = '/auth';
   static const String loading = '/loading';
+  static const String home = '/home';
   static const String vehicleLookup = '/vehicle-lookup';
   static const String vehicleResult = '/vehicle-result';
   static const String estimatedPrice = '/estimated-price';
@@ -51,5 +52,6 @@ static const String exteriorPhotos = '/exterior-photos';
   static const String privatePlate = '/private-plate';
   static const String profile = '/profile';
   static const String review = '/review';
+  static const String saleType = '/sale-type';
   static const String submissionStatus = '/submission-status';
 }

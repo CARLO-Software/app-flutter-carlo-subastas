@@ -466,7 +466,7 @@ class DashboardScreen extends ConsumerWidget {
                 title: Text('Cerrar sesión', style: AppTypography.titleSmall.copyWith(color: AppColors.error)),
                 onTap: () {
                   Navigator.of(ctx).pop();
-                  context.go(AppRoutes.vehicleLookup);
+                  context.go(AppRoutes.auth);
                 },
               ),
             ],
