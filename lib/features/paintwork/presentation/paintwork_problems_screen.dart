@@ -64,11 +64,10 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A2E),
-        foregroundColor: Colors.white,
         title: const Text('Problemas de pintura'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -91,7 +90,7 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.white12,
+                          color: isSelected ? AppColors.primary : c.surfaceVariant,
                           borderRadius: AppSpacing.borderRadiusSm,
                         ),
                         child: Column(
@@ -99,13 +98,15 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
                             Text(
                               s['label']!,
                               style: AppTypography.labelMedium.copyWith(
-                                color: Colors.white,
+                                color: isSelected ? Colors.white : c.textPrimary,
                                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                               ),
                             ),
                             Text(
                               s['desc']!,
-                              style: AppTypography.caption.copyWith(color: Colors.white60),
+                              style: AppTypography.caption.copyWith(
+                                color: isSelected ? Colors.white70 : c.textTertiary,
+                              ),
                             ),
                           ],
                         ),
@@ -123,8 +124,8 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
             onTap: (_) => setState(() {}),
             isScrollable: true,
             indicatorColor: AppColors.primary,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white54,
+            labelColor: c.textPrimary,
+            unselectedLabelColor: c.textTertiary,
             tabAlignment: TabAlignment.start,
             tabs: _views.map((v) => Tab(text: v)).toList(),
           ),
@@ -158,7 +159,7 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
                   AppSpacing.hGapSm,
                   Text(
                     '${_marks.length} problema${_marks.length == 1 ? '' : 's'} marcado${_marks.length == 1 ? '' : 's'}',
-                    style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                    style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
                   ),
                 ],
               ),
@@ -180,14 +181,14 @@ class _PaintworkProblemsScreenState extends ConsumerState<PaintworkProblemsScree
                         context.pop();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
+                        backgroundColor: c.textPrimary,
+                        foregroundColor: c.background,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
                       ),
                       child: Text(
                         _marks.isEmpty ? 'Sin problemas de pintura' : 'Listo',
-                        style: AppTypography.button,
+                        style: AppTypography.button.copyWith(color: c.background),
                       ),
                     ),
                   ),
@@ -227,6 +228,7 @@ class _CarDiagramView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final silhouette = _silhouettes[viewId];
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -234,19 +236,21 @@ class _CarDiagramView extends StatelessWidget {
           onTapUp: (details) => onTap(details.localPosition, constraints.biggest),
           child: Stack(
             children: [
-              // Car silhouette or fallback outline
               Center(
                 child: silhouette != null
                     ? Padding(
                         padding: const EdgeInsets.all(24),
-                        child: Opacity(
-                          opacity: 0.45,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            c.textPrimary.withValues(alpha: 0.45),
+                            BlendMode.srcIn,
+                          ),
                           child: Image.asset(silhouette, fit: BoxFit.contain),
                         ),
                       )
                     : CustomPaint(
                         size: constraints.biggest,
-                        painter: _CarOutlinePainter(viewId),
+                        painter: _CarOutlinePainter(viewId, c.textPrimary),
                       ),
               ),
               // Marks
@@ -265,7 +269,7 @@ class _CarDiagramView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: c.background, width: 2),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.primary.withValues(alpha: 0.5),
@@ -286,7 +290,7 @@ class _CarDiagramView extends StatelessWidget {
                 child: Text(
                   'Toca para marcar problemas de pintura',
                   textAlign: TextAlign.center,
-                  style: AppTypography.bodySmall.copyWith(color: Colors.white38),
+                  style: AppTypography.bodySmall.copyWith(color: c.textTertiary),
                 ),
               ),
             ],
@@ -312,13 +316,14 @@ class _CarDiagramView extends StatelessWidget {
 
 class _CarOutlinePainter extends CustomPainter {
   final String viewId;
+  final Color lineColor;
 
-  _CarOutlinePainter(this.viewId);
+  _CarOutlinePainter(this.viewId, this.lineColor);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white24
+      ..color = lineColor.withValues(alpha: 0.24)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round;
@@ -355,7 +360,6 @@ class _CarOutlinePainter extends CustomPainter {
       canvas.scale(-1, 1);
     }
 
-    // Body
     final body = Path()
       ..moveTo(left + w * 0.05, top + h)
       ..lineTo(left + w * 0.05, top + h * 0.55)
@@ -369,7 +373,6 @@ class _CarOutlinePainter extends CustomPainter {
       ..lineTo(left + w * 0.95, top + h);
     canvas.drawPath(body, paint);
 
-    // Windows
     final window = Path()
       ..moveTo(left + w * 0.28, top + h * 0.2)
       ..lineTo(left + w * 0.48, top + h * 0.2)
@@ -386,7 +389,6 @@ class _CarOutlinePainter extends CustomPainter {
       ..close();
     canvas.drawPath(window2, paint);
 
-    // Wheels
     canvas.drawCircle(Offset(left + w * 0.2, top + h), w * 0.07, paint);
     canvas.drawCircle(Offset(left + w * 0.8, top + h), w * 0.07, paint);
 
@@ -399,7 +401,6 @@ class _CarOutlinePainter extends CustomPainter {
     final left = cx - w / 2;
     final top = cy - h / 2;
 
-    // Body outline
     final body = Path()
       ..moveTo(left, top + h)
       ..lineTo(left, top + h * 0.45)
@@ -410,7 +411,6 @@ class _CarOutlinePainter extends CustomPainter {
       ..lineTo(left + w, top + h);
     canvas.drawPath(body, paint);
 
-    // Windshield
     final windshield = Path()
       ..moveTo(left + w * 0.2, top + h * 0.28)
       ..quadraticBezierTo(cx, top + h * 0.15, left + w * 0.8, top + h * 0.28)
@@ -419,11 +419,9 @@ class _CarOutlinePainter extends CustomPainter {
       ..close();
     canvas.drawPath(windshield, paint);
 
-    // Headlights
     canvas.drawOval(Rect.fromCenter(center: Offset(left + w * 0.18, top + h * 0.55), width: w * 0.15, height: h * 0.08), paint);
     canvas.drawOval(Rect.fromCenter(center: Offset(left + w * 0.82, top + h * 0.55), width: w * 0.15, height: h * 0.08), paint);
 
-    // Grille
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromCenter(center: Offset(cx, top + h * 0.65), width: w * 0.4, height: h * 0.1),
@@ -432,7 +430,6 @@ class _CarOutlinePainter extends CustomPainter {
       paint,
     );
 
-    // Bumper
     canvas.drawLine(Offset(left + w * 0.1, top + h * 0.85), Offset(left + w * 0.9, top + h * 0.85), paint);
   }
 
@@ -442,7 +439,6 @@ class _CarOutlinePainter extends CustomPainter {
     final left = cx - w / 2;
     final top = cy - h / 2;
 
-    // Body outline
     final body = Path()
       ..moveTo(left, top + h)
       ..lineTo(left, top + h * 0.3)
@@ -451,7 +447,6 @@ class _CarOutlinePainter extends CustomPainter {
       ..lineTo(left + w, top + h);
     canvas.drawPath(body, paint);
 
-    // Rear windshield
     final rearWindow = Path()
       ..moveTo(left + w * 0.15, top + h * 0.15)
       ..quadraticBezierTo(cx, top + h * 0.05, left + w * 0.85, top + h * 0.15)
@@ -460,11 +455,9 @@ class _CarOutlinePainter extends CustomPainter {
       ..close();
     canvas.drawPath(rearWindow, paint);
 
-    // Tail lights
     canvas.drawOval(Rect.fromCenter(center: Offset(left + w * 0.12, top + h * 0.55), width: w * 0.12, height: h * 0.12), paint);
     canvas.drawOval(Rect.fromCenter(center: Offset(left + w * 0.88, top + h * 0.55), width: w * 0.12, height: h * 0.12), paint);
 
-    // License plate
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromCenter(center: Offset(cx, top + h * 0.7), width: w * 0.35, height: h * 0.1),
@@ -473,7 +466,6 @@ class _CarOutlinePainter extends CustomPainter {
       paint,
     );
 
-    // Bumper
     canvas.drawLine(Offset(left + w * 0.1, top + h * 0.88), Offset(left + w * 0.9, top + h * 0.88), paint);
   }
 
@@ -483,7 +475,6 @@ class _CarOutlinePainter extends CustomPainter {
     final left = cx - w / 2;
     final top = cy - h / 2;
 
-    // Body outline
     final body = Path()
       ..moveTo(cx, top)
       ..quadraticBezierTo(left + w, top + h * 0.05, left + w, top + h * 0.15)
@@ -495,15 +486,12 @@ class _CarOutlinePainter extends CustomPainter {
       ..close();
     canvas.drawPath(body, paint);
 
-    // Windshield line
     canvas.drawLine(Offset(left + w * 0.15, top + h * 0.25), Offset(left + w * 0.85, top + h * 0.25), paint);
-    // Rear window line
     canvas.drawLine(Offset(left + w * 0.15, top + h * 0.7), Offset(left + w * 0.85, top + h * 0.7), paint);
-    // Roof line
     canvas.drawLine(Offset(left + w * 0.2, top + h * 0.35), Offset(left + w * 0.8, top + h * 0.35), paint);
     canvas.drawLine(Offset(left + w * 0.2, top + h * 0.6), Offset(left + w * 0.8, top + h * 0.6), paint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _CarOutlinePainter oldDelegate) => lineColor != oldDelegate.lineColor;
 }

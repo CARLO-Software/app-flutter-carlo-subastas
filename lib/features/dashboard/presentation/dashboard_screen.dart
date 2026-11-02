@@ -234,8 +234,8 @@ class DashboardScreen extends ConsumerWidget {
                       ElevatedButton(
                         onPressed: onPressed,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF292929),
-                          foregroundColor: Colors.white,
+                          backgroundColor: c.textPrimary,
+                          foregroundColor: c.background,
                           elevation: 0,
                           minimumSize: Size.zero,
                           padding: const EdgeInsets.symmetric(
@@ -251,11 +251,11 @@ class DashboardScreen extends ConsumerWidget {
                           children: [
                             Text(buttonText,
                                 style: AppTypography.buttonSmall
-                                    .copyWith(color: Colors.white)),
+                                    .copyWith(color: c.background)),
                             if (allDone) ...[
                               const SizedBox(width: 4),
-                              const Icon(Icons.arrow_forward,
-                                  size: 16, color: Colors.white),
+                              Icon(Icons.arrow_forward,
+                                  size: 16, color: c.background),
                             ],
                           ],
                         ),
@@ -405,14 +405,14 @@ class DashboardScreen extends ConsumerWidget {
                         _openWhatsApp();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF292929),
-                        foregroundColor: Colors.white,
+                        backgroundColor: c.textPrimary,
+                        foregroundColor: c.background,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
                       ),
                       child: Text(
                         'Contactar por WhatsApp',
-                        style: AppTypography.button.copyWith(color: Colors.white),
+                        style: AppTypography.button.copyWith(color: c.background),
                       ),
                     ),
                   ),
@@ -622,7 +622,7 @@ class _StepCard extends StatelessWidget {
                 padding: const EdgeInsets.only(right: AppSpacing.sm),
                 child: Icon(
                   Icons.check_circle_outline,
-                  color: Colors.black87,
+                  color: c.textPrimary,
                   size: 24,
                 ),
               ),

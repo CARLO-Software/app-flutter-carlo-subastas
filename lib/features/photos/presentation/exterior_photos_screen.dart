@@ -162,14 +162,14 @@ class _ExteriorPhotosScreenState extends ConsumerState<ExteriorPhotosScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.of(ctx).pop(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF292929),
-                        foregroundColor: Colors.white,
+                        backgroundColor: c.textPrimary,
+                        foregroundColor: c.background,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
                       ),
                       child: Text(
                         'OK, entendido',
-                        style: AppTypography.button.copyWith(color: Colors.white),
+                        style: AppTypography.button.copyWith(color: c.background),
                       ),
                     ),
                   ),

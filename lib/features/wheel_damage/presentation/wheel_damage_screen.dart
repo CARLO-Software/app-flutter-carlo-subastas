@@ -35,14 +35,11 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
   @override
   Widget build(BuildContext context) {
     final wheelsPhotos = ref.watch(vehicleRegistrationProvider.select((s) => s.wheelsPhotosMap));
+    final c = context.colors;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Daño en ruedas'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -60,14 +57,13 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                   Text(
                     '¿Hay alguna rueda de aleación rayada, rozada o dañada?',
                     style: AppTypography.titleLarge.copyWith(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   AppSpacing.vGapXs,
                   Text(
                     'Selecciona las ruedas con daño visible',
-                    style: AppTypography.bodyMedium.copyWith(color: Colors.white54),
+                    style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
                   ),
                   AppSpacing.vGapXxl,
                   GridView.builder(
@@ -97,7 +93,7 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                         }),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
+                            color: c.surfaceVariant,
                             borderRadius: AppSpacing.borderRadiusLg,
                             border: Border.all(
                               color: isSelected ? AppColors.warning : Colors.transparent,
@@ -117,9 +113,9 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                                           width: double.infinity,
                                           fit: BoxFit.cover,
                                           cacheWidth: 300,
-                                          errorBuilder: (_, __, ___) => _placeholder(),
+                                          errorBuilder: (_, __, ___) => _placeholder(c),
                                         )
-                                      : _placeholder(),
+                                      : _placeholder(c),
                                 ),
                               ),
                               Padding(
@@ -133,7 +129,7 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                                       child: Text(
                                         label,
                                         style: AppTypography.labelSmall.copyWith(
-                                          color: Colors.white,
+                                          color: c.textPrimary,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -144,7 +140,7 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(
-                                          color: isSelected ? AppColors.warning : Colors.white38,
+                                          color: isSelected ? AppColors.warning : c.textTertiary,
                                           width: 2,
                                         ),
                                         color: isSelected ? AppColors.warning : Colors.transparent,
@@ -167,7 +163,7 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
             ),
           ),
           Container(
-            color: const Color(0xFF1E1E1E),
+            color: c.surface,
             child: SafeArea(
               top: false,
               child: Padding(
@@ -185,8 +181,8 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                       context.push(AppRoutes.tirePhotos);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
+                      backgroundColor: c.textPrimary,
+                      foregroundColor: c.background,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppSpacing.borderRadiusXl,
@@ -194,7 +190,7 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
                     ),
                     child: Text(
                       _damaged.isEmpty ? 'Ninguna tiene daño' : 'Continuar',
-                      style: AppTypography.button.copyWith(color: Colors.black),
+                      style: AppTypography.button.copyWith(color: c.background),
                     ),
                   ),
                 ),
@@ -206,11 +202,11 @@ class _WheelDamageScreenState extends ConsumerState<WheelDamageScreen> {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(AdaptiveColors c) {
     return Container(
-      color: const Color(0xFF3A3A3A),
-      child: const Center(
-        child: Icon(Icons.image_outlined, size: 40, color: Colors.white24),
+      color: c.surfaceVariant,
+      child: Center(
+        child: Icon(Icons.image_outlined, size: 40, color: c.textTertiary),
       ),
     );
   }

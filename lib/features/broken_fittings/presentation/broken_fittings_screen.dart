@@ -75,7 +75,6 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
     ref.read(vehicleRegistrationProvider.notifier).removeBrokenFittingMark(markId);
   }
 
-  /// Toma fotos de cada punto marcado que aún no tenga foto
   Future<void> _takePhotosForMarks() async {
     final pending = _marks.where((m) => m.photoPath == null).toList();
     if (pending.isEmpty) {
@@ -86,7 +85,7 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
     for (int i = 0; i < pending.length; i++) {
       final mark = pending[i];
       final xFile = await _picker.pickImage(source: ImageSource.camera, imageQuality: 85);
-      if (xFile == null) return; // el usuario canceló
+      if (xFile == null) return;
 
       final appDir = await getApplicationDocumentsDirectory();
       final fileName = 'broken_${mark.label.toLowerCase()}_${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -112,11 +111,10 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A1A2E),
-        foregroundColor: Colors.white,
         title: const Text('Accesorios rotos o faltantes'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -140,13 +138,13 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.white12,
+                          color: isSelected ? AppColors.primary : c.surfaceVariant,
                           borderRadius: AppSpacing.borderRadiusSm,
                         ),
                         child: Text(
                           type,
                           style: AppTypography.labelMedium.copyWith(
-                            color: Colors.white,
+                            color: isSelected ? Colors.white : c.textPrimary,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
@@ -164,8 +162,8 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
             onTap: (_) => setState(() {}),
             isScrollable: true,
             indicatorColor: AppColors.primary,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white54,
+            labelColor: c.textPrimary,
+            unselectedLabelColor: c.textTertiary,
             tabAlignment: TabAlignment.start,
             tabs: _views.map((v) => Tab(text: v)).toList(),
           ),
@@ -197,13 +195,13 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
                   AppSpacing.hGapSm,
                   Text(
                     '${_marks.length} accesorio${_marks.length == 1 ? '' : 's'} marcado${_marks.length == 1 ? '' : 's'}',
-                    style: AppTypography.bodySmall.copyWith(color: Colors.white70),
+                    style: AppTypography.bodySmall.copyWith(color: c.textSecondary),
                   ),
                   if (_pendingPhotos > 0) ...[
                     const Spacer(),
                     Text(
                       '$_pendingPhotos sin foto',
-                      style: AppTypography.bodySmall.copyWith(color: Colors.orange),
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.warning),
                     ),
                   ],
                 ],
@@ -250,8 +248,8 @@ class _BrokenFittingsScreenState extends ConsumerState<BrokenFittingsScreen>
                         context.pop();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _marks.isEmpty ? Colors.white : Colors.white12,
-                        foregroundColor: _marks.isEmpty ? Colors.black : Colors.white70,
+                        backgroundColor: _marks.isEmpty ? c.textPrimary : c.surfaceVariant,
+                        foregroundColor: _marks.isEmpty ? c.background : c.textSecondary,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
                       ),
@@ -286,6 +284,7 @@ class _FittingDiagramView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final silhouette = _silhouettes[viewId];
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -297,8 +296,11 @@ class _FittingDiagramView extends StatelessWidget {
                 child: silhouette != null
                     ? Padding(
                         padding: const EdgeInsets.all(24),
-                        child: Opacity(
-                          opacity: 0.45,
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            c.textPrimary.withValues(alpha: 0.45),
+                            BlendMode.srcIn,
+                          ),
                           child: Image.asset(silhouette, fit: BoxFit.contain),
                         ),
                       )
@@ -323,7 +325,7 @@ class _FittingDiagramView extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: hasPhoto ? AppColors.success : AppColors.error,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
+                            border: Border.all(color: c.background, width: 2),
                             boxShadow: [
                               BoxShadow(
                                 color: (hasPhoto ? AppColors.success : AppColors.error).withValues(alpha: 0.5),
@@ -342,12 +344,12 @@ class _FittingDiagramView extends StatelessWidget {
                           margin: const EdgeInsets.only(top: 2),
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                           decoration: BoxDecoration(
-                            color: Colors.black87,
+                            color: c.textPrimary.withValues(alpha: 0.87),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             mark.label,
-                            style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w600),
+                            style: TextStyle(color: c.background, fontSize: 9, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],
@@ -363,7 +365,7 @@ class _FittingDiagramView extends StatelessWidget {
                 child: Text(
                   'Toca para marcar accesorios rotos o faltantes',
                   textAlign: TextAlign.center,
-                  style: AppTypography.bodySmall.copyWith(color: Colors.white38),
+                  style: AppTypography.bodySmall.copyWith(color: c.textTertiary),
                 ),
               ),
             ],

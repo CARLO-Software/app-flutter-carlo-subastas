@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../shared/providers/providers.dart';
@@ -40,14 +41,11 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
   @override
   Widget build(BuildContext context) {
     final selected = ref.watch(vehicleRegistrationProvider.select((s) => s.warningLights));
+    final c = context.colors;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Luces del tablero'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -67,14 +65,13 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                       Text(
                         '¿Alguna de estas luces permanece encendida cuando el motor está en marcha?',
                         style: AppTypography.titleLarge.copyWith(
-                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       AppSpacing.vGapXs,
                       Text(
                         'Selecciona todas las que apliquen',
-                        style: AppTypography.bodyMedium.copyWith(color: Colors.white54),
+                        style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
                       ),
                       AppSpacing.vGapXxl,
                       GridView.builder(
@@ -120,7 +117,7 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                                   },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2A2A2A),
+                                color: c.surfaceVariant,
                                 borderRadius: AppSpacing.borderRadiusLg,
                                 border: Border.all(
                                   color: isSelected ? color : Colors.transparent,
@@ -149,7 +146,7 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                                   Text(
                                     name,
                                     style: AppTypography.labelSmall.copyWith(
-                                      color: isSelected ? Colors.white : Colors.white70,
+                                      color: isSelected ? c.textPrimary : c.textSecondary,
                                       fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                     ),
                                     textAlign: TextAlign.center,
@@ -165,7 +162,7 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                 ),
               ),
               Container(
-                color: const Color(0xFF1E1E1E),
+                color: c.surface,
                 child: SafeArea(
                   top: false,
                   child: Padding(
@@ -176,10 +173,10 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                       child: ElevatedButton(
                         onPressed: selected.isNotEmpty && !_isAnalyzing ? _analyze : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          disabledBackgroundColor: Colors.white24,
-                          disabledForegroundColor: Colors.white38,
+                          backgroundColor: c.textPrimary,
+                          foregroundColor: c.background,
+                          disabledBackgroundColor: c.surfaceVariant,
+                          disabledForegroundColor: c.textTertiary,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: AppSpacing.borderRadiusXl,
@@ -188,7 +185,7 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                         child: Text(
                           _isAnalyzing ? 'Analizando...' : 'Continuar',
                           style: AppTypography.button.copyWith(
-                            color: selected.isNotEmpty && !_isAnalyzing ? Colors.black : Colors.white38,
+                            color: selected.isNotEmpty && !_isAnalyzing ? c.background : c.textTertiary,
                           ),
                         ),
                       ),
@@ -200,16 +197,16 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
           ),
           if (_isAnalyzing)
             Container(
-              color: const Color(0xFF1E1E1E).withValues(alpha: 0.85),
+              color: c.background.withValues(alpha: 0.85),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       width: 48,
                       height: 48,
                       child: CircularProgressIndicator(
-                        color: Colors.white,
+                        color: c.textPrimary,
                         strokeWidth: 3,
                       ),
                     ),
@@ -217,7 +214,6 @@ class _WarningLightsScreenState extends ConsumerState<WarningLightsScreen> {
                     Text(
                       'Analizando respuestas...',
                       style: AppTypography.titleMedium.copyWith(
-                        color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

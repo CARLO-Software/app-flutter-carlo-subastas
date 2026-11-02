@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
+import '../../../core/services/auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -140,12 +142,52 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
     setState(() => _isLoading = true);
 
-    // ponytail: simulate auth call, replace with real API
-    await Future.delayed(const Duration(milliseconds: 1500));
+    try {
+      final authService = ref.read(authServiceProvider);
 
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-    context.go(AppRoutes.loading);
+      if (_isLogin) {
+        await authService.login(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+      } else {
+        final nameParts = _nameController.text.trim().split(' ');
+        await authService.register(
+          firstName: nameParts.first,
+          lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+      }
+
+      if (!mounted) return;
+      context.go(AppRoutes.loading);
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final message = _extractError(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: AppColors.error),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  String _extractError(DioException e) {
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      if (data.containsKey('message')) return data['message'] as String;
+      if (data.containsKey('errors')) {
+        final errors = data['errors'] as Map<String, dynamic>;
+        final first = errors.values.first;
+        if (first is List && first.isNotEmpty) return first.first as String;
+      }
+    }
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout) {
+      return 'No se pudo conectar al servidor. Intenta de nuevo.';
+    }
+    return 'Ocurrió un error. Intenta de nuevo.';
   }
 
   @override

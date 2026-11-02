@@ -96,8 +96,8 @@ class NotificationPermissionScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => _requestPermission(context),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF292929),
-                    foregroundColor: Colors.white,
+                    backgroundColor: c.textPrimary,
+                    foregroundColor: c.background,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: AppSpacing.borderRadiusMd,
@@ -105,7 +105,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                   ),
                   child: Text('Aceptar',
                       style: AppTypography.button
-                          .copyWith(color: Colors.white)),
+                          .copyWith(color: c.background)),
                 ),
               ),
               AppSpacing.vGapSm,

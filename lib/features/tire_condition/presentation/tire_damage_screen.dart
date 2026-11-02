@@ -35,14 +35,11 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
   @override
   Widget build(BuildContext context) {
     final tirePhotos = ref.watch(vehicleRegistrationProvider.select((s) => s.tirePhotosMap));
+    final c = context.colors;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Daño en neumáticos'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -60,14 +57,13 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                   Text(
                     '¿Hay algún neumático desgastado o dañado?',
                     style: AppTypography.titleLarge.copyWith(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   AppSpacing.vGapXs,
                   Text(
                     'Selecciona los neumáticos con desgaste o daño visible',
-                    style: AppTypography.bodyMedium.copyWith(color: Colors.white54),
+                    style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
                   ),
                   AppSpacing.vGapXxl,
                   GridView.builder(
@@ -97,7 +93,7 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                         }),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
+                            color: c.surfaceVariant,
                             borderRadius: AppSpacing.borderRadiusLg,
                             border: Border.all(
                               color: isSelected ? AppColors.warning : Colors.transparent,
@@ -117,9 +113,9 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                                           width: double.infinity,
                                           fit: BoxFit.cover,
                                           cacheWidth: 300,
-                                          errorBuilder: (_, __, ___) => _placeholder(),
+                                          errorBuilder: (_, __, ___) => _placeholder(c),
                                         )
-                                      : _placeholder(),
+                                      : _placeholder(c),
                                 ),
                               ),
                               Padding(
@@ -133,7 +129,7 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                                       child: Text(
                                         label,
                                         style: AppTypography.labelSmall.copyWith(
-                                          color: Colors.white,
+                                          color: c.textPrimary,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -144,7 +140,7 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(6),
                                         border: Border.all(
-                                          color: isSelected ? AppColors.warning : Colors.white38,
+                                          color: isSelected ? AppColors.warning : c.textTertiary,
                                           width: 2,
                                         ),
                                         color: isSelected ? AppColors.warning : Colors.transparent,
@@ -167,7 +163,7 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
             ),
           ),
           Container(
-            color: const Color(0xFF1E1E1E),
+            color: c.surface,
             child: SafeArea(
               top: false,
               child: Padding(
@@ -186,8 +182,8 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                       context.push(AppRoutes.interiorPhotos);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
+                      backgroundColor: c.textPrimary,
+                      foregroundColor: c.background,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppSpacing.borderRadiusXl,
@@ -195,7 +191,7 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
                     ),
                     child: Text(
                       _damaged.isEmpty ? 'Ninguno tiene daño' : 'Continuar',
-                      style: AppTypography.button.copyWith(color: Colors.black),
+                      style: AppTypography.button.copyWith(color: c.background),
                     ),
                   ),
                 ),
@@ -207,11 +203,11 @@ class _TireDamageScreenState extends ConsumerState<TireDamageScreen> {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(AdaptiveColors c) {
     return Container(
-      color: const Color(0xFF3A3A3A),
-      child: const Center(
-        child: Icon(Icons.tire_repair, size: 40, color: Colors.white24),
+      color: c.surfaceVariant,
+      child: Center(
+        child: Icon(Icons.tire_repair, size: 40, color: c.textTertiary),
       ),
     );
   }

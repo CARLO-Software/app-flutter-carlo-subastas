@@ -207,14 +207,14 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.of(ctx).pop(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF292929),
-                        foregroundColor: Colors.white,
+                        backgroundColor: c.textPrimary,
+                        foregroundColor: c.background,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusXl),
                       ),
                       child: Text(
                         'OK, entendido',
-                        style: AppTypography.button.copyWith(color: Colors.white),
+                        style: AppTypography.button.copyWith(color: c.background),
                       ),
                     ),
                   ),
@@ -275,13 +275,10 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: c.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        foregroundColor: Colors.white,
-        titleTextStyle: AppTypography.titleLarge.copyWith(color: Colors.white),
-        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Condición y Daños'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -305,7 +302,6 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   Text(
                     '¿Qué tipo de daño o desgaste presenta?',
                     style: AppTypography.titleLarge.copyWith(
-                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -313,17 +309,17 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                   Text(
                     'Toca para tomar una foto del daño',
                     style: AppTypography.bodyMedium.copyWith(
-                      color: Colors.white54,
+                      color: c.textSecondary,
                     ),
                   ),
                   AppSpacing.vGapXxl,
-                  ..._damageTypes.map((type) => _buildDamageCard(type)),
+                  ..._damageTypes.map((type) => _buildDamageCard(type, c)),
                 ],
               ),
             ),
           ),
           Container(
-            color: const Color(0xFF1E1E1E),
+            color: c.surface,
             child: SafeArea(
               top: false,
               child: Padding(
@@ -341,8 +337,8 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                       context.push(AppRoutes.wheelsPhotos);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
+                      backgroundColor: c.textPrimary,
+                      foregroundColor: c.background,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: AppSpacing.borderRadiusXl,
@@ -352,7 +348,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                       _capturedPhotos.isEmpty
                           ? 'Mi auto no tiene daños'
                           : 'Continuar',
-                      style: AppTypography.button.copyWith(color: Colors.black),
+                      style: AppTypography.button.copyWith(color: c.background),
                     ),
                   ),
                 ),
@@ -379,7 +375,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
     );
   }
 
-  Widget _buildDamageCard(Map<String, Object> type) {
+  Widget _buildDamageCard(Map<String, Object> type, AdaptiveColors c) {
     final id = type['id'] as String;
     final title = type['title'] as String;
     final icon = type['icon'] as IconData;
@@ -392,11 +388,11 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
         onTap: () => hasPhoto ? _viewPhoto(capturedPath, title, type) : _openCamera(type),
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF2A2A2A),
+            color: c.card,
             borderRadius: AppSpacing.borderRadiusLg,
             border: Border.all(
-              color: hasPhoto ? AppColors.success : Colors.transparent,
-              width: 2,
+              color: hasPhoto ? AppColors.success : c.cardBorder,
+              width: hasPhoto ? 2 : 1,
             ),
           ),
           child: Row(
@@ -407,14 +403,14 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                 decoration: BoxDecoration(
                   color: hasPhoto
                       ? AppColors.success.withValues(alpha: 0.15)
-                      : Colors.white.withValues(alpha: 0.07),
+                      : c.surfaceVariant,
                   borderRadius: const BorderRadius.horizontal(
                     left: Radius.circular(AppSpacing.radiusLg),
                   ),
                 ),
                 child: Icon(
                   icon,
-                  color: hasPhoto ? AppColors.success : Colors.white70,
+                  color: hasPhoto ? AppColors.success : c.textSecondary,
                   size: 40,
                 ),
               ),
@@ -423,7 +419,6 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                 child: Text(
                   title,
                   style: AppTypography.titleSmall.copyWith(
-                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -432,7 +427,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
                 padding: const EdgeInsets.only(right: AppSpacing.md),
                 child: hasPhoto
                     ? const Icon(Icons.check_circle, color: AppColors.success, size: 26)
-                    : const Icon(Icons.camera_alt_outlined, color: Colors.white38, size: 24),
+                    : Icon(Icons.camera_alt_outlined, color: c.textTertiary, size: 24),
               ),
             ],
           ),
@@ -442,6 +437,7 @@ class _ConditionDamageScreenState extends ConsumerState<ConditionDamageScreen> {
   }
 }
 
+// Visor de foto de daño — intencionalmente dark (es un visor de foto)
 class _DamagePhotoViewer extends StatelessWidget {
   final String photoPath;
   final String title;

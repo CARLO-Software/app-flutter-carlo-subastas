@@ -153,8 +153,8 @@ void showEstimatedPricePopup(BuildContext context, WidgetRef ref) {
                   GoRouter.of(context).go(AppRoutes.notificationPermission);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF292929),
-                  foregroundColor: Colors.white,
+                  backgroundColor: c.textPrimary,
+                  foregroundColor: c.background,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: AppSpacing.borderRadiusXl,
@@ -162,7 +162,7 @@ void showEstimatedPricePopup(BuildContext context, WidgetRef ref) {
                 ),
                 child: Text(
                   'Empezar a vender',
-                  style: AppTypography.button.copyWith(color: Colors.white),
+                  style: AppTypography.button.copyWith(color: c.background),
                 ),
               ),
             ),
