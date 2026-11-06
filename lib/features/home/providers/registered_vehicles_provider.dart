@@ -1,18 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../models/vehicle.dart';
+import '../../../core/services/api_client.dart';
 
 enum AuctionStatus { draft, submitted, inReview, live, sold }
 
 class RegisteredVehicle {
-  final Vehicle vehicle;
-  final double progress;
+  final String id;
+  final String identifier;
+  final String vehicleLabel;
+  final String plate;
   final AuctionStatus status;
   final DateTime createdAt;
 
   const RegisteredVehicle({
-    required this.vehicle,
-    required this.progress,
-    this.status = AuctionStatus.draft,
+    required this.id,
+    required this.identifier,
+    required this.vehicleLabel,
+    required this.plate,
+    required this.status,
     required this.createdAt,
   });
 
@@ -25,20 +30,44 @@ class RegisteredVehicle {
       };
 }
 
-final registeredVehiclesProvider =
-    NotifierProvider<RegisteredVehiclesNotifier, List<RegisteredVehicle>>(
+AuctionStatus _parseStatus(String? raw) => switch (raw) {
+      'submitted' => AuctionStatus.submitted,
+      'in_review' => AuctionStatus.inReview,
+      'live' || 'published' => AuctionStatus.live,
+      'sold' || 'approved' => AuctionStatus.sold,
+      _ => AuctionStatus.draft,
+    };
+
+final registeredVehiclesProvider = AsyncNotifierProvider<
+    RegisteredVehiclesNotifier, List<RegisteredVehicle>>(
   RegisteredVehiclesNotifier.new,
 );
 
-class RegisteredVehiclesNotifier extends Notifier<List<RegisteredVehicle>> {
+class RegisteredVehiclesNotifier
+    extends AsyncNotifier<List<RegisteredVehicle>> {
   @override
-  List<RegisteredVehicle> build() => [];
+  Future<List<RegisteredVehicle>> build() => _fetch();
 
-  void add(RegisteredVehicle vehicle) {
-    state = [...state, vehicle];
+  Future<List<RegisteredVehicle>> _fetch() async {
+    final api = ref.read(apiClientProvider);
+    try {
+      final data = await api.fetchRegistrations();
+      return data.map((r) => RegisteredVehicle(
+            id: r['id'] as String,
+            identifier: r['identifier'] as String? ?? '',
+            vehicleLabel: r['vehicle'] as String? ?? '',
+            plate: r['plate'] as String? ?? '',
+            status: _parseStatus(r['status'] as String?),
+            createdAt: DateTime.parse(r['created_at'] as String),
+          )).toList();
+    } catch (e) {
+      debugPrint('Error fetching registrations: $e');
+      return [];
+    }
   }
 
-  void remove(int index) {
-    state = [...state]..removeAt(index);
+  Future<void> refresh() async {
+    state = const AsyncLoading();
+    state = AsyncData(await _fetch());
   }
 }

@@ -154,6 +154,18 @@ class ReviewScreen extends ConsumerWidget {
                             ].join(' · '),
                             style: AppTypography.bodyMedium.copyWith(color: c.textSecondary),
                           ),
+                          if (vehicle.color.isNotEmpty || vehicle.bodyType.isNotEmpty || vehicle.doors > 0 || vehicle.engineSize.isNotEmpty) ...[
+                            AppSpacing.vGapXxs,
+                            Text(
+                              [
+                                if (vehicle.color.isNotEmpty) vehicle.color,
+                                if (vehicle.bodyType.isNotEmpty) vehicle.bodyType,
+                                if (vehicle.doors > 0) '${vehicle.doors} puertas',
+                                if (vehicle.engineSize.isNotEmpty) vehicle.engineSize,
+                              ].join(' · '),
+                              style: AppTypography.bodySmall.copyWith(color: c.textTertiary),
+                            ),
+                          ],
                         ],
 
                         // Vehicle details
@@ -163,8 +175,6 @@ class ReviewScreen extends ConsumerWidget {
                         _GroupedCard(
                           c: c,
                           children: [
-                            _DetailRow(label: 'Siniestro o robo', value: 'No', c: c),
-                            _DetailRow(label: 'Uso como taxi', value: 'No', c: c),
                             _DetailRow(
                               label: 'Comprobante de compra',
                               value: state.hasProofOfPurchase ? 'Sí' : 'No',
@@ -253,7 +263,11 @@ class ReviewScreen extends ConsumerWidget {
                               _DetailRow(
                                 label: 'Dirección de recojo',
                                 value: state.collectionAddressLine1.isNotEmpty
-                                    ? '${state.collectionAddressLine1}, ${state.collectionCity}'
+                                    ? [
+                                        state.collectionAddressLine1,
+                                        state.collectionCity,
+                                        if (state.collectionPostcode.isNotEmpty) state.collectionPostcode,
+                                      ].join(', ')
                                     : state.collectionAddress,
                                 c: c,
                                 hasChevron: true,

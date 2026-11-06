@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/router/app_routes.dart';
+import '../../../core/services/auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final c = context.colors;
-    final vehicles = ref.watch(registeredVehiclesProvider);
+    final vehiclesAsync = ref.watch(registeredVehiclesProvider);
 
     return Scaffold(
       backgroundColor: c.background,
@@ -47,21 +47,28 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ),
-      drawer: _buildDrawer(context, c),
-      body: vehicles.isEmpty
-          ? _buildEmptyState(context, c)
-          : _buildVehicleList(context, c, vehicles),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(AppRoutes.vehicleLookup),
-        backgroundColor: _headerColor,
-        foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text('Nuevo vehículo'),
+      drawer: _buildDrawer(context, ref, c),
+      body: vehiclesAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator(color: _headerColor)),
+        error: (_, __) => _buildEmptyState(context, c),
+        data: (vehicles) => vehicles.isEmpty
+            ? _buildEmptyState(context, c)
+            : _buildVehicleList(context, c, vehicles),
       ),
+      floatingActionButton: vehiclesAsync.valueOrNull?.isNotEmpty == true
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push(AppRoutes.vehicleLookup),
+              backgroundColor: _headerColor,
+              foregroundColor: Colors.white,
+              icon: const Icon(Icons.add),
+              label: const Text('Nuevo vehículo'),
+            )
+          : null,
     );
   }
 
-  Widget _buildDrawer(BuildContext context, AdaptiveColors c) {
+  Widget _buildDrawer(BuildContext context, WidgetRef ref, AdaptiveColors c) {
+    final user = ref.watch(currentUserProvider);
     return Drawer(
       backgroundColor: c.surface,
       child: SafeArea(
@@ -83,15 +90,19 @@ class HomeScreen extends ConsumerWidget {
                       color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 28,
+                    child: Center(
+                      child: Text(
+                        (user?.name ?? 'U').substring(0, 1).toUpperCase(),
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                   AppSpacing.vGapMd,
                   Text(
-                    'Juan Pérez',
+                    user?.name ?? 'Usuario',
                     style: AppTypography.titleMedium.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -99,7 +110,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   AppSpacing.vGapXxs,
                   Text(
-                    'juan@email.com',
+                    user?.email ?? '',
                     style: AppTypography.bodySmall.copyWith(
                       color: Colors.white70,
                     ),
@@ -145,6 +156,8 @@ class HomeScreen extends ConsumerWidget {
               label: 'Cerrar sesión',
               color: AppColors.error,
               onTap: () {
+                ref.read(authServiceProvider).logout();
+                ref.read(currentUserProvider.notifier).state = null;
                 Navigator.of(context).pop();
                 context.go(AppRoutes.auth);
               },
@@ -297,8 +310,6 @@ class _VehicleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final v = vehicle.vehicle;
-    final formatter = NumberFormat('#,###', 'es_PE');
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
@@ -318,18 +329,20 @@ class _VehicleCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${v.brand} ${v.model}',
+                      vehicle.vehicleLabel,
                       style: AppTypography.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    AppSpacing.vGapXxs,
-                    Text(
-                      '${v.year} · ${v.color}',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: c.textSecondary,
+                    if (vehicle.identifier.isNotEmpty) ...[
+                      AppSpacing.vGapXxs,
+                      Text(
+                        vehicle.identifier,
+                        style: AppTypography.bodySmall.copyWith(
+                          color: c.textSecondary,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
@@ -344,7 +357,7 @@ class _VehicleCard extends StatelessWidget {
                   border: Border.all(color: c.border),
                 ),
                 child: Text(
-                  v.plate,
+                  vehicle.plate,
                   style: AppTypography.labelMedium.copyWith(
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.2,
@@ -354,36 +367,7 @@ class _VehicleCard extends StatelessWidget {
             ],
           ),
           AppSpacing.vGapMd,
-          Row(
-            children: [
-              _StatusChip(label: vehicle.statusLabel, status: vehicle.status),
-              const Spacer(),
-              Text(
-                'S/${formatter.format(v.estimatedPrice.round())}',
-                style: AppTypography.titleSmall.copyWith(
-                  color: _headerColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          if (vehicle.progress < 100) ...[
-            AppSpacing.vGapMd,
-            ClipRRect(
-              borderRadius: AppSpacing.borderRadiusFull,
-              child: LinearProgressIndicator(
-                value: vehicle.progress / 100,
-                backgroundColor: c.surfaceVariant,
-                valueColor: const AlwaysStoppedAnimation<Color>(_headerColor),
-                minHeight: 4,
-              ),
-            ),
-            AppSpacing.vGapXxs,
-            Text(
-              '${vehicle.progress.round()}% completado',
-              style: AppTypography.caption.copyWith(color: c.textSecondary),
-            ),
-          ],
+          _StatusChip(label: vehicle.statusLabel, status: vehicle.status),
         ],
       ),
     );

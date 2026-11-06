@@ -10,6 +10,7 @@ final dioProvider = Provider<Dio>((ref) {
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 60),
     sendTimeout: const Duration(seconds: 120),
+    headers: {'Accept': 'application/json'},
   ));
 
   final authService = ref.watch(authServiceProvider);
@@ -55,6 +56,11 @@ class ApiClient {
   Future<String> submitRegistration(Map<String, dynamic> payload) async {
     final response = await _dio.post('/registrations', data: payload);
     return response.data['id'] as String;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRegistrations() async {
+    final response = await _dio.get('/registrations');
+    return (response.data as List).cast<Map<String, dynamic>>();
   }
 }
 

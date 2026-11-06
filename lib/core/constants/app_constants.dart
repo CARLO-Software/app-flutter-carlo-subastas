@@ -10,7 +10,7 @@ class AppConstants {
   // API Configuration — passed via --dart-define-from-file=.env
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://api.carlo.pe/v1',
+    defaultValue: 'https://carlo.pe/api/v1',
   );
 
   // AI Configuration — passed via --dart-define-from-file=.env

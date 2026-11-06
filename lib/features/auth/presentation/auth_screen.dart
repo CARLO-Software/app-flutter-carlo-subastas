@@ -145,20 +145,22 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
     try {
       final authService = ref.read(authServiceProvider);
 
+      final AuthUser user;
       if (_isLogin) {
-        await authService.login(
+        user = await authService.login(
           _emailController.text.trim(),
           _passwordController.text,
         );
       } else {
         final nameParts = _nameController.text.trim().split(' ');
-        await authService.register(
+        user = await authService.register(
           firstName: nameParts.first,
           lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
       }
+      ref.read(currentUserProvider.notifier).state = user;
 
       if (!mounted) return;
       context.go(AppRoutes.loading);

@@ -88,12 +88,15 @@ class AuthService {
   Future<String?> getToken() => _storage.read(key: _tokenKey);
 }
 
+final currentUserProvider = StateProvider<AuthUser?>((_) => null);
+
 final _secureStorageProvider = Provider((_) => const FlutterSecureStorage());
 
 final authServiceProvider = Provider<AuthService>((ref) {
   final dio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
+    headers: {'Accept': 'application/json'},
   ));
   return AuthService(dio, ref.watch(_secureStorageProvider));
 });

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../home/providers/registered_vehicles_provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../models/models.dart';
@@ -26,6 +27,112 @@ class _SaleTypeScreenState extends ConsumerState<SaleTypeScreen> {
   void initState() {
     super.initState();
     _selected = ref.read(vehicleRegistrationProvider).saleType;
+  }
+
+  void _showDetail({
+    required String title,
+    required IconData icon,
+    required List<String> details,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.colors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.85,
+        expand: false,
+        builder: (_, scrollController) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: ListView(
+            controller: scrollController,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.colors.border,
+                    borderRadius: AppSpacing.borderRadiusFull,
+                  ),
+                ),
+              ),
+              AppSpacing.vGapLg,
+              Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: _headerColor.withValues(alpha: 0.1),
+                      borderRadius: AppSpacing.borderRadiusMd,
+                    ),
+                    child: Icon(icon, color: _headerColor, size: 24),
+                  ),
+                  AppSpacing.hGapMd,
+                  Text(
+                    title,
+                    style: AppTypography.headlineSmall.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+              AppSpacing.vGapLg,
+              ...details.map((detail) => Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 6),
+                      child: Icon(Icons.check_circle, color: _headerColor, size: 18),
+                    ),
+                    AppSpacing.hGapSm,
+                    Expanded(
+                      child: Text(
+                        detail,
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: context.colors.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+              AppSpacing.vGapLg,
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final type = title == 'Venta Inmediata'
+                        ? SaleType.ecommerce
+                        : title == 'Subasta'
+                            ? SaleType.auction
+                            : SaleType.consignment;
+                    setState(() => _selected = type);
+                    Navigator.of(ctx).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _headerColor,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusMd),
+                  ),
+                  child: Text('Seleccionar $title', style: AppTypography.button.copyWith(color: Colors.white)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _onConfirm() {
@@ -102,12 +209,22 @@ class _SaleTypeScreenState extends ConsumerState<SaleTypeScreen> {
                   ),
                   AppSpacing.vGapXl,
                   _SaleTypeCard(
-                    icon: Icons.storefront_outlined,
-                    title: 'Ecommerce',
-                    subtitle: 'Venta directa',
-                    description: 'Carlo compra tu vehículo y lo vende directamente. Recibes el pago de forma rápida y segura.',
+                    icon: Icons.bolt_outlined,
+                    title: 'Venta Inmediata',
+                    subtitle: 'Pago el mismo día',
+                    description: 'Hacemos la inspección de tu auto y si todo está ok, gestionamos el abono en ese instante. La forma más rápida de vender.',
                     selected: _selected == SaleType.ecommerce,
-                    onTap: () => setState(() => _selected = SaleType.ecommerce),
+                    onTap: () => _showDetail(
+                      title: 'Venta Inmediata',
+                      icon: Icons.bolt_outlined,
+                      details: [
+                        'Carlo compra tu vehículo directamente después de la inspección.',
+                        'El pago se gestiona el mismo día que se aprueba la inspección.',
+                        'No necesitas esperar compradores ni negociar con terceros.',
+                        'Si tu auto aún tiene deuda bancaria, se descuenta del monto de la propuesta.',
+                        'La inspección es 100% gratuita, ya sea en tu domicilio o en nuestras instalaciones.',
+                      ],
+                    ),
                     c: c,
                   ),
                   AppSpacing.vGapMd,
@@ -115,19 +232,41 @@ class _SaleTypeScreenState extends ConsumerState<SaleTypeScreen> {
                     icon: Icons.gavel_outlined,
                     title: 'Subasta',
                     subtitle: 'Venta al mejor postor',
-                    description: 'Tu vehículo entra en subasta para dealers verificados. Puedes obtener un mejor precio por la competencia entre compradores.',
+                    description: 'Tu vehículo entra en subasta para dealers verificados. El pago es inmediato al aceptarse la mejor oferta.',
                     selected: _selected == SaleType.auction,
-                    onTap: () => setState(() => _selected = SaleType.auction),
+                    onTap: () => _showDetail(
+                      title: 'Subasta',
+                      icon: Icons.gavel_outlined,
+                      details: [
+                        'Tu auto se publica en la plataforma de subastas de Carlo para dealers verificados.',
+                        'Los dealers compiten con pujas para ofrecer el mejor precio por tu vehículo.',
+                        'Todas las pujas son vinculantes — una vez aceptada la oferta, la venta es segura.',
+                        'El pago es inmediato una vez que se acepta la mejor oferta.',
+                        'Carlo cobra una tarifa administrativa por vehículo vendido.',
+                        'Tienes hasta 5 días para aceptar la propuesta después de la inspección.',
+                      ],
+                    ),
                     c: c,
                   ),
                   AppSpacing.vGapMd,
                   _SaleTypeCard(
                     icon: Icons.handshake_outlined,
-                    title: 'Consigna',
-                    subtitle: 'Carlo vende por ti',
-                    description: 'Dejás tu vehículo en consigna y Carlo se encarga de venderlo. Tú defines el precio esperado y Carlo cobra una comisión.',
+                    title: 'Consignación',
+                    subtitle: 'Mayor rentabilidad',
+                    description: 'Si buscas mayor rentabilidad, esta es la mejor alternativa. Carlo se encarga de todo y el pago se realiza en 30-45 días.',
                     selected: _selected == SaleType.consignment,
-                    onTap: () => setState(() => _selected = SaleType.consignment),
+                    onTap: () => _showDetail(
+                      title: 'Consignación',
+                      icon: Icons.handshake_outlined,
+                      details: [
+                        'Si buscas mayor rentabilidad por tu auto, esta es la mejor alternativa.',
+                        'Tu vehículo se queda en las instalaciones de Carlo y se firma un documento de consignación.',
+                        'Carlo se encarga de todo el proceso de venta — tú no tienes que hacer nada más.',
+                        'Una vez vendido el auto (estimado 30-45 días), se te deposita el valor acordado.',
+                        'Tú defines el precio esperado junto con Carlo.',
+                        'La inspección es 100% gratuita.',
+                      ],
+                    ),
                     c: c,
                   ),
                   AppSpacing.vGapXl,
@@ -278,8 +417,9 @@ class _SubmissionProgressDialog extends ConsumerWidget {
     ref.listen<SubmissionProgress>(submissionProvider, (prev, next) {
       if (next.phase == SubmissionPhase.done) {
         ref.read(vehicleRegistrationProvider.notifier).submitForReview();
+        ref.read(registeredVehiclesProvider.notifier).refresh();
         Navigator.of(context).pop();
-        context.go(AppRoutes.submissionStatus);
+        context.go(AppRoutes.home);
       }
     });
 

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/router/app_routes.dart';
+import '../../../core/services/auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
@@ -41,12 +43,21 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+    _checkSession();
+  }
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) {
-        context.go(AppRoutes.auth);
-      }
-    });
+  Future<void> _checkSession() async {
+    final authService = ref.read(authServiceProvider);
+    final user = await authService.restoreSession();
+    if (!mounted) return;
+
+    if (user != null) {
+      ref.read(currentUserProvider.notifier).state = user;
+      context.go(AppRoutes.home);
+    } else {
+      await Future.delayed(const Duration(milliseconds: 1200));
+      if (mounted) context.go(AppRoutes.auth);
+    }
   }
 
   @override
