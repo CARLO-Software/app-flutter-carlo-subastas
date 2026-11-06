@@ -40,7 +40,6 @@ static const String exteriorPhotos = '/exterior-photos';
   static const String ownerName = '/owner-name';
   static const String collectionAddress = '/collection-address';
   static const String confirmAddress = '/confirm-address';
-  static const String confirmPhone = '/confirm-phone';
   static const String lockingWheelNut = '/locking-wheel-nut';
   static const String warningLights = '/warning-lights';
   static const String chargingCables = '/charging-cables';

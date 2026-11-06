@@ -126,7 +126,6 @@ abstract class VehicleRegistrationState with _$VehicleRegistrationState {
 
     // Phone Verification
     @Default('') String phoneNumber,
-    @Default(false) bool phoneConfirmed,
 
     // Collection Address
     @Default('') String collectionAddress,

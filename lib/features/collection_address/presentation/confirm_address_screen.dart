@@ -119,7 +119,7 @@ class _ConfirmAddressScreenState extends ConsumerState<ConfirmAddressScreen> {
                               postcode: _postcode.text.trim(),
                             );
                             notifier.confirmCollectionAddress();
-                            context.push(AppRoutes.confirmPhone);
+                            context.push(AppRoutes.review);
                           }
                         : null,
                     style: ElevatedButton.styleFrom(

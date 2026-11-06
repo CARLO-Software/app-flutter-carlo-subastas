@@ -45,7 +45,6 @@ import '../../features/registered_keeper/presentation/registered_keeper_screen.d
 import '../../features/owner_name/presentation/owner_name_screen.dart';
 import '../../features/collection_address/presentation/collection_address_screen.dart';
 import '../../features/collection_address/presentation/confirm_address_screen.dart';
-import '../../features/confirm_phone/presentation/confirm_phone_screen.dart';
 import '../../features/interior_condition/presentation/interior_condition_screen.dart';
 import '../../features/service_history/presentation/service_history_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -280,11 +279,6 @@ GoRoute(
       path: AppRoutes.confirmAddress,
       name: 'confirmAddress',
       builder: (context, state) => const ConfirmAddressScreen(),
-    ),
-    GoRoute(
-      path: AppRoutes.confirmPhone,
-      name: 'confirmPhone',
-      builder: (context, state) => const ConfirmPhoneScreen(),
     ),
     GoRoute(
       path: AppRoutes.conditionDamage,

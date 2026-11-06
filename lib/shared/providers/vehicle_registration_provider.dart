@@ -286,10 +286,6 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     state = state.copyWith(phoneNumber: phone);
   }
 
-  void confirmPhone() {
-    state = state.copyWith(phoneConfirmed: true);
-  }
-
   // Collection Address
   void setCollectionAddress(String address) {
     state = state.copyWith(collectionAddress: address);
@@ -545,7 +541,7 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
   // Progress Calculation
   double calculateProgress() {
     int completedSteps = 0;
-    const int totalSteps = 31;
+    const int totalSteps = 30;
 
     if (state.vehicleDetailsConfirmed) completedSteps++;
     if (state.extraFeaturesConfirmed) completedSteps++;
@@ -577,7 +573,6 @@ class VehicleRegistrationNotifier extends Notifier<VehicleRegistrationState> {
     if (state.registeredKeeperConfirmed) completedSteps++;
     if (state.ownerNameConfirmed) completedSteps++;
     if (state.collectionAddressConfirmed) completedSteps++;
-    if (state.phoneConfirmed) completedSteps++;
 
     return completedSteps / totalSteps;
   }

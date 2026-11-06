@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../core/router/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
@@ -254,9 +255,11 @@ class ReviewScreen extends ConsumerWidget {
                             ),
                             _DetailRow(
                               label: 'Teléfono',
-                              value: state.phoneNumber.isNotEmpty ? state.phoneNumber : 'No especificado',
+                              value: state.phoneNumber.isNotEmpty ? state.phoneNumber : 'Agregar',
                               c: c,
                               hasChevron: true,
+                              valueColor: state.phoneNumber.isEmpty ? _headerColor : null,
+                              onTap: () => _showPhoneDialog(context, ref, state.phoneNumber),
                             ),
                             if (state.collectionAddress.isNotEmpty ||
                                 state.collectionAddressLine1.isNotEmpty)
@@ -542,6 +545,45 @@ class ReviewScreen extends ConsumerWidget {
     );
   }
 
+  void _showPhoneDialog(BuildContext context, WidgetRef ref, String current) {
+    final controller = TextEditingController(text: current);
+    final c = context.colors;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.surface,
+        shape: RoundedRectangleBorder(borderRadius: AppSpacing.borderRadiusLg),
+        title: Text('Teléfono de contacto', style: AppTypography.titleMedium),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: TextInputType.phone,
+          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\- ()]+'))],
+          decoration: InputDecoration(
+            hintText: '+51 999 999 999',
+            prefixIcon: Icon(Icons.phone_outlined, color: c.textTertiary),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text('Cancelar', style: TextStyle(color: c.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () {
+              final phone = controller.text.trim();
+              if (phone.isNotEmpty) {
+                ref.read(vehicleRegistrationProvider.notifier).setPhoneNumber(phone);
+              }
+              Navigator.of(ctx).pop();
+            },
+            child: const Text('Guardar', style: TextStyle(color: AppColors.primary)),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showSubmissionDialog(BuildContext context, WidgetRef ref) {
     final registrationState = ref.read(vehicleRegistrationProvider);
     ref.read(submissionProvider.notifier).reset();
@@ -717,6 +759,7 @@ class _DetailRow extends StatelessWidget {
   final AdaptiveColors c;
   final bool hasChevron;
   final Color? valueColor;
+  final VoidCallback? onTap;
 
   const _DetailRow({
     required this.label,
@@ -724,11 +767,12 @@ class _DetailRow extends StatelessWidget {
     required this.c,
     this.hasChevron = false,
     this.valueColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final content = Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 14),
       child: Row(
         children: [
@@ -755,6 +799,8 @@ class _DetailRow extends StatelessWidget {
         ],
       ),
     );
+    if (onTap != null) return GestureDetector(onTap: onTap, child: content);
+    return content;
   }
 }
 
